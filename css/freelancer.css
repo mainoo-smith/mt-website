@@ -2639,14 +2639,14 @@
   .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
   .show > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #148f77;
-    border-color: #12846e;
+    background-color: #df8a1b;
+    border-color: #e28d1d;
   }
   
   .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
   .show > .btn-primary.dropdown-toggle:focus {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(60, 198, 171, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(60, 198, 171, 0.5);
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(223, 169, 22, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(197, 150, 20, 0.5);
   }
   
   .btn-secondary {
@@ -4878,6 +4878,7 @@
     background-clip: border-box;
     border: 0.125rem solid rgba(0, 0, 0, 0.125);
     border-radius: 0.5rem;
+    margin-top: 20px !important;
   }
   
   .card > hr {
@@ -5040,6 +5041,11 @@
     margin-bottom: 15px;
   }
   
+  .about-section{
+    margin: 10px !important;
+    background-color: red;
+  }
+
   @media (min-width: 576px) {
     .card-group {
       -webkit-box-orient: horizontal;
@@ -10676,7 +10682,7 @@
   }
   
   #mainNav .navbar-nav li.nav-item a.nav-link:hover {
-    color: #1abc9c;
+    color: orange !important;
   }
   
   #mainNav .navbar-nav li.nav-item a.nav-link:active, #mainNav .navbar-nav li.nav-item a.nav-link:focus {
@@ -10684,7 +10690,7 @@
   }
   
   #mainNav .navbar-nav li.nav-item a.nav-link.active {
-    color: #1abc9c;
+    color: orange !important;
   }
   
   #mainNav .navbar-toggler {
@@ -10709,11 +10715,11 @@
     }
     #mainNav .navbar-nav > li.nav-item > a.nav-link.active {
       color: #fff;
-      background: #1abc9c;
+      background: orange !important;
     }
     #mainNav .navbar-nav > li.nav-item > a.nav-link.active:active, #mainNav .navbar-nav > li.nav-item > a.nav-link.active:focus, #mainNav .navbar-nav > li.nav-item > a.nav-link.active:hover {
       color: #fff;
-      background: #1abc9c;
+      background: orange !important;
     }
     #mainNav.navbar-shrink {
       padding-top: 0.5rem;

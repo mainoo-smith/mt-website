@@ -3,5 +3,9 @@
   }
   
   .card-text{
-    color: white !important;
+    color: black;
+  }
+
+  .card{
+    margin-top: 10px;
   }
