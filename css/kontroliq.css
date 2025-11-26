@@ -1,0 +1,416 @@
+/* KontrolIQ Page Styles */
+
+/* Hero Section */
+.hero-section {
+  padding-top: calc(6rem + 74px);
+  padding-bottom: 4rem;
+  background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+  color: #fff;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.hero-subheading {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+}
+
+.hero-icon {
+  font-size: 10rem;
+  color: #1abc9c;
+  opacity: 0.8;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@media (min-width: 992px) {
+  .hero-heading {
+    font-size: 3.5rem;
+  }
+  
+  .hero-subheading {
+    font-size: 1.5rem;
+  }
+}
+
+/* Section Headings */
+.section-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #1abc9c, dodgerblue);
+  border-radius: 2px;
+}
+
+/* Overview Section */
+.section-overview {
+  background: #fff;
+}
+
+.feature-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  font-size: 3.5rem;
+  color: #1abc9c;
+}
+
+.feature-card .card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.feature-card .card-text {
+  font-size: 1.1rem;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Problems & Solutions Section */
+.section-problems {
+  background: #f8f9fa;
+}
+
+.problem-list,
+.solution-list {
+  list-style: none;
+  padding: 0;
+}
+
+.problem-list li,
+.solution-list li {
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.problem-list li:last-child,
+.solution-list li:last-child {
+  border-bottom: none;
+}
+
+/* How It Works Section */
+.section-how-it-works {
+  background: #fff;
+}
+
+.step-card {
+  padding: 2rem 1rem;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-10px);
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #1abc9c, dodgerblue);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.step-icon {
+  font-size: 3rem;
+  color: #2c3e50;
+  margin-top: 1rem;
+}
+
+.step-card h5 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+}
+
+.step-card p {
+  font-size: 1rem;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* Comparison Section */
+.section-comparison {
+  background: #f8f9fa;
+}
+
+.comparison-table {
+  font-size: 1.1rem;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-table thead {
+  background: #2c3e50;
+  color: #fff;
+}
+
+.comparison-table th {
+  font-weight: 700;
+  padding: 1.25rem;
+  border: none;
+}
+
+.comparison-table td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+}
+
+.comparison-table .highlight-col {
+  background: #e8f5f1;
+  font-weight: 600;
+}
+
+.comparison-table tbody tr {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.comparison-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* CTA Section */
+.section-cta {
+  background: linear-gradient(135deg, #1abc9c 0%, dodgerblue 100%);
+  color: #fff;
+}
+
+.section-cta h2 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.section-cta .lead {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.25rem;
+}
+
+.section-cta .btn-primary {
+  background: #fff;
+  color: #1abc9c;
+  border: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.section-cta .btn-primary:hover {
+  background: #2c3e50;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styles */
+.btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1abc9c, dodgerblue);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, dodgerblue, #1abc9c);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(26, 188, 156, 0.3);
+}
+
+/* Utilities */
+.min-vh-80 {
+  min-height: 80vh;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .hero-section {
+    padding-top: calc(4rem + 74px);
+    padding-bottom: 3rem;
+    min-height: auto;
+  }
+  
+  .hero-heading {
+    font-size: 2rem;
+  }
+  
+  .hero-subheading {
+    font-size: 1.1rem;
+  }
+  
+  .hero-icon {
+    font-size: 6rem;
+  }
+  
+  .section-heading {
+    font-size: 2rem;
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+  }
+  
+  .step-icon {
+    font-size: 2.5rem;
+  }
+  
+  .comparison-table {
+    font-size: 0.95rem;
+  }
+  
+  .section-cta h2 {
+    font-size: 2rem;
+  }
+  
+  .btn-xl {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-heading {
+    font-size: 1.75rem;
+  }
+  
+  .hero-subheading {
+    font-size: 1rem;
+  }
+  
+  .section-heading {
+    font-size: 1.75rem;
+  }
+  
+  .feature-card .card-title {
+    font-size: 1.25rem;
+  }
+  
+  .feature-card .card-text {
+    font-size: 1rem;
+  }
+  
+  .problem-list li,
+  .solution-list li {
+    font-size: 1rem;
+  }
+  
+  .step-card h5 {
+    font-size: 1.2rem;
+  }
+  
+  .comparison-table {
+    font-size: 0.85rem;
+  }
+  
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.75rem;
+  }
+}
+
+/* Additional KontrolIQ branding */
+.kontroliq-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #1abc9c, dodgerblue);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improve link contrast for accessibility */
+a {
+  color: #1abc9c;
+  text-decoration: none;
+}
+
+a:hover {
+  color: dodgerblue;
+  text-decoration: underline;
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .footer,
+  .copyright,
+  .scroll-to-top,
+  .section-cta {
+    display: none;
+  }
+  
+  .hero-section {
+    padding-top: 2rem;
+    min-height: auto;
+  }
+}
