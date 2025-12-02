@@ -2,6 +2,10 @@
 (function() {
   'use strict';
 
+  // Constants
+  const DESKTOP_BREAKPOINT = 992; // Bootstrap's lg breakpoint
+  const RESIZE_DEBOUNCE_MS = 250;
+
   // Close mobile menu when a nav link is clicked
   document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.getElementById('navbarResponsive');
@@ -34,14 +38,14 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() {
         // If viewport is desktop size and menu is open, close it
-        if (window.innerWidth >= 992 && navbarCollapse && navbarCollapse.classList.contains('show')) {
+        if (window.innerWidth >= DESKTOP_BREAKPOINT && navbarCollapse && navbarCollapse.classList.contains('show')) {
           if (typeof $ !== 'undefined' && $.fn.collapse) {
             $(navbarCollapse).collapse('hide');
           } else {
             navbarCollapse.classList.remove('show');
           }
         }
-      }, 250);
+      }, RESIZE_DEBOUNCE_MS);
     });
 
     // Close menu when clicking outside of it
