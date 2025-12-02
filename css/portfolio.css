@@ -93,8 +93,11 @@
     margin-top: 0.5rem;
   }
   
-  /* Image improvements */
-  img {
+  /* Image improvements - scoped to content areas */
+  .masthead img,
+  .page-section img,
+  section img,
+  .card img {
     max-width: 100%;
     height: auto;
   }
@@ -167,6 +170,14 @@
     font-size: 2.5rem !important;
   }
   
+  .btn-xl {
+    width: auto;
+    padding: 1rem 2rem !important;
+  }
+}
+
+/* Desktop - ensure buttons don't span full width */
+@media (min-width: 992px) {
   .btn-xl {
     width: auto;
   }

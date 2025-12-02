@@ -8,7 +8,7 @@
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
     const navbarToggler = document.querySelector('.navbar-toggler');
 
-    if (navLinks && navbarCollapse && navbarToggler) {
+    if (navLinks && navLinks.length > 0 && navbarCollapse && navbarToggler) {
       navLinks.forEach(function(link) {
         link.addEventListener('click', function() {
           // Check if menu is expanded
