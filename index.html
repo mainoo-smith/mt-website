@@ -17,8 +17,6 @@
 <!--  custom css-->
 
   <link href="css/portfolio.css" rel="stylesheet" type="text/css">
-  <!-- KontrolIQ theme styles to unify look & feel -->
-  <link href="css/kontroliq.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -28,6 +26,8 @@
 
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
+  <!-- KontrolIQ theme styles to unify look & feel (loaded last to override) -->
+  <link href="css/kontroliq.css" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -110,7 +110,7 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-7">
-          <h2 class="text-uppercase text-secondary mb-3">Introducing KontrolIQ</h2>
+          <h2 class="section-heading text-center">Introducing KontrolIQ</h2>
           <h3 class="mb-4">SOC 2 Readiness. Automated. Secure.</h3>
           <p class="lead mb-4">
             Get audit-ready in days—not months—with zero data leaving your AWS environment. 
@@ -134,23 +134,16 @@
   </section>
 
   <!-- About Section -->
-  <section class="page-section bg-primary text-white mb-0" id="about">
+  <section class="page-section section-cta text-white mb-0" id="about">
     <div class="container">
 
       <!-- About Section Heading -->
       <h2 class="section-heading text-center text-white">About</h2>
 
-      <!-- Icon Divider -->
-      <div class="divider-custom divider-light">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon">
-          <i class="fas fa-star"></i>
-        </div>
-        <div class="divider-custom-line"></div>
-      </div>
+      <!-- KontrolIQ-style underline is handled by section-heading -->
 
       <!-- About Section Content -->
-      <div>
+        <div>
         <p class="lead">
             At Mainoo Technologies we love to transform your business through cloud and mobile solutions. 
             We have a team of experts dedicated to bringing innovation and productivity to your organization.

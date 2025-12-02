@@ -426,7 +426,7 @@
 /* Additional KontrolIQ branding */
 .kontroliq-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #1abc9c, dodgerblue);
+  background: linear-gradient(135deg, #D37506, #000);
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 20px;
