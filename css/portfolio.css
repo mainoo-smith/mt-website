@@ -1,5 +1,7 @@
+/* Branding Colors: White, Orange (#D37506), and Black (#000) */
+
 .bg-primary {
-    background-color: dodgerblue !important;
+    background-color: #D37506 !important; /* Orange branding color */
   }
   
   .card-text{
@@ -9,3 +11,174 @@
   .card{
     margin-top: 10px;
   }
+
+/* Hamburger Menu Smooth Transitions */
+.navbar-collapse {
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-toggler {
+  border: 2px solid #D37506;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggler:hover {
+  background-color: rgba(211, 117, 6, 0.1);
+  transform: scale(1.05);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(211, 117, 6, 0.5);
+  outline: none;
+}
+
+/* Smooth animation for menu items */
+.navbar-nav .nav-link {
+  transition: all 0.3s ease;
+  padding: 0.8rem 1rem !important;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: rgba(211, 117, 6, 0.1);
+  transform: translateX(5px);
+}
+
+/* Mobile Layout Improvements */
+@media (max-width: 991.98px) {
+  /* Navigation improvements */
+  .navbar-collapse {
+    background-color: rgba(44, 62, 80, 0.98);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-nav {
+    margin-top: 0 !important;
+  }
+  
+  .navbar-nav .nav-item {
+    margin: 0.5rem 0;
+    text-align: center;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 1rem !important;
+    border-radius: 0.25rem;
+  }
+  
+  /* Masthead mobile improvements */
+  .masthead {
+    padding-top: calc(4rem + 74px);
+    padding-bottom: 4rem;
+  }
+  
+  .masthead-heading {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .masthead-subheading {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Button improvements for mobile */
+  .btn-xl {
+    padding: 0.875rem 1.5rem !important;
+    font-size: 1rem !important;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+  /* Image improvements - scoped to content areas */
+  .masthead img,
+  .page-section img,
+  section img,
+  .card img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Container padding for mobile */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Card improvements */
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+    text-align: left;
+  }
+  
+  /* Section improvements */
+  .page-section {
+    padding: 3rem 0;
+  }
+  
+  /* KontrolIQ promo section mobile */
+  #kontroliq-promo .col-lg-7,
+  #kontroliq-promo .col-lg-5 {
+    text-align: center;
+  }
+  
+  #kontroliq-promo h2,
+  #kontroliq-promo h3 {
+    font-size: 1.5rem;
+  }
+  
+  #kontroliq-promo .lead {
+    font-size: 1rem;
+  }
+  
+  /* About section mobile */
+  #about .col-lg-4,
+  #about .col-lg-6 {
+    margin-bottom: 2rem;
+  }
+  
+  #about h4 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  
+  #about .lead {
+    font-size: 1rem;
+  }
+  
+  /* Footer mobile improvements */
+  .footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .footer .col-lg-4 {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .masthead-heading {
+    font-size: 2.5rem !important;
+  }
+  
+  .btn-xl {
+    width: auto;
+    padding: 1rem 2rem !important;
+  }
+}
+
+/* Desktop - ensure buttons don't span full width */
+@media (min-width: 992px) {
+  .btn-xl {
+    width: auto;
+  }
+}
