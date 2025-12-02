@@ -1,7 +1,7 @@
-/* Branding Colors: White, Orange (#fd7e14), and Black (#000) */
+/* Branding Colors: White, Orange (#D37506), and Black (#000) */
 
 .bg-primary {
-    background-color: #fd7e14 !important; /* Orange branding color */
+    background-color: #D37506 !important; /* Orange branding color */
   }
   
   .card-text{
@@ -18,17 +18,17 @@
 }
 
 .navbar-toggler {
-  border: 2px solid #fd7e14;
+  border: 2px solid #D37506;
   transition: all 0.3s ease;
 }
 
 .navbar-toggler:hover {
-  background-color: rgba(253, 126, 20, 0.1);
+  background-color: rgba(211, 117, 6, 0.1);
   transform: scale(1.05);
 }
 
 .navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(253, 126, 20, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(211, 117, 6, 0.5);
   outline: none;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .navbar-nav .nav-link:hover {
-  background-color: rgba(253, 126, 20, 0.1);
+  background-color: rgba(211, 117, 6, 0.1);
   transform: translateX(5px);
 }
 

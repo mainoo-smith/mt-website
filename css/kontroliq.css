@@ -1,5 +1,5 @@
 /* KontrolIQ Page Styles */
-/* Branding Colors: White, Orange (#fd7e14), and Black (#000) */
+/* Branding Colors: White, Orange (#D37506), and Black (#000) */
 
 /* Hero Section */
 .hero-section {
@@ -28,7 +28,7 @@
 
 .hero-icon {
   font-size: 10rem;
-  color: #fd7e14; /* Orange branding color */
+  color: #D37506; /* Orange branding color */
   opacity: 0.8;
   animation: float 3s ease-in-out infinite;
 }
@@ -69,7 +69,7 @@
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: linear-gradient(90deg, #fd7e14, #000); /* Orange to black gradient */
+  background: linear-gradient(90deg, #D37506, #000); /* Orange to black gradient */
   border-radius: 2px;
 }
 
@@ -93,7 +93,7 @@
 
 .feature-icon {
   font-size: 3.5rem;
-  color: #fd7e14; /* Orange branding color */
+  color: #D37506; /* Orange branding color */
 }
 
 .feature-card .card-title {
@@ -155,7 +155,7 @@
   transform: translateX(-50%);
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #fd7e14, #000); /* Orange to black gradient */
+  background: linear-gradient(135deg, #D37506, #000); /* Orange to black gradient */
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -229,7 +229,7 @@
 
 /* CTA Section */
 .section-cta {
-  background: linear-gradient(135deg, #fd7e14 0%, #000 100%); /* Orange to black gradient */
+  background: linear-gradient(135deg, #D37506 0%, #000 100%); /* Orange to black gradient */
   color: #fff;
 }
 
@@ -246,7 +246,7 @@
 
 .section-cta .btn-primary {
   background: #fff;
-  color: #fd7e14; /* Orange text */
+  color: #D37506; /* Orange text */
   border: none;
   font-weight: 700;
   transition: all 0.3s ease;
@@ -269,14 +269,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #fd7e14, #000); /* Orange to black gradient */
+  background: linear-gradient(135deg, #D37506, #000); /* Orange to black gradient */
   border: none;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #000, #fd7e14); /* Reverse gradient on hover */
+  background: linear-gradient(135deg, #000, #D37506); /* Reverse gradient on hover */
   transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(253, 126, 20, 0.3);
+  box-shadow: 0 8px 16px rgba(211, 117, 6, 0.3);
 }
 
 /* Utilities */
