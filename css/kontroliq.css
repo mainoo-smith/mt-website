@@ -442,14 +442,14 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Improve link contrast for accessibility */
+/* Links - align with logo/theme colors */
 a {
-  color: #1abc9c;
+  color: #D37506; /* Orange branding color */
   text-decoration: none;
 }
 
 a:hover {
-  color: dodgerblue;
+  color: #000; /* Black on hover for contrast */
   text-decoration: underline;
 }
 

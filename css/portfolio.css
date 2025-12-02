@@ -198,3 +198,12 @@ html {
     scroll-margin-top: 110px; /* slightly larger on desktop */
   }
 }
+
+/* Ensure section-heading is readable on orange backgrounds */
+.bg-primary .section-heading {
+  color: #fff;
+}
+
+.bg-primary .section-heading::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.65));
+}
