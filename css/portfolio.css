@@ -182,3 +182,19 @@
     width: auto;
   }
 }
+
+/* Smooth scrolling across site */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset anchors to avoid being covered by fixed navbar */
+[id] {
+  scroll-margin-top: 96px; /* approx navbar height + spacing */
+}
+
+@media (min-width: 992px) {
+  [id] {
+    scroll-margin-top: 110px; /* slightly larger on desktop */
+  }
+}
