@@ -32,6 +32,34 @@
   opacity: 0.8;
   animation: float 3s ease-in-out infinite;
 }
+/* Blue, responsive shield icon for promo */
+.kontroliq-shield-icon {
+  color: #1e90ff; /* DodgerBlue */
+  opacity: 0.85;
+  font-size: 8rem;
+  animation: float 3s ease-in-out infinite; /* same animation as products page */
+}
+
+@media (min-width: 576px) {
+  .kontroliq-shield-icon { font-size: 10rem; }
+}
+@media (min-width: 768px) {
+  .kontroliq-shield-icon { font-size: 12rem; }
+}
+@media (min-width: 992px) {
+  .kontroliq-shield-icon { font-size: 14rem; }
+}
+
+/* Provide spacing between promo CTA and shield icon */
+#kontroliq-promo .kontroliq-icon-wrapper {
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  #kontroliq-promo .kontroliq-icon-wrapper {
+    margin-top: 1.75rem;
+  }
+}
 
 @keyframes float {
   0%, 100% {

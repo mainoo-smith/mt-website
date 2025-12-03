@@ -32,6 +32,15 @@
   outline: none;
 }
 
+/* Force hamburger to use theme color */
+.navbar .navbar-toggler {
+  background-color: #D37506 !important;
+  border-color: #D37506 !important;
+}
+.navbar .navbar-toggler .fa-bars {
+  color: #fff !important;
+}
+
 /* Smooth animation for menu items */
 .navbar-nav .nav-link {
   transition: all 0.3s ease;
@@ -128,6 +137,11 @@
   #kontroliq-promo .col-lg-5 {
     text-align: center;
   }
+  #kontroliq-promo .col-lg-7 > *,
+  #kontroliq-promo .col-lg-5 > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
   
   #kontroliq-promo h2,
   #kontroliq-promo h3 {
@@ -142,6 +156,19 @@
   #kontroliq-promo .row {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+  }
+
+  /* Center CTA button in promo on mobile */
+  #kontroliq-promo .btn {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #kontroliq-promo ul {
+    text-align: left;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   /* About section mobile */
@@ -163,6 +190,51 @@
   #about .row,
   #about div {
     text-align: center;
+  }
+  #about ul {
+    text-align: left;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Ensure CONTACT US heading is centered and icon row aligned */
+  .footer h4#contact {
+    text-align: center;
+    width: 100%;
+  }
+  .footer .row .col-lg-4:nth-child(2) > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .footer .row .col-lg-4:nth-child(2) .mb-2 {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .footer .btn-social {
+    margin: 0.25rem;
+  }
+  .footer small {
+    display: block;
+    text-align: center;
+  }
+
+  /* Footer mobile improvements: center content */
+  .footer .row,
+  .footer .col-lg-4 {
+    text-align: center;
+  }
+  .footer .btn-social {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .footer small {
+    display: block;
+    margin-top: 0.5rem;
   }
   
   /* Footer mobile improvements */
@@ -202,6 +274,32 @@
   #about .col-lg-6 {
     margin-bottom: 1rem;
   }
+
+  /* KontrolIQ promo desktop alignment: left content, centered icon */
+  #kontroliq-promo .col-lg-7 { text-align: left; }
+  #kontroliq-promo .col-lg-5 { text-align: center; }
+
+  /* Keep CTA button aligned with text on desktop */
+  #kontroliq-promo .col-lg-7 .btn {
+    margin-left: 0;
+  }
+
+  /* Footer desktop: align middle column center */
+  .footer .col-lg-4:nth-child(2) {
+    text-align: center;
+  }
+}
+
+/* Global spacing fixes for gradient sections */
+.section-cta {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Standardize heading margins */
+.section-heading {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Smooth scrolling across site */
