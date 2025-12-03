@@ -138,6 +138,12 @@
     font-size: 1rem;
   }
   
+  /* Ensure spacing around promo content */
+  #kontroliq-promo .row {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
   /* About section mobile */
   #about .col-lg-4,
   #about .col-lg-6 {
@@ -151,6 +157,12 @@
   
   #about .lead {
     font-size: 1rem;
+  }
+  
+  /* Center text in About on small screens */
+  #about .row,
+  #about div {
+    text-align: center;
   }
   
   /* Footer mobile improvements */
@@ -180,6 +192,15 @@
 @media (min-width: 992px) {
   .btn-xl {
     width: auto;
+  }
+  
+  /* Desktop: left align About text with balanced spacing */
+  #about .row {
+    text-align: left;
+  }
+  #about .col-lg-4,
+  #about .col-lg-6 {
+    margin-bottom: 1rem;
   }
 }
 
