@@ -452,6 +452,20 @@
 }
 
 /* Additional KontrolIQ branding */
+.kontroliq-brand {
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+}
+
+.kontroliq-iq {
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.08em;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
 .kontroliq-badge {
   display: inline-block;
   background: linear-gradient(135deg, #D37506, #000);
