@@ -227,6 +227,55 @@
   color: var(--slate-700);
 }
 
+.loop-node {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem 0.85rem;
+  box-shadow: 0 4px 12px rgba(15, 31, 51, 0.05);
+}
+
+.loop-node h5 {
+  font-size: 1rem;
+  margin: 0.75rem 0 0.5rem;
+  color: var(--navy-800);
+}
+
+.loop-node p {
+  font-size: 0.9rem;
+  color: var(--slate-500);
+  margin-bottom: 0;
+}
+
+.loop-icon {
+  font-size: 1.4rem;
+  color: var(--accent-500);
+}
+
+.loop-node-active {
+  border-color: rgba(211, 117, 6, 0.5);
+  box-shadow: 0 8px 18px rgba(211, 117, 6, 0.15);
+}
+
+.framework-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.framework-pill {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(211, 117, 6, 0.45);
+  background: rgba(211, 117, 6, 0.12);
+  color: var(--navy-800);
+  font-weight: 700;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+}
+
 .feature-card {
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
