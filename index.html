@@ -99,9 +99,33 @@
             </div>
           </div>
 
-          <!-- Intentional empty band so the 3D/fallback scene is the hero visual -->
-          <div class="platform-visual-gap" aria-hidden="true">
-            <p class="platform-hint">Scroll to watch data move from ingest to impact · Tap a stage</p>
+          <!-- Story map: communicates ingest → impact in plain language -->
+          <div class="platform-visual-gap">
+            <div class="story-map" id="story-map" data-zone="in" aria-hidden="false">
+              <div class="story-zone story-zone-in" data-zone="in">
+                <p class="story-kicker">Data in</p>
+                <ul class="story-list">
+                  <li>Sensors &amp; GIS</li>
+                  <li>Hospital systems</li>
+                  <li>Agency feeds</li>
+                </ul>
+              </div>
+              <div class="story-arrow" aria-hidden="true">→</div>
+              <div class="story-zone story-zone-core" data-zone="core">
+                <p class="story-kicker">Coordinate</p>
+                <p class="story-core-label">Mainoo<br>Coordination Engine</p>
+              </div>
+              <div class="story-arrow" aria-hidden="true">→</div>
+              <div class="story-zone story-zone-out" data-zone="out">
+                <p class="story-kicker">Impact out</p>
+                <ul class="story-list">
+                  <li>Lives protected</li>
+                  <li>Damage reduced</li>
+                  <li>Evacuation success</li>
+                </ul>
+              </div>
+            </div>
+            <p class="platform-hint">Scroll or tap a stage — watch the story move from data in to impact out</p>
           </div>
 
           <div class="platform-chrome">

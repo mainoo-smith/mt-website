@@ -6,12 +6,12 @@
   'use strict';
 
   var STAGE_COPY = [
-    { title: 'Signals come in', caption: 'Environment, operations, and agency data enter one coordination fabric.' },
-    { title: 'Context becomes shared', caption: 'Fragmented inputs resolve into a picture teams can act on together.' },
-    { title: 'Teams coordinate', caption: 'Cross-agency workflows move on the same operating picture—in real time.' },
-    { title: 'Decisions land faster', caption: 'Operators see what matters when it matters—without losing local control.' },
-    { title: 'Action is orchestrated', caption: 'Responses trigger across units so effort compounds instead of colliding.' },
-    { title: 'Impact you can name', caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.' }
+    { title: 'Data comes in', caption: 'Sensors, hospital systems, and agency feeds enter the coordination fabric.', zone: 'in' },
+    { title: 'Shared context forms', caption: 'Scattered inputs become one picture teams can act on together.', zone: 'in' },
+    { title: 'Teams coordinate', caption: 'Agencies move on the same operating picture—in real time.', zone: 'core' },
+    { title: 'Decisions land faster', caption: 'Operators see what matters when it matters—without losing local control.', zone: 'core' },
+    { title: 'Action is orchestrated', caption: 'Responses trigger across units so effort compounds instead of colliding.', zone: 'out' },
+    { title: 'Impact you can name', caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.', zone: 'out' }
   ];
 
   var showcase = document.querySelector('.platform-showcase');
@@ -22,6 +22,7 @@
   var stageButtons = document.querySelectorAll('.platform-stage-btn');
   var overlayCopy = document.querySelector('.platform-copy');
   var progressFill = document.getElementById('platform-progress-fill');
+  var storyMap = document.getElementById('story-map');
 
   if (!showcase || !canvas) return;
 
@@ -57,6 +58,7 @@
     var copy = STAGE_COPY[currentStage];
     if (captionEl) captionEl.textContent = copy.caption;
     if (titleEl) titleEl.textContent = copy.title;
+    if (storyMap) storyMap.setAttribute('data-zone', copy.zone);
     stageButtons.forEach(function (btn) {
       var active = Number(btn.getAttribute('data-stage')) === currentStage;
       btn.classList.toggle('is-active', active);
