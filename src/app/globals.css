@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-orange: #d37506;
+  --brand-cream: #f8ead9;
+  --brand-ink: #050505;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: var(--brand-ink);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(211, 117, 6, 0.45);
+}
+
+.chapter-copy {
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
+}

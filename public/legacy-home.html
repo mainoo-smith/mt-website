@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Mainoo Technologies builds digital coordination infrastructure for critical sectors—enabling secure data exchange, interoperable operations, and measurable impact across healthcare, emergency response, and compliance.">
+  <meta name="author" content="Mainoo Technologies">
+
+  <title>Mainoo Technologies | Digital Coordination Infrastructure</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" type="text/css">
+  <link href="css/portfolio.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="css/freelancer.min.css" rel="stylesheet">
+  <link href="css/kontroliq.css" rel="stylesheet" type="text/css">
+  <link href="css/platform.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">
+        <img style="width: 50px; height: 50px; border-radius:25px" src="./assets/IMG_0090.png" alt="Mainoo Technologies">
+      </a>
+
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#platform">Platform</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#solutions">Solutions</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#labs">Sovereignty &amp; Research</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Book Demo</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero + Interactive 3D Platform Showcase -->
+  <section class="platform-showcase" id="platform" data-engine="pending" aria-label="Mainoo coordination platform showcase">
+    <div class="platform-showcase-sticky">
+      <canvas id="platform-canvas" class="platform-canvas" aria-hidden="true"></canvas>
+
+      <!-- Animated fallback when WebGL / reduced-motion is unavailable -->
+      <div class="platform-fallback" id="platform-fallback" hidden data-stage="0">
+        <div class="fallback-stage fallback-glass" aria-hidden="true">
+          <div class="fallback-nodes fallback-nodes-in">
+            <span title="Sensors"></span><span title="Hospital"></span><span title="Agency"></span><span title="Cloud"></span><span title="Compliance"></span>
+          </div>
+          <div class="fallback-spine">
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+          </div>
+          <div class="fallback-board">
+            <span>Coordination Board</span>
+          </div>
+          <div class="fallback-spine fallback-spine-out">
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+          </div>
+          <div class="fallback-nodes fallback-nodes-out">
+            <span data-label="Lives"></span>
+            <span data-label="Damage↓"></span>
+            <span data-label="Evac"></span>
+            <span data-label="Risk↓"></span>
+            <span data-label="Trust"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="platform-overlay">
+        <div class="container platform-overlay-grid">
+          <div class="platform-copy" data-stage="0">
+            <p class="platform-brand">Mainoo</p>
+            <h1 class="hero-heading">Digital Coordination Infrastructure for Critical Sectors.</h1>
+            <p class="hero-subheading">
+              Interoperable sector platforms for secure exchange, coordinated operations, and measurable impact.
+            </p>
+            <div class="hero-cta-group">
+              <a class="btn btn-primary btn-xl" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+              <a class="btn btn-outline-light btn-xl" href="#solutions">View Live Demos</a>
+            </div>
+          </div>
+
+          <!-- Story map: communicates ingest → impact in plain language -->
+          <div class="platform-visual-gap">
+            <div class="story-map" id="story-map" data-zone="in" aria-hidden="false">
+              <div class="story-zone story-zone-in" data-zone="in">
+                <p class="story-kicker">Signals in</p>
+                <ul class="story-list">
+                  <li>Sensors &amp; GIS</li>
+                  <li>Hospital systems</li>
+                  <li>Agency feeds</li>
+                  <li>Cloud signals</li>
+                  <li>Compliance evidence</li>
+                </ul>
+              </div>
+              <div class="story-arrow" aria-hidden="true">→</div>
+              <div class="story-zone story-zone-core" data-zone="core">
+                <p class="story-kicker">Glass board</p>
+                <p class="story-core-label">Mainoo<br>Coordination Board</p>
+              </div>
+              <div class="story-arrow" aria-hidden="true">→</div>
+              <div class="story-zone story-zone-out" data-zone="out">
+                <p class="story-kicker">Impact out</p>
+                <ul class="story-list">
+                  <li>Lives protected</li>
+                  <li>Damage reduced</li>
+                  <li>Evacuation success</li>
+                  <li>Risk reduced</li>
+                  <li>Trust ensured</li>
+                </ul>
+              </div>
+            </div>
+            <p class="platform-hint">Scroll or tap a stage — signals move into the glass board, then impact comes out</p>
+          </div>
+
+          <div class="platform-chrome">
+            <div class="platform-progress" aria-hidden="true">
+              <div class="platform-progress-fill" id="platform-progress-fill"></div>
+            </div>
+            <div class="platform-stage-rail" role="tablist" aria-label="Architecture stages">
+              <button type="button" class="platform-stage-btn is-active" data-stage="0" role="tab" aria-selected="true">Ingest</button>
+              <button type="button" class="platform-stage-btn" data-stage="1" role="tab" aria-selected="false">Normalize</button>
+              <button type="button" class="platform-stage-btn" data-stage="2" role="tab" aria-selected="false">Coordinate</button>
+              <button type="button" class="platform-stage-btn" data-stage="3" role="tab" aria-selected="false">Decide</button>
+              <button type="button" class="platform-stage-btn" data-stage="4" role="tab" aria-selected="false">Act</button>
+              <button type="button" class="platform-stage-btn" data-stage="5" role="tab" aria-selected="false">Impact</button>
+            </div>
+            <p class="platform-stage-title" id="platform-stage-title">Signals come in</p>
+            <div class="platform-stage-caption" id="platform-stage-caption" aria-live="polite">
+              Environment, operations, and agency data enter one coordination fabric.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Longer scroll track for cinematic scrubbing -->
+    <div class="platform-scroll-track" aria-hidden="true">
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+    </div>
+  </section>
+
+  <!-- What the system delivers -->
+  <section class="page-section section-overview" id="impact">
+    <div class="container">
+      <h2 class="section-heading text-center">What coordination delivers</h2>
+      <p class="lead text-center mt-4 mb-5">
+        Illustrative outcomes—not a feature checklist of the internals. Figures show the kind of impact the architecture is designed to enable.
+      </p>
+      <div class="row">
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-heart" aria-hidden="true"></i></div>
+            <h3 class="h5">Lives protected</h3>
+            <p class="mb-0">e.g. <strong>100 lives saved</strong> in a coordinated emergency response.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+            <h3 class="h5">Damage reduced</h3>
+            <p class="mb-0">e.g. <strong>property damage reduced by X%</strong> through earlier coordinated action.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-route" aria-hidden="true"></i></div>
+            <h3 class="h5">Evacuation success</h3>
+            <p class="mb-0">e.g. <strong>higher evacuation success</strong> when agencies share one operating picture.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+            <h3 class="h5">Risk reduced</h3>
+            <p class="mb-0">e.g. compliance and operational <strong>risk reduced</strong> through continuous control visibility.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-handshake" aria-hidden="true"></i></div>
+            <h3 class="h5">Trust ensured</h3>
+            <p class="mb-0">e.g. regulator and stakeholder <strong>trust ensured</strong> with local-first evidence and audit trails.</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-muted small mb-0">Illustrative examples for discussion—not claimed live metrics.</p>
+    </div>
+  </section>
+
+  <!-- Solutions -->
+  <section class="page-section section-problems" id="solutions">
+    <div class="container">
+      <h2 class="section-heading text-center">Solutions</h2>
+      <p class="lead text-center mt-4 mb-5">
+        Live demos and products built so far. Request a pilot to explore deployment in your environment.
+      </p>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <article class="solution-module h-100">
+            <span class="solution-badge">Live demo · MVP</span>
+            <h3 class="h4 mt-3">Health Emergency Coordination System</h3>
+            <p>
+              Secure data exchange, patient routing workflows, and real-time cross-agency communication for health emergency operations.
+            </p>
+            <div class="solution-actions">
+              <a class="btn btn-primary" href="https://nyansapo-one.vercel.app/#/hospital" target="_blank" rel="noopener">View live demos</a>
+              <a class="btn btn-outline-dark" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+            </div>
+          </article>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <article class="solution-module h-100">
+            <span class="solution-badge">Live demo · MVP</span>
+            <h3 class="h4 mt-3">Flood Prevention &amp; Monitoring System</h3>
+            <p>
+              Multi-layered environmental data ingestion, unified flood command hubs, and real-time crisis notification networks.
+            </p>
+            <div class="solution-actions">
+              <a class="btn btn-primary" href="https://flood-xi-five.vercel.app/#/command" target="_blank" rel="noopener">View live demos</a>
+              <a class="btn btn-outline-dark" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+            </div>
+          </article>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <article class="solution-module h-100">
+            <span class="solution-badge">Product</span>
+            <h3 class="h4 mt-3">KontrolIQ</h3>
+            <p>
+              Continuous compliance control plane for regulated businesses—local-first data control, evidence workflows, and remediation tracking.
+            </p>
+            <div class="solution-actions">
+              <a class="btn btn-primary" href="kontroliq.html">Explore KontrolIQ</a>
+              <a class="btn btn-outline-dark" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KontrolIQ boundary (retained from current site) -->
+  <section class="page-section section-overview" id="kontroliq">
+    <div class="container">
+      <h2 class="section-heading text-center">What KontrolIQ Replaces and What It Is Not</h2>
+      <p class="lead text-center mt-4 mb-5">
+        KontrolIQ is the compliance solution built on Mainoo’s coordination core—focused on continuous, local-first compliance operations.
+      </p>
+      <div class="row mt-2">
+        <div class="col-lg-6 mb-4">
+          <div class="card trust-card h-100">
+            <div class="card-body">
+              <h4>What KontrolIQ Replaces</h4>
+              <ul class="trust-list mb-0 mt-3">
+                <li>Spreadsheet-heavy evidence tracking across teams</li>
+                <li>Manual audit preparation and last-minute file chasing</li>
+                <li>Point-in-time compliance snapshots without continuity</li>
+                <li>Fragmented remediation follow-up over email and chat</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+          <div class="card trust-card h-100">
+            <div class="card-body">
+              <h4>What KontrolIQ Is Not</h4>
+              <ul class="trust-list mb-0 mt-3">
+                <li>Not a generic compliance dashboard with static checklists</li>
+                <li>Not a forced multi-tenant SaaS data export model</li>
+                <li>Not a consultancy-only engagement without product workflow</li>
+                <li>Not a once-per-audit toolkit disconnected from operations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-2">
+        <a class="btn btn-primary" href="kontroliq.html">Explore Global Compliance Edition</a>
+        <a class="btn btn-outline-dark ml-md-2 mt-3 mt-md-0" href="kontroliq-gh.html">Ghana Compliance Edition</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sovereignty & Labs -->
+  <section class="page-section labs-section" id="labs">
+    <div class="container">
+      <h2 class="section-heading text-center text-white">Mainoo Labs</h2>
+      <p class="lead text-center text-white-50 mt-4 mb-5">
+        R&amp;D behind the coordination architecture—not client-services filler.
+      </p>
+      <div class="row">
+        <div class="col-lg-6 mb-4">
+          <div class="labs-panel labs-panel-primary h-100">
+            <h3 class="h4">Project Nyansapo</h3>
+            <p class="mb-0">
+              Event-driven urban intelligence networks powering our health emergency and flood prevention MVPs—built for real-time coordination across agencies.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-3 mb-4">
+          <div class="labs-panel h-100">
+            <h3 class="h5">Sovereign AI Frameworks</h3>
+            <p class="mb-0">
+              Optional, privacy-first models that can plug into the architecture where useful. AI is a tool in the stack—not the product.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-3 mb-4">
+          <div class="labs-panel h-100">
+            <h3 class="h5">Data Sovereignty &amp; Residency</h3>
+            <p class="mb-0">
+              Bring-your-own-cloud deployments engineered for Ghana Data Protection Act (Act 843) and regional residency expectations.
+            </p>
+          </div>
+        </div>
+      </div>
+      <ul class="sovereignty-list labs-sovereignty mt-2">
+        <li><i class="fas fa-check-circle mr-2"></i>No forced multi-tenant SaaS dependency</li>
+        <li><i class="fas fa-check-circle mr-2"></i>Deploy inside your own infrastructure</li>
+        <li><i class="fas fa-check-circle mr-2"></i>Designed for regulated environments where trust and residency matter</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="page-section section-cta text-white mb-0" id="demo-cta">
+    <div class="container text-center">
+      <h2 class="section-heading text-white">Ready to coordinate your sector operations?</h2>
+      <p class="lead mt-4 mb-4">
+        Walk through a live MVP or request a pilot for your environment—healthcare, flood operations, or compliance.
+      </p>
+      <a class="btn btn-primary btn-xl mr-md-3 mb-3 mb-md-0" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+      <a class="btn btn-outline-light btn-xl" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Book a Platform Walkthrough</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-5 mb-lg-0">
+          <h4 class="text-uppercase mb-4" id="contact">Contact Us</h4>
+        </div>
+        <div class="col-lg-4 mb-5 mb-lg-0">
+          <div class="d-flex flex-column align-items-start align-items-lg-center">
+            <div class="mb-2">
+              <a href="mailto:mainootechnologies@gmail.com?subject=Hello%20Mainoo%20Technologies" class="btn btn-outline-light btn-social mx-1" aria-label="Email">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                <span class="sr-only">Email</span>
+              </a>
+              <a href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener" class="btn btn-outline-light btn-social mx-1" aria-label="Schedule on Calendly">
+                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                <span class="sr-only">Calendly</span>
+              </a>
+              <a href="https://instagram.com/mainootechnologies" target="_blank" rel="noopener" class="btn btn-outline-light btn-social mx-1" aria-label="Instagram">
+                <i class="fab fa-instagram" aria-hidden="true"></i>
+                <span class="sr-only">Instagram</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <section class="copyright py-4 text-center text-white">
+    <div class="container">
+      <small>Copyright &copy; Mainoo Technologies LLC 2026</small>
+    </div>
+  </section>
+
+  <div class="scroll-to-top d-lg-none position-fixed">
+    <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="js/vendor/three.min.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/platform-showcase.js"></script>
+</body>
+
+</html>
