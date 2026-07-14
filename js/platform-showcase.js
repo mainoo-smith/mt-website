@@ -1,36 +1,17 @@
 /**
  * Mainoo Platform Showcase
- * Cinematic sticky 3D: scroll + tap/click stages, mouse/touch parallax.
- * Clear ingest → impact data flow. SVG fallback only when necessary.
+ * Sticky scroll + tap stages. Target: obviously visible ingest → impact flow.
  */
 (function () {
   'use strict';
 
   var STAGE_COPY = [
-    {
-      title: 'Signals come in',
-      caption: 'Environment, operations, and agency data enter one coordination fabric.'
-    },
-    {
-      title: 'Context becomes shared',
-      caption: 'Fragmented inputs resolve into a picture teams can act on together.'
-    },
-    {
-      title: 'Teams coordinate',
-      caption: 'Cross-agency workflows move on the same operating picture—in real time.'
-    },
-    {
-      title: 'Decisions land faster',
-      caption: 'Operators see what matters when it matters—without losing local control.'
-    },
-    {
-      title: 'Action is orchestrated',
-      caption: 'Responses trigger across units so effort compounds instead of colliding.'
-    },
-    {
-      title: 'Impact you can name',
-      caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.'
-    }
+    { title: 'Signals come in', caption: 'Environment, operations, and agency data enter one coordination fabric.' },
+    { title: 'Context becomes shared', caption: 'Fragmented inputs resolve into a picture teams can act on together.' },
+    { title: 'Teams coordinate', caption: 'Cross-agency workflows move on the same operating picture—in real time.' },
+    { title: 'Decisions land faster', caption: 'Operators see what matters when it matters—without losing local control.' },
+    { title: 'Action is orchestrated', caption: 'Responses trigger across units so effort compounds instead of colliding.' },
+    { title: 'Impact you can name', caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.' }
   ];
 
   var showcase = document.querySelector('.platform-showcase');
@@ -41,7 +22,6 @@
   var stageButtons = document.querySelectorAll('.platform-stage-btn');
   var overlayCopy = document.querySelector('.platform-copy');
   var progressFill = document.getElementById('platform-progress-fill');
-  var hintEl = document.querySelector('.platform-hint');
 
   if (!showcase || !canvas) return;
 
@@ -49,32 +29,27 @@
   var targetProgress = 0;
   var renderProgress = 0;
   var manualLockUntil = 0;
-  var rafId = 0;
   var pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  var isPortrait = window.innerHeight > window.innerWidth;
+  var isPortrait = window.matchMedia('(orientation: portrait), (max-width: 900px)').matches;
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  var saveData = !!(connection && connection.saveData);
 
-  if (hintEl && window.matchMedia('(hover: none)').matches) {
-    hintEl.textContent = 'Scroll to enter the system · Tap a stage';
+  function setEngine(name) {
+    showcase.setAttribute('data-engine', name);
   }
 
-  function hasWebGL() {
-    try {
-      var test = document.createElement('canvas');
-      return !!(test.getContext('webgl') || test.getContext('experimental-webgl'));
-    } catch (e) {
-      return false;
+  function updateOverlay(progress) {
+    if (overlayCopy) {
+      var fade = 1 - Math.min(progress * 3.2, 1);
+      overlayCopy.style.opacity = String(fade);
+      overlayCopy.style.transform = 'translateY(' + (-36 * progress) + 'px)';
+      overlayCopy.style.pointerEvents = fade < 0.2 ? 'none' : '';
+      overlayCopy.style.visibility = fade < 0.05 ? 'hidden' : 'visible';
     }
-  }
-
-  function shouldUseFallback() {
-    // Only fall back when we truly cannot run WebGL / user asks for reduced motion
-    if (reducedMotion || saveData) return true;
-    if (typeof THREE === 'undefined') return true;
-    if (!hasWebGL()) return true;
-    return false;
+    if (progressFill) progressFill.style.width = (progress * 100).toFixed(1) + '%';
+    showcase.classList.toggle('is-immersed', progress > 0.18);
+    if (fallback && !fallback.hidden) {
+      fallback.style.setProperty('--flow', String(progress));
+    }
   }
 
   function setStageUI(stage, fromManual) {
@@ -87,12 +62,11 @@
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    if (fallback && !fallback.hidden) {
-      fallback.setAttribute('data-stage', String(currentStage));
-    }
+    if (fallback) fallback.setAttribute('data-stage', String(currentStage));
     if (fromManual) {
       targetProgress = currentStage / 5;
       manualLockUntil = performance.now() + 1400;
+      updateOverlay(targetProgress);
     }
   }
 
@@ -105,19 +79,7 @@
     targetProgress = scrolled / total;
     var stage = Math.round(targetProgress * 5);
     if (stage !== currentStage) setStageUI(stage, false);
-
-    if (overlayCopy) {
-      var fade = 1 - Math.min(targetProgress * 1.6, 0.9);
-      overlayCopy.style.opacity = String(fade);
-      overlayCopy.style.transform = 'translateY(' + (-24 * targetProgress) + 'px)';
-      overlayCopy.style.pointerEvents = fade < 0.2 ? 'none' : '';
-    }
-    if (progressFill) {
-      progressFill.style.width = (targetProgress * 100).toFixed(1) + '%';
-    }
-    if (fallback && !fallback.hidden) {
-      fallback.style.setProperty('--flow', String(targetProgress));
-    }
+    updateOverlay(targetProgress);
   }
 
   stageButtons.forEach(function (btn) {
@@ -132,236 +94,246 @@
   });
 
   function onPointerMove(e) {
-    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    pointer.tx = (clientX / window.innerWidth) * 2 - 1;
-    pointer.ty = (clientY / window.innerHeight) * 2 - 1;
+    var t = e.touches ? e.touches[0] : e;
+    pointer.tx = (t.clientX / window.innerWidth) * 2 - 1;
+    pointer.ty = (t.clientY / window.innerHeight) * 2 - 1;
   }
-
   window.addEventListener('mousemove', onPointerMove, { passive: true });
   window.addEventListener('touchmove', onPointerMove, { passive: true });
   window.addEventListener('scroll', syncFromScroll, { passive: true });
   window.addEventListener('resize', function () {
-    isPortrait = window.innerHeight > window.innerWidth;
+    isPortrait = window.matchMedia('(orientation: portrait), (max-width: 900px)').matches;
     syncFromScroll();
   });
 
-  if (shouldUseFallback()) {
+  function enableFallback(reason) {
     canvas.style.display = 'none';
     if (fallback) fallback.hidden = false;
+    setEngine('fallback:' + reason);
     setStageUI(0, false);
     syncFromScroll();
+  }
+
+  if (reducedMotion) {
+    enableFallback('reduced-motion');
+    return;
+  }
+  if (typeof THREE === 'undefined') {
+    enableFallback('no-three');
+    return;
+  }
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: 'high-performance',
+      failIfMajorPerformanceCaveat: false
+    });
+  } catch (err) {
+    enableFallback('webgl-create');
     return;
   }
 
   if (fallback) fallback.hidden = true;
+  setEngine('webgl');
 
-  var renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: window.devicePixelRatio < 2,
-    alpha: true,
-    powerPreference: 'high-performance'
-  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setClearColor(0x050505, 1);
-  if (renderer.outputEncoding !== undefined) {
-    renderer.outputEncoding = THREE.sRGBEncoding;
-  }
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050505, 0.038);
+  scene.fog = new THREE.FogExp2(0x050505, 0.028);
 
-  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-  camera.position.set(0, 0.15, 7.4);
+  var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.set(isPortrait ? 0 : -0.4, 0, isPortrait ? 7.2 : 6.8);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
-  var key = new THREE.PointLight(0xd37506, 2.6, 55);
-  key.position.set(2.2, 2.4, 4.5);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var key = new THREE.PointLight(0xd37506, 3.2, 60);
+  key.position.set(2, 2.5, 5);
   scene.add(key);
-  var rim = new THREE.PointLight(0xffe0b0, 1.1, 45);
-  rim.position.set(-3.2, -1.2, 2.5);
-  scene.add(rim);
+  var fill = new THREE.PointLight(0xffe6c0, 1.2, 50);
+  fill.position.set(-3, -1, 3);
+  scene.add(fill);
 
   var root = new THREE.Group();
+  // Desktop: keep core/impact to the right of marketing copy
+  root.position.x = isPortrait ? 0 : 2.15;
   scene.add(root);
 
-  // Bright coordination core
+  // Oversized bright core — must read on phone behind overlay gaps
   var coreInner = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0.78, 2),
+    new THREE.IcosahedronGeometry(1.05, 2),
     new THREE.MeshStandardMaterial({
       color: 0xd37506,
       emissive: 0xd37506,
-      emissiveIntensity: 0.75,
-      metalness: 0.45,
-      roughness: 0.2,
+      emissiveIntensity: 1.1,
+      metalness: 0.4,
+      roughness: 0.18,
       flatShading: true
     })
   );
   root.add(coreInner);
 
   var coreShell = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.05, 1),
+    new THREE.IcosahedronGeometry(1.4, 1),
     new THREE.MeshStandardMaterial({
       color: 0xffc878,
       emissive: 0xd37506,
-      emissiveIntensity: 0.28,
-      metalness: 0.65,
+      emissiveIntensity: 0.45,
+      metalness: 0.6,
       roughness: 0.12,
       transparent: true,
-      opacity: 0.42,
+      opacity: 0.4,
       flatShading: true
     })
   );
   root.add(coreShell);
 
   var coreWire = new THREE.LineSegments(
-    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.2, 1)),
-    new THREE.LineBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.4 })
+    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.55, 1)),
+    new THREE.LineBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.55 })
   );
   root.add(coreWire);
 
   var rings = [];
-  for (var r = 0; r < 4; r++) {
+  for (var r = 0; r < 3; r++) {
     var ring = new THREE.Mesh(
-      new THREE.TorusGeometry(1.7 + r * 0.6, 0.025, 12, 100),
+      new THREE.TorusGeometry(2.0 + r * 0.7, 0.04, 12, 96),
       new THREE.MeshBasicMaterial({
-        color: r % 2 === 0 ? 0xd37506 : 0xffe0b0,
+        color: r % 2 ? 0xffe6c0 : 0xd37506,
         transparent: true,
-        opacity: 0.35 + r * 0.06
+        opacity: 0.55
       })
     );
-    ring.rotation.x = Math.PI / 2.35 + r * 0.2;
-    ring.rotation.y = r * 0.45;
+    ring.rotation.x = Math.PI / 2.2 + r * 0.25;
     root.add(ring);
     rings.push(ring);
   }
 
-  var particleCount = isPortrait ? 220 : 380;
+  var particleCount = 280;
   var particlePositions = new Float32Array(particleCount * 3);
   var particleSeeds = new Float32Array(particleCount);
   for (var i = 0; i < particleCount; i++) {
     particleSeeds[i] = Math.random() * Math.PI * 2;
-    var radius = 1.1 + Math.random() * 5.2;
+    var radius = 1.4 + Math.random() * 5;
     var theta = Math.random() * Math.PI * 2;
     var phi = Math.acos(2 * Math.random() - 1);
     particlePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-    particlePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.7;
+    particlePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.75;
     particlePositions[i * 3 + 2] = radius * Math.cos(phi);
   }
   var particleGeo = new THREE.BufferGeometry();
   particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-  var particleMat = new THREE.PointsMaterial({
-    color: 0xffe6c0,
-    size: isPortrait ? 0.055 : 0.042,
-    transparent: true,
-    opacity: 0.85,
-    depthWrite: false,
-    sizeAttenuation: true
-  });
-  var particles = new THREE.Points(particleGeo, particleMat);
+  var particles = new THREE.Points(
+    particleGeo,
+    new THREE.PointsMaterial({
+      color: 0xffe6c0,
+      size: 0.07,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false
+    })
+  );
   root.add(particles);
 
-  // Layout helpers: landscape = left→right, portrait = top→bottom
-  function layoutAxis() {
-    return isPortrait
-      ? { inA: [0, 2.6, 0], inB: [-0.9, 2.2, 0.3], inC: [0.9, 2.35, -0.2], outA: [0, -2.55, 0], outB: [-0.95, -2.2, 0.25], outC: [0.95, -2.3, -0.2] }
-      : { inA: [-3.5, 1.15, 0.25], inB: [-3.7, -0.1, -0.45], inC: [-3.3, -1.2, 0.5], outA: [3.45, 1.2, 0], outB: [3.55, 0.05, 0], outC: [3.4, -1.15, 0] };
-  }
-
   var ingestGroup = new THREE.Group();
-  root.add(ingestGroup);
-  var ingestNodes = [];
   var impactGroup = new THREE.Group();
-  root.add(impactGroup);
-  var impactOrbs = [];
-
-  function rebuildEndpoints() {
-    while (ingestGroup.children.length) ingestGroup.remove(ingestGroup.children[0]);
-    while (impactGroup.children.length) impactGroup.remove(impactGroup.children[0]);
-    ingestNodes.length = 0;
-    impactOrbs.length = 0;
-
-    var L = layoutAxis();
-    [[L.inA, 0.22], [L.inB, 0.18], [L.inC, 0.16]].forEach(function (item, idx) {
-      var mesh = new THREE.Mesh(
-        new THREE.OctahedronGeometry(item[1], 0),
-        new THREE.MeshStandardMaterial({
-          color: 0xffe6c0,
-          emissive: 0xd37506,
-          emissiveIntensity: 0.55,
-          metalness: 0.35,
-          roughness: 0.28
-        })
-      );
-      mesh.position.set(item[0][0], item[0][1], item[0][2]);
-      ingestGroup.add(mesh);
-      ingestNodes.push(mesh);
-    });
-
-    [[L.outA, 0.42], [L.outB, 0.5], [L.outC, 0.36]].forEach(function (item) {
-      var orb = new THREE.Mesh(
-        new THREE.SphereGeometry(item[1], 24, 24),
-        new THREE.MeshStandardMaterial({
-          color: 0xd37506,
-          emissive: 0xd37506,
-          emissiveIntensity: 0.35,
-          metalness: 0.3,
-          roughness: 0.22,
-          transparent: true,
-          opacity: 0.9
-        })
-      );
-      orb.position.set(item[0][0], item[0][1], item[0][2]);
-      var halo = new THREE.Mesh(
-        new THREE.SphereGeometry(item[1] * 1.6, 16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: 0.18 })
-      );
-      orb.add(halo);
-      impactGroup.add(orb);
-      impactOrbs.push(orb);
-    });
-  }
-  rebuildEndpoints();
-
   var beamGroup = new THREE.Group();
+  root.add(ingestGroup);
+  root.add(impactGroup);
   root.add(beamGroup);
+  var ingestNodes = [];
+  var impactOrbs = [];
   var beamsIn = [];
   var beamsOut = [];
 
-  function makeCurveBeam(from, to, opacity) {
-    var mid = new THREE.Vector3(
-      (from.x + to.x) * 0.5,
-      (from.y + to.y) * 0.5 + (isPortrait ? 0 : 0.5),
-      (from.z + to.z) * 0.5 + (isPortrait ? 0.45 : 0)
-    );
+  function layout() {
+    return isPortrait
+      ? {
+        ins: [[0, 3.1, 0], [-1.1, 2.7, 0.35], [1.1, 2.8, -0.25]],
+        outs: [[0, -3.15, 0], [-1.15, -2.7, 0.3], [1.15, -2.75, -0.2]]
+      }
+      : {
+        ins: [[-4.9, 1.35, 0.3], [-5.15, 0.05, -0.45], [-4.8, -1.25, 0.5]],
+        outs: [[3.9, 1.3, 0], [4.15, 0.05, 0], [3.95, -1.2, 0]]
+      };
+  }
+
+  function makeBeam(from, to, opacity) {
+    var mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
+    if (isPortrait) mid.z += 0.55;
+    else mid.y += 0.55;
     var curve = new THREE.QuadraticBezierCurve3(from.clone(), mid, to.clone());
-    var geo = new THREE.TubeGeometry(curve, 56, 0.022, 8, false);
     return new THREE.Mesh(
-      geo,
-      new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: opacity || 0.45 })
+      new THREE.TubeGeometry(curve, 64, 0.035, 8, false),
+      new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: opacity })
     );
   }
 
-  function rebuildBeams() {
+  function rebuildAnchors() {
+    while (ingestGroup.children.length) ingestGroup.remove(ingestGroup.children[0]);
+    while (impactGroup.children.length) impactGroup.remove(impactGroup.children[0]);
     while (beamGroup.children.length) beamGroup.remove(beamGroup.children[0]);
-    beamsIn = ingestNodes.map(function (n) {
-      var b = makeCurveBeam(n.position, new THREE.Vector3(0, 0, 0), 0.5);
+    ingestNodes = [];
+    impactOrbs = [];
+    beamsIn = [];
+    beamsOut = [];
+
+    var L = layout();
+    L.ins.forEach(function (p, idx) {
+      var n = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.28 - idx * 0.03, 0),
+        new THREE.MeshStandardMaterial({
+          color: 0xffe6c0,
+          emissive: 0xd37506,
+          emissiveIntensity: 0.9,
+          metalness: 0.3,
+          roughness: 0.25
+        })
+      );
+      n.position.set(p[0], p[1], p[2]);
+      ingestGroup.add(n);
+      ingestNodes.push(n);
+      var b = makeBeam(n.position, new THREE.Vector3(0, 0, 0), 0.65);
       beamGroup.add(b);
-      return b;
+      beamsIn.push(b);
     });
-    beamsOut = impactOrbs.map(function (n) {
-      var b = makeCurveBeam(new THREE.Vector3(0, 0, 0), n.position, 0.25);
+
+    L.outs.forEach(function (p, idx) {
+      var size = 0.48 + (idx === 1 ? 0.12 : 0);
+      var orb = new THREE.Mesh(
+        new THREE.SphereGeometry(size, 28, 28),
+        new THREE.MeshStandardMaterial({
+          color: 0xd37506,
+          emissive: 0xd37506,
+          emissiveIntensity: 0.55,
+          metalness: 0.25,
+          roughness: 0.2,
+          transparent: true,
+          opacity: 0.95
+        })
+      );
+      orb.position.set(p[0], p[1], p[2]);
+      orb.add(new THREE.Mesh(
+        new THREE.SphereGeometry(size * 1.7, 16, 16),
+        new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: 0.2 })
+      ));
+      impactGroup.add(orb);
+      impactOrbs.push(orb);
+      var b = makeBeam(new THREE.Vector3(0, 0, 0), orb.position, 0.35);
       beamGroup.add(b);
-      return b;
+      beamsOut.push(b);
     });
   }
-  rebuildBeams();
+  rebuildAnchors();
 
   var packets = [];
-  for (var p = 0; p < 24; p++) {
+  for (var p = 0; p < 28; p++) {
     var packet = new THREE.Mesh(
-      new THREE.SphereGeometry(0.06, 10, 10),
-      new THREE.MeshBasicMaterial({ color: 0xffe6c0 })
+      new THREE.SphereGeometry(0.08, 10, 10),
+      new THREE.MeshBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.9 })
     );
     packet.userData.t = Math.random();
     packet.userData.lane = p % 3;
@@ -369,16 +341,13 @@
     packets.push(packet);
   }
 
-  // Floating labels as simple sprites? skip text — keep visual only
-
   var lastPortrait = isPortrait;
 
   function resize() {
-    isPortrait = window.innerHeight > window.innerWidth;
+    isPortrait = window.matchMedia('(orientation: portrait), (max-width: 900px)').matches;
     if (isPortrait !== lastPortrait) {
       lastPortrait = isPortrait;
-      rebuildEndpoints();
-      rebuildBeams();
+      rebuildAnchors();
     }
     var w = canvas.clientWidth || showcase.clientWidth;
     var h = canvas.clientHeight || window.innerHeight;
@@ -387,111 +356,122 @@
     camera.updateProjectionMatrix();
   }
 
-  function easeInOut(t) {
+  function ease(t) {
     return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   }
 
   function applyNarrative(p) {
-    var e = easeInOut(p);
+    var e = ease(p);
+    var stageF = p * 5; // 0..5 continuous
 
-    // Camera: start back → dive through core → reveal impact
-    var camZ = (isPortrait ? 8.6 : 7.6) - e * (isPortrait ? 3.8 : 4.8);
-    if (e > 0.3 && e < 0.72) {
-      camZ -= Math.sin((e - 0.3) / 0.42 * Math.PI) * (isPortrait ? 1.1 : 1.5);
+    // Stage-aware camera targets so ingest → impact is readable
+    var camTarget;
+    if (isPortrait) {
+      if (stageF < 1.2) camTarget = { x: 0, y: 1.6, z: 7.8 };       // look at ingest
+      else if (stageF < 3.2) camTarget = { x: 0, y: 0.15, z: 6.2 };  // core
+      else if (stageF < 4.4) camTarget = { x: 0, y: -0.6, z: 5.8 }; // action
+      else camTarget = { x: 0, y: -1.9, z: 7.0 };                     // impact orbs
+    } else {
+      if (stageF < 1.2) camTarget = { x: -1.5, y: 0.3, z: 7.2 };
+      else if (stageF < 3.2) camTarget = { x: 0.8, y: 0.1, z: 6.0 };
+      else if (stageF < 4.4) camTarget = { x: 1.6, y: 0, z: 5.6 };
+      else camTarget = { x: 2.6, y: 0, z: 6.8 };
     }
-    var camY = isPortrait ? (0.4 - e * 0.9) : (0.2 + Math.sin(e * Math.PI) * 0.25);
 
-    pointer.x += (pointer.tx - pointer.x) * 0.08;
-    pointer.y += (pointer.ty - pointer.y) * 0.08;
+    pointer.x += (pointer.tx - pointer.x) * 0.1;
+    pointer.y += (pointer.ty - pointer.y) * 0.1;
 
-    camera.position.x += (pointer.x * (isPortrait ? 0.45 : 0.9) - camera.position.x) * 0.1;
-    camera.position.y += (camY - pointer.y * 0.35 - camera.position.y) * 0.1;
-    camera.position.z += (camZ - camera.position.z) * 0.1;
-    camera.lookAt(pointer.x * 0.15, isPortrait ? (-e * 0.4) : 0, 0);
+    var wantX = camTarget.x + pointer.x * (isPortrait ? 0.3 : 0.55);
+    var wantY = camTarget.y - pointer.y * 0.28;
+    var wantZ = camTarget.z;
+    camera.position.x += (wantX - camera.position.x) * 0.08;
+    camera.position.y += (wantY - camera.position.y) * 0.08;
+    camera.position.z += (wantZ - camera.position.z) * 0.08;
 
-    var pulse = 1 + Math.sin(performance.now() * 0.0024) * 0.04;
-    var coreScale = (1.05 + e * 0.45) * pulse;
+    var lookY = isPortrait ? (1.2 - e * 3.0) : 0;
+    var lookX = isPortrait ? 0 : (-1.2 + e * 3.4);
+    camera.lookAt(lookX + pointer.x * 0.1, lookY, 0);
+
+    root.position.x += ((isPortrait ? 0 : 2.15) - root.position.x) * 0.08;
+
+    var pulse = 1 + Math.sin(performance.now() * 0.0026) * 0.04;
+    var coreScale = (1.05 + Math.sin(Math.min(e, 1) * Math.PI) * 0.35) * pulse;
     coreInner.scale.setScalar(coreScale);
-    coreShell.scale.setScalar(coreScale * 1.03);
-    coreWire.scale.setScalar(coreScale * 1.08);
-    coreInner.material.emissiveIntensity = 0.55 + e * 0.7;
-    coreShell.material.opacity = 0.3 + e * 0.3;
-    coreInner.rotation.y += 0.008;
-    coreShell.rotation.y -= 0.005;
-    coreWire.rotation.y += 0.004;
+    coreShell.scale.setScalar(coreScale);
+    coreWire.scale.setScalar(coreScale * 1.05);
+    coreInner.material.emissiveIntensity = 0.7 + (1 - Math.abs(e - 0.5)) * 0.7;
+    coreInner.rotation.y += 0.01;
+    coreShell.rotation.y -= 0.007;
+    coreWire.rotation.y += 0.005;
 
     rings.forEach(function (ring, idx) {
-      ring.rotation.z += 0.004 + idx * 0.0018;
-      ring.scale.setScalar(1 + e * (0.45 + idx * 0.1));
-      ring.material.opacity = 0.2 + (1 - Math.abs(e - 0.5)) * 0.45;
+      ring.rotation.z += 0.006 + idx * 0.002;
+      ring.scale.setScalar(1 + e * (0.4 + idx * 0.1));
+      ring.material.opacity = 0.25 + (1 - Math.abs(e - 0.45)) * 0.45;
     });
 
-    // Ingest strong early
-    var ingestStrength = Math.max(0.25, 1 - e * 0.85);
+    // Ingest dominant early
+    var ingestStrength = Math.max(0.2, 1 - Math.max(0, stageF - 0.4) / 2.8);
     ingestNodes.forEach(function (n, idx) {
-      n.rotation.y += 0.03;
-      n.scale.setScalar(0.9 + ingestStrength * 0.55 + Math.sin(performance.now() * 0.004 + idx) * 0.08);
-      n.material.emissiveIntensity = 0.35 + (e < 0.4 ? 0.55 : 0.15);
+      n.rotation.y += 0.045;
+      n.scale.setScalar(1.05 + ingestStrength * 0.95 + Math.sin(performance.now() * 0.005 + idx) * 0.12);
+      n.material.emissiveIntensity = 0.4 + ingestStrength * 1.1;
+      n.visible = true;
     });
     beamsIn.forEach(function (b) {
-      b.material.opacity = 0.2 + (e < 0.45 ? 0.55 : 0.18);
+      b.material.opacity = 0.15 + ingestStrength * 0.7;
     });
 
-    // Impact strong late
-    var impactStrength = Math.max(0, (e - 0.4) / 0.6);
+    // Impact dominant late — three outcome orbs must blow up at the end
+    var impactStrength = Math.max(0, (stageF - 2.8) / 2.2);
     impactOrbs.forEach(function (orb, idx) {
-      var local = Math.max(0, impactStrength - idx * 0.07);
-      orb.scale.setScalar(0.5 + local * 1.15);
-      orb.material.emissiveIntensity = 0.2 + local * 1.1;
-      orb.material.opacity = 0.5 + local * 0.5;
+      var local = Math.max(0, impactStrength - idx * 0.05);
+      orb.scale.setScalar(0.45 + local * 1.55);
+      orb.material.emissiveIntensity = 0.25 + local * 1.6;
+      orb.material.opacity = 0.45 + local * 0.55;
     });
     beamsOut.forEach(function (b) {
-      b.material.opacity = 0.1 + impactStrength * 0.65;
+      b.material.opacity = 0.08 + impactStrength * 0.8;
     });
 
-    root.rotation.y = (isPortrait ? e * 0.25 : e * 0.55) + pointer.x * 0.12;
+    root.rotation.y = (isPortrait ? e * 0.18 : e * 0.35) + pointer.x * 0.08;
+    particles.rotation.y += 0.0015;
 
-    particles.rotation.y += 0.0012;
-    particleMat.opacity = 0.45 + e * 0.45;
-
-    // Packets travel ingest → impact along axis
     packets.forEach(function (packet, idx) {
-      packet.userData.t += 0.006 + e * 0.008;
+      packet.userData.t += 0.009 + e * 0.012;
       if (packet.userData.t > 1) packet.userData.t -= 1;
       var t = packet.userData.t;
       var lane = packet.userData.lane - 1;
       if (isPortrait) {
         packet.position.set(
-          lane * 0.55 + Math.sin(t * Math.PI * 2 + idx) * 0.15,
-          2.5 - t * 5.1,
-          Math.cos(t * Math.PI + idx) * 0.2
+          lane * 0.75 + Math.sin(t * Math.PI * 2 + idx) * 0.18,
+          3.15 - t * 6.3,
+          Math.cos(t * Math.PI + idx) * 0.28
         );
       } else {
         packet.position.set(
-          -3.6 + t * 7.3,
-          lane * 0.5 + Math.sin(t * Math.PI * 2 + idx) * 0.18,
-          Math.cos(t * Math.PI + idx) * 0.22
+          -4.2 + t * 8.5,
+          lane * 0.7 + Math.sin(t * Math.PI * 2 + idx) * 0.22,
+          Math.cos(t * Math.PI + idx) * 0.28
         );
       }
-      packet.scale.setScalar(0.85 + e * 0.7);
-      packet.visible = true;
+      packet.scale.setScalar(1.05 + e * 0.9);
+      // Emphasize packets near the active region of the story
+      packet.material.opacity = 0.35 + (1 - Math.abs(t - Math.min(Math.max(e, 0.05), 0.95))) * 0.65;
     });
   }
 
   function tick() {
-    rafId = requestAnimationFrame(tick);
-    renderProgress += (targetProgress - renderProgress) * 0.07;
+    requestAnimationFrame(tick);
+    renderProgress += (targetProgress - renderProgress) * 0.075;
     applyNarrative(renderProgress);
     renderer.render(scene, camera);
   }
 
-  function onVisibility() {
-    if (document.hidden) cancelAnimationFrame(rafId);
-    else tick();
-  }
-
   window.addEventListener('resize', resize);
-  document.addEventListener('visibilitychange', onVisibility);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) tick();
+  });
 
   setStageUI(0, false);
   resize();

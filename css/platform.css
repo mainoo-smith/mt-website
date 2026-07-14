@@ -2,18 +2,32 @@
 
 .platform-showcase {
   position: relative;
-  background: #0a0a0a;
+  background: #050505;
   color: #fff;
+}
+
+.platform-scroll-track {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.platform-scroll-panel {
+  height: 90vh;
+  min-height: 560px;
+  pointer-events: none;
 }
 
 .platform-showcase-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100svh;
   min-height: 560px;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  z-index: 2;
 }
 
 .platform-canvas {
@@ -25,6 +39,7 @@
   z-index: 0;
 }
 
+/* ---- Animated CSS fallback (used when WebGL unavailable) ---- */
 .platform-fallback {
   position: absolute;
   inset: 0;
@@ -32,63 +47,157 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #050505;
-  padding: 5rem 1rem 8rem;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(211, 117, 6, 0.22), transparent 55%),
+    #050505;
+  padding: 6.5rem 1rem 9rem;
   --flow: 0;
 }
 
-.platform-fallback svg {
-  width: min(420px, 88%);
-  height: auto;
-  max-height: 70vh;
+.fallback-stage {
+  width: min(320px, 78vw);
+  height: min(58vh, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
-.platform-fallback .fallback-core {
-  transform-origin: 180px 285px;
-  animation: fallback-pulse 2.4s ease-in-out infinite;
+.fallback-nodes {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  width: 100%;
 }
 
-.platform-fallback .fallback-path {
-  stroke-dasharray: 8 10;
-  animation: fallback-dash 1.4s linear infinite;
+.fallback-nodes span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffe6c0;
+  box-shadow: 0 0 16px rgba(211, 117, 6, 0.85);
+  position: relative;
 }
 
-.platform-fallback .fallback-impact {
-  opacity: calc(0.25 + var(--flow) * 0.75);
-  transition: opacity 0.3s ease;
+.fallback-nodes-in {
+  opacity: calc(1 - var(--flow) * 0.35);
+  transform: scale(calc(1 + (1 - var(--flow)) * 0.15));
 }
 
-.platform-fallback .fallback-ingest {
-  opacity: calc(1 - var(--flow) * 0.45);
+.fallback-nodes-out {
+  opacity: calc(0.2 + var(--flow) * 0.8);
+  transform: scale(calc(0.75 + var(--flow) * 0.45));
 }
 
-@keyframes fallback-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.12); opacity: 0.85; }
+.fallback-nodes-out span::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
 }
 
-@keyframes fallback-dash {
-  to { stroke-dashoffset: -36; }
+.fallback-spine {
+  width: 3px;
+  flex: 1;
+  min-height: 40px;
+  margin: 0.35rem 0;
+  background: linear-gradient(180deg, rgba(211, 117, 6, 0.15), #D37506, rgba(211, 117, 6, 0.15));
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
 }
 
+.fallback-packet {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: #ffe6c0;
+  box-shadow: 0 0 12px #D37506;
+  animation: packet-fall 1.8s linear infinite;
+}
+
+.fallback-packet:nth-child(2) { animation-delay: 0.6s; }
+.fallback-packet:nth-child(3) { animation-delay: 1.2s; }
+.fallback-spine-out .fallback-packet { animation-duration: 1.4s; }
+
+@keyframes packet-fall {
+  0% { top: -10%; opacity: 0; }
+  15% { opacity: 1; }
+  100% { top: 110%; opacity: 0.2; }
+}
+
+.fallback-core-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: grid;
+  place-items: center;
+  transform: scale(calc(0.95 + var(--flow) * 0.35));
+}
+
+.fallback-core {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffc878, #D37506 60%, #8a4a04);
+  box-shadow: 0 0 40px rgba(211, 117, 6, 0.9), 0 0 80px rgba(211, 117, 6, 0.4);
+  animation: core-pulse 2.2s ease-in-out infinite;
+  z-index: 2;
+}
+
+.fallback-ring {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(255, 230, 192, 0.45);
+  border-radius: 50%;
+  animation: ring-spin 8s linear infinite;
+}
+
+.fallback-ring-2 {
+  inset: -6px;
+  border-color: rgba(211, 117, 6, 0.55);
+  animation-duration: 12s;
+  animation-direction: reverse;
+}
+
+@keyframes core-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes ring-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Overlay / copy / chrome ---- */
 .platform-overlay {
   position: relative;
   z-index: 2;
   width: 100%;
   height: 100%;
-  padding-top: calc(4.5rem + 54px);
-  padding-bottom: 2rem;
+  padding-top: calc(4.25rem + 40px);
+  padding-bottom: 1.25rem;
   pointer-events: none;
   display: flex;
   align-items: stretch;
 }
 
 .platform-overlay-grid {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: calc(100vh - 5rem);
+  display: grid;
+  grid-template-rows: auto minmax(220px, 1fr) auto;
+  gap: 0.75rem;
   width: 100%;
+  min-height: calc(100% - 0.5rem);
 }
 
 .platform-overlay .btn,
@@ -97,85 +206,118 @@
 }
 
 .platform-copy {
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  max-width: 40rem;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  max-width: 38rem;
+  padding: 0.85rem 1rem;
+  margin-left: -0.5rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.28));
+}
+
+.platform-showcase.is-immersed .platform-visual-gap .platform-hint {
+  opacity: 0;
+}
+
+.platform-visual-gap {
+  position: relative;
+  min-height: 28vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.platform-hint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
 }
 
 .platform-chrome {
   max-width: 42rem;
-  margin-top: auto;
-  padding-bottom: 0.5rem;
+  padding: 0.75rem 0.85rem 0.5rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
 }
 
 .platform-progress {
-  height: 2px;
+  height: 3px;
   width: 100%;
   background: rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .platform-progress-fill {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, #D37506, #f8ead9);
-  transition: width 0.1s linear;
 }
 
 .platform-stage-title {
-  margin: 0.85rem 0 0.25rem;
+  margin: 0.75rem 0 0.2rem;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: #fff;
-  letter-spacing: 0.01em;
 }
 
 .platform-brand {
   font-family: "Noto Sans", "Montserrat", sans-serif;
   font-weight: 800;
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-size: clamp(2.1rem, 5.5vw, 4rem);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #fff;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.45rem;
   line-height: 1;
 }
 
 .platform-showcase .hero-heading {
-  max-width: 18ch;
-  font-size: clamp(1.65rem, 3.2vw, 2.75rem);
+  max-width: 20ch;
+  font-size: clamp(1.35rem, 2.8vw, 2.4rem);
+  margin-bottom: 0.65rem;
 }
 
 .platform-showcase .hero-subheading {
-  max-width: 42rem;
-  font-size: clamp(1rem, 1.6vw, 1.25rem);
-}
-
-.platform-hint {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.92rem;
+  max-width: 36rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  margin-bottom: 1rem;
 }
 
 .platform-stage-rail {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 2rem;
-  max-width: 42rem;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.15rem;
+}
+
+.platform-stage-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.platform-stage-btn {
+  flex: 0 0 auto;
 }
 
 .platform-stage-btn {
   appearance: none;
-  border: 1px solid rgba(211, 117, 6, 0.45);
-  background: rgba(0, 0, 0, 0.35);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.78rem;
+  border: 1px solid rgba(211, 117, 6, 0.5);
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.45rem 0.75rem;
+  padding: 0.42rem 0.7rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
@@ -195,21 +337,11 @@
 }
 
 .platform-stage-caption {
-  margin-top: 1rem;
+  margin-top: 0.35rem;
   max-width: 36rem;
   color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
-  min-height: 1.5em;
-}
-
-.platform-scroll-track {
-  position: relative;
-  z-index: 1;
-}
-
-.platform-scroll-panel {
-  height: 85vh;
-  min-height: 520px;
+  font-size: 0.95rem;
+  min-height: 1.4em;
 }
 
 /* Impact */
@@ -294,11 +426,16 @@
   text-decoration: none;
 }
 
-.btn-outline-light {
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  color: #fff;
-  background: transparent;
-  font-weight: 700;
+.hero-cta-group .btn {
+  backdrop-filter: blur(4px);
+}
+
+.hero-cta-group .btn-primary {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.hero-cta-group .btn-outline-light {
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .btn-outline-light:hover {
@@ -353,17 +490,18 @@
   color: #D37506;
 }
 
-/* Soft gradient wash — keep center of canvas readable */
+/* Keep top/bottom readable; leave mid-canvas bright for the 3D */
 .platform-overlay::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.78) 0%,
-    rgba(0, 0, 0, 0.28) 38%,
-    rgba(0, 0, 0, 0.12) 55%,
-    rgba(0, 0, 0, 0.72) 100%
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.35) 22%,
+    rgba(0, 0, 0, 0.05) 45%,
+    rgba(0, 0, 0, 0.08) 58%,
+    rgba(0, 0, 0, 0.78) 100%
   );
   z-index: -1;
   pointer-events: none;
@@ -374,66 +512,66 @@
     min-height: 100svh;
   }
 
+  .platform-overlay {
+    padding-top: calc(4rem + 28px);
+    padding-bottom: 0.75rem;
+  }
+
+  .platform-overlay-grid {
+    grid-template-rows: auto minmax(34vh, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .platform-brand {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+  }
+
   .platform-showcase .hero-heading {
     max-width: none;
-    font-size: clamp(1.35rem, 5.5vw, 1.85rem);
+    font-size: 1.2rem;
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
   }
 
   .platform-showcase .hero-subheading {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
+    margin-bottom: 0.65rem;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .platform-overlay {
-    padding-top: calc(4.25rem + 36px);
-    padding-bottom: 1rem;
+  .hero-cta-group {
+    gap: 0.5rem;
   }
 
-  .platform-overlay-grid {
-    min-height: calc(100svh - 3.5rem);
-    gap: 0.75rem;
-  }
-
-  /* Leave a clear band in the middle for the 3D scene */
-  .platform-copy {
-    max-width: none;
+  .hero-cta-group .btn-xl {
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+    width: auto;
+    flex: 1 1 auto;
   }
 
   .platform-visual-gap {
-    flex: 1 1 auto;
-    min-height: 28vh;
-    pointer-events: none;
+    min-height: 34vh;
   }
 
   .platform-chrome {
     max-width: none;
-    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55) 30%);
-    padding-top: 1rem;
-    margin-left: -0.25rem;
-    margin-right: -0.25rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-
-  .platform-stage-rail {
-    margin-top: 0.35rem;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.65) 40%);
+    margin: 0 -0.5rem;
+    padding: 0.75rem 0.5rem 0.25rem;
   }
 
   .platform-scroll-panel {
-    height: 80vh;
-    min-height: 480px;
+    height: 85vh;
+    min-height: 520px;
   }
 
-  .platform-hint {
-    font-size: 0.8rem;
-  }
-
-  .hero-cta-group .btn-xl {
-    padding: 0.9rem 1.25rem;
-    font-size: 0.95rem;
+  .platform-fallback {
+    padding: 5.5rem 1rem 10rem;
   }
 
   .solution-actions .btn {
@@ -442,26 +580,28 @@
 }
 
 @media (max-width: 575.98px) {
-  .platform-brand {
-    font-size: 1.85rem;
-  }
-
   .platform-stage-btn {
-    font-size: 0.65rem;
-    padding: 0.38rem 0.5rem;
+    font-size: 0.62rem;
+    padding: 0.35rem 0.48rem;
   }
 
   .platform-stage-title {
-    font-size: 1rem;
+    font-size: 0.98rem;
   }
 
   .platform-stage-caption {
-    font-size: 0.88rem;
+    font-size: 0.84rem;
+  }
+
+  .platform-hint {
+    font-size: 0.75rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .platform-canvas {
-    display: none;
+  .fallback-packet,
+  .fallback-core,
+  .fallback-ring {
+    animation: none;
   }
 }

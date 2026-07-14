@@ -53,56 +53,56 @@
   </nav>
 
   <!-- Hero + Interactive 3D Platform Showcase -->
-  <section class="platform-showcase" id="platform" aria-label="Mainoo coordination platform showcase">
+  <section class="platform-showcase" id="platform" data-engine="pending" aria-label="Mainoo coordination platform showcase">
     <div class="platform-showcase-sticky">
       <canvas id="platform-canvas" class="platform-canvas" aria-hidden="true"></canvas>
 
-      <!-- SVG fallback when WebGL / reduced-motion is unavailable -->
+      <!-- Animated fallback when WebGL / reduced-motion is unavailable -->
       <div class="platform-fallback" id="platform-fallback" hidden data-stage="0">
-        <svg viewBox="0 0 360 640" role="img" aria-label="Coordination flow from ingest to impact">
-          <defs>
-            <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#D37506" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#D37506" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <rect width="360" height="640" fill="#050505"/>
-          <g class="fallback-ingest" fill="#ffe6c0">
-            <circle cx="120" cy="90" r="9"/>
-            <circle cx="180" cy="70" r="11"/>
-            <circle cx="240" cy="95" r="8"/>
-          </g>
-          <g stroke="#D37506" stroke-width="2" fill="none" opacity="0.7">
-            <path class="fallback-path" d="M180 90 C180 160, 180 200, 180 250"/>
-            <path class="fallback-path" d="M180 320 C180 380, 180 430, 180 500"/>
-          </g>
-          <circle cx="180" cy="285" r="70" fill="url(#coreGlow)"/>
-          <circle class="fallback-core" cx="180" cy="285" r="28" fill="#D37506"/>
-          <g class="fallback-impact" fill="#D37506">
-            <circle cx="120" cy="545" r="14"/>
-            <circle cx="180" cy="565" r="18"/>
-            <circle cx="240" cy="545" r="12"/>
-          </g>
-          <text x="180" y="620" text-anchor="middle" fill="#fff" font-family="Montserrat, sans-serif" font-size="13">Ingest → Coordinate → Impact</text>
-        </svg>
+        <div class="fallback-stage" aria-hidden="true">
+          <div class="fallback-nodes fallback-nodes-in">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="fallback-spine">
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+          </div>
+          <div class="fallback-core-wrap">
+            <div class="fallback-core"></div>
+            <div class="fallback-ring"></div>
+            <div class="fallback-ring fallback-ring-2"></div>
+          </div>
+          <div class="fallback-spine fallback-spine-out">
+            <i class="fallback-packet"></i>
+            <i class="fallback-packet"></i>
+          </div>
+          <div class="fallback-nodes fallback-nodes-out">
+            <span data-label="Lives"></span>
+            <span data-label="Damage↓"></span>
+            <span data-label="Evac"></span>
+          </div>
+        </div>
       </div>
 
       <div class="platform-overlay">
         <div class="container platform-overlay-grid">
           <div class="platform-copy" data-stage="0">
             <p class="platform-brand">Mainoo</p>
-            <h1 class="hero-heading mb-3">Digital Coordination Infrastructure for Critical Sectors.</h1>
-            <p class="hero-subheading mb-4">
-              We build interoperable sector platforms that help organizations securely exchange data, coordinate operations, and deliver measurable impact.
+            <h1 class="hero-heading">Digital Coordination Infrastructure for Critical Sectors.</h1>
+            <p class="hero-subheading">
+              Interoperable sector platforms for secure exchange, coordinated operations, and measurable impact.
             </p>
             <div class="hero-cta-group">
-              <a class="btn btn-primary btn-xl mr-md-3 mb-3 mb-md-0" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
+              <a class="btn btn-primary btn-xl" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
               <a class="btn btn-outline-light btn-xl" href="#solutions">View Live Demos</a>
             </div>
-            <p class="platform-hint mt-3 mb-0">Scroll to enter the system · Tap or click a stage</p>
           </div>
 
-          <div class="platform-visual-gap" aria-hidden="true"></div>
+          <!-- Intentional empty band so the 3D/fallback scene is the hero visual -->
+          <div class="platform-visual-gap" aria-hidden="true">
+            <p class="platform-hint">Scroll to watch data move from ingest to impact · Tap a stage</p>
+          </div>
 
           <div class="platform-chrome">
             <div class="platform-progress" aria-hidden="true">
@@ -360,7 +360,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/vendor/three.min.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/platform-showcase.js"></script>
 </body>
