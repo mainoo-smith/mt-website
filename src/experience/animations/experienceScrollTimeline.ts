@@ -40,7 +40,7 @@ export function createExperienceScrollTimeline(
   for (const chapter of SCROLL_CHAPTERS) {
     timeline.addLabel(chapter.id, chapter.range[0]);
   }
-  timeline.addLabel("closing", 1);
+  timeline.addLabel("end", 1);
 
   const scrollTrigger = timeline.scrollTrigger!;
 

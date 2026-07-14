@@ -13,9 +13,9 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
 });
 
 export function ExperienceShell() {
-  const { progress, scrollRef } = useScrollProgress();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { progress, scrollRef } = useScrollProgress({ smoothScroll: !reducedMotion });
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -142,15 +142,22 @@ export function ExperienceShell() {
 }
 
 function ReducedMotionFallback({ progress }: { progress: number }) {
-  const step = progress < 0.33 ? 0 : progress < 0.66 ? 1 : 2;
-  const labels = ["Digital continent", "Systems in isolation", "Mainoo connects"];
+  const labels = [
+    "Digital continent",
+    "Systems in isolation",
+    "Coordination emerges",
+    "The challenge",
+    "The platform",
+    "The framework",
+  ];
+  const step = Math.min(labels.length - 1, Math.floor(progress * labels.length));
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-brand-ink px-6">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 h-40 w-40 rounded-full border border-brand-orange/50 bg-[radial-gradient(circle_at_30%_30%,#d37506,transparent_60%)] opacity-80" />
         <p className="font-display text-xs uppercase tracking-[0.2em] text-brand-orange">{labels[step]}</p>
         <p className="mt-3 text-sm text-white/70">
-          Motion is reduced on this device. Scroll or use the chapters below to follow the story.
+          Motion is reduced on this device. Scroll through the chapters to follow the story.
         </p>
       </div>
     </div>
