@@ -184,28 +184,16 @@
 
   var board = new THREE.Mesh(
     new THREE.BoxGeometry(isPortrait ? 2.6 : 2.2, isPortrait ? 3.2 : 2.8, 0.12),
-    new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      metalness: 0.05,
-      roughness: 0.05,
-      transmission: 0.85,
+    new THREE.MeshStandardMaterial({
+      color: 0xf3efe8,
+      metalness: 0.12,
+      roughness: 0.12,
       transparent: true,
-      opacity: 0.35,
-      reflectivity: 0.6
+      opacity: 0.38,
+      emissive: 0xd37506,
+      emissiveIntensity: 0.14
     })
   );
-  // MeshPhysicalMaterial transmission may not exist in r128 — fallback material
-  if (board.material.transmission === undefined) {
-    board.material = new THREE.MeshStandardMaterial({
-      color: 0xd8e4ef,
-      metalness: 0.15,
-      roughness: 0.08,
-      transparent: true,
-      opacity: 0.28,
-      emissive: 0xd37506,
-      emissiveIntensity: 0.08
-    });
-  }
   boardGroup.add(board);
 
   // Glass rim
@@ -423,14 +411,18 @@
     var inStrength = Math.max(0.35, 1 - Math.max(0, stageF - 0.5) / 3);
     var outStrength = Math.max(0.2, (stageF - 2.2) / 2.8);
 
+    // Hide floating labels while hero copy is still on screen (avoid clutter)
+    var labelsOn = e > 0.12;
     sourceNodes.forEach(function (node, i) {
       var home = node.userData.home;
-      // Drift slightly toward board as story progresses
       var pull = Math.min(1, Math.max(0, (stageF - 0.2) / 3.5));
       var toward = new THREE.Vector3().copy(home).lerp(new THREE.Vector3(0, home.y * 0.35, 0.4), pull * 0.35);
       node.position.lerp(toward, 0.06);
       node.userData.orb.material.emissiveIntensity = 0.4 + inStrength * 0.7;
       node.scale.setScalar(0.9 + inStrength * 0.25 + Math.sin(performance.now() * 0.003 + i) * 0.04);
+      node.children.forEach(function (child) {
+        if (child.isSprite) child.visible = labelsOn;
+      });
     });
 
     impactNodes.forEach(function (node, i) {
@@ -445,6 +437,9 @@
         node.scale.setScalar(0.35);
         node.userData.orb.material.opacity = 0.25;
       }
+      node.children.forEach(function (child) {
+        if (child.isSprite) child.visible = labelsOn && stageF > 2;
+      });
     });
 
     // Packets: lane from source home → board center → impact home
