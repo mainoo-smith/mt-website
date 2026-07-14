@@ -35,21 +35,23 @@ export function SectorCard({ org, showLabel = true }: SectorCardProps) {
         <meshBasicMaterial color={brand.orange} toneMapped={false} />
       </mesh>
 
-      {/* Glyph chip inset on the left of the top face. */}
-      <group position={[-0.19, 0.055, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.095}>
+      {/* Glyph flat on the top face. */}
+      <group position={[0, 0.052, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.1}>
         <SectorGlyph icon={org.icon} color={org.color} />
       </group>
 
+      {/* Upright label facing the camera so it stays legible at the iso angle. */}
       {showLabel ? (
         <Text
-          position={[0.055, 0.056, 0.008]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          fontSize={0.068}
-          maxWidth={0.48}
-          letterSpacing={0.005}
-          color={brand.ink}
+          position={[0, 0.14, 0.19]}
+          fontSize={0.075}
+          maxWidth={0.62}
+          letterSpacing={0.01}
+          color={brand.cream}
           anchorX="center"
-          anchorY="middle"
+          anchorY="bottom"
+          outlineWidth={0.004}
+          outlineColor={brand.ink}
         >
           {org.label.toUpperCase()}
         </Text>

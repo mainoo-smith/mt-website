@@ -30,8 +30,10 @@ import { PlatformScene } from "@/experience/scenes/PlatformScene";
 const HUB_STAND_Y = LAYOUT.groundY + 0.34;
 /** Height the boxes + pipes float above the stage. */
 const CARD_FLOAT_Y = LAYOUT.groundY + 0.16;
-/** Radius of the hub body footprint (pipes dock to this edge). */
-const HUB_DOCK_RADIUS = 0.44;
+/** Final display scale of the coordination hub at full connect. */
+const HUB_SCALE = 0.66;
+/** Radius of the hub body footprint at HUB_SCALE (pipes dock to this edge). */
+const HUB_DOCK_RADIUS = 0.3;
 /** Radius of a card footprint toward the hub (pipes start from this edge). */
 const CARD_DOCK_INSET = 0.28;
 
@@ -212,7 +214,7 @@ export function SceneManager({ progress }: { progress: number }) {
     if (hub.current) {
       hub.current.visible = hubVisible;
       const pulse = 1 + Math.sin(clock.elapsedTime * 2.6) * MOTION.hubPulse;
-      hub.current.scale.setScalar(lerp(0.05, lerp(0.9, 1, iso), connect) * pulse * actIExit);
+      hub.current.scale.setScalar(lerp(0.04, lerp(0.9, 1, iso) * HUB_SCALE, connect) * pulse * actIExit);
       hub.current.position.set(0, lerp(LAYOUT.hubZ, HUB_STAND_Y, iso), 0);
       // Static: pipes dock to fixed hub edges, so the hub must not spin.
       hub.current.rotation.y = 0;
