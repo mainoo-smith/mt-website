@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -16,9 +15,9 @@ type FrameworkSceneProps = {
 const STAGE_TOP = LAYOUT.groundY - 0.03;
 const CUBE_Y = LAYOUT.groundY + 0.17;
 const HUB_POS: [number, number, number] = [0, STAGE_TOP + 0.25, 0];
-const CUBE_SIZE = 0.34;
-const TRACK_RX = 1.02;
-const TRACK_RZ = 0.68;
+const CUBE_SIZE = 0.32;
+const TRACK_RX = 1.28;
+const TRACK_RZ = 0.86;
 const PACKET_COUNT = 10;
 
 export function FrameworkScene({ weight }: FrameworkSceneProps) {
@@ -54,7 +53,6 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
         g.scale.setScalar(appear);
         g.position.copy(positions[i]);
         g.position.y = CUBE_Y + Math.sin(clock.elapsedTime * 0.9 + i * 0.8) * 0.025;
-        g.rotation.y = Math.sin(clock.elapsedTime * 0.25 + i) * 0.08;
       });
     }
 
@@ -113,39 +111,17 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
         ))}
       </group>
 
-      {/* Step cubes on the track. */}
+      {/* Step cubes on the track, with front-face labels like Platform. */}
       <group ref={cubes}>
         {FRAMEWORK_STEPS.map((step, i) => {
           const org = SECTOR_ORGS[i % SECTOR_ORGS.length];
           return (
             <group key={step.id}>
-              <AppCube icon={org.icon} color={step.color} size={CUBE_SIZE} />
+              <AppCube icon={org.icon} color={step.color} size={CUBE_SIZE} label={step.label} showLabel />
             </group>
           );
         })}
       </group>
-
-      {/* Labels on the top face — visible from the isometric camera on every cube. */}
-      {FRAMEWORK_STEPS.map((step, i) => {
-        const p = positions[i];
-        return (
-          <Text
-            key={step.id}
-            position={[p.x, CUBE_Y + CUBE_SIZE * 0.52 + 0.05, p.z]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            fontSize={0.058}
-            maxWidth={0.55}
-            letterSpacing={0.015}
-            color={brand.cream}
-            anchorX="center"
-            anchorY="middle"
-            outlineWidth={0.003}
-            outlineColor={brand.ink}
-          >
-            {step.label.toUpperCase()}
-          </Text>
-        );
-      })}
     </group>
   );
 }

@@ -15,10 +15,14 @@ export function AppCube({
   icon,
   color,
   size = 0.46,
+  label,
+  showLabel = false,
 }: {
   icon: SectorIcon;
   color: string;
   size?: number;
+  label?: string;
+  showLabel?: boolean;
 }) {
   return (
     <group>
@@ -49,6 +53,23 @@ export function AppCube({
         <cylinderGeometry args={[0.03, 0.03, 0.02, 16]} />
         <meshBasicMaterial color={brand.keycapEdge} toneMapped={false} />
       </mesh>
+
+      {/* Front-face label (matches DeviceNode). */}
+      {showLabel && label ? (
+        <Text
+          position={[0, -size * 0.18, size * 0.51]}
+          fontSize={size * 0.15}
+          maxWidth={size * 1.6}
+          letterSpacing={0.01}
+          color={brand.cream}
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={size * 0.008}
+          outlineColor={brand.ink}
+        >
+          {label.toUpperCase()}
+        </Text>
+      ) : null}
     </group>
   );
 }
