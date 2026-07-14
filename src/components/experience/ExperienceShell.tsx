@@ -15,17 +15,29 @@ const CHAPTERS = [
   {
     id: "continent",
     range: [0, 0.28] as const,
-    lines: ["Every nation has data.", "Every organization has systems.", "Few can truly work together."],
+    lines: [
+      "Africa runs on digital systems.",
+      "Hospitals. Agencies. Utilities. Cities.",
+      "The continent is already online.",
+    ],
   },
   {
     id: "isolation",
     range: [0.28, 0.55] as const,
-    lines: ["Critical systems pulse alone.", "Hospital. Fire. Police. Utility. Government. Finance.", "Operating in isolation."],
+    lines: [
+      "Hospital. Fire. Police. Utility. Government. Finance.",
+      "Each system pulses alone.",
+      "No shared picture. No coordination.",
+    ],
   },
   {
     id: "connect",
     range: [0.55, 0.92] as const,
-    lines: ["Mainoo connects systems.", "Light moves as information moves.", "Coordination becomes visible."],
+    lines: [
+      "Mainoo sits at the center.",
+      "Signals flow into one shared board.",
+      "Isolated systems become one operating network.",
+    ],
   },
 ];
 
