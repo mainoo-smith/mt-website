@@ -59,19 +59,17 @@
 
       <!-- Animated fallback when WebGL / reduced-motion is unavailable -->
       <div class="platform-fallback" id="platform-fallback" hidden data-stage="0">
-        <div class="fallback-stage" aria-hidden="true">
+        <div class="fallback-stage fallback-glass" aria-hidden="true">
           <div class="fallback-nodes fallback-nodes-in">
-            <span></span><span></span><span></span>
+            <span title="Sensors"></span><span title="Hospital"></span><span title="Agency"></span><span title="Cloud"></span><span title="Compliance"></span>
           </div>
           <div class="fallback-spine">
             <i class="fallback-packet"></i>
             <i class="fallback-packet"></i>
             <i class="fallback-packet"></i>
           </div>
-          <div class="fallback-core-wrap">
-            <div class="fallback-core"></div>
-            <div class="fallback-ring"></div>
-            <div class="fallback-ring fallback-ring-2"></div>
+          <div class="fallback-board">
+            <span>Coordination Board</span>
           </div>
           <div class="fallback-spine fallback-spine-out">
             <i class="fallback-packet"></i>
@@ -81,6 +79,8 @@
             <span data-label="Lives"></span>
             <span data-label="Damage↓"></span>
             <span data-label="Evac"></span>
+            <span data-label="Risk↓"></span>
+            <span data-label="Trust"></span>
           </div>
         </div>
       </div>
@@ -103,17 +103,19 @@
           <div class="platform-visual-gap">
             <div class="story-map" id="story-map" data-zone="in" aria-hidden="false">
               <div class="story-zone story-zone-in" data-zone="in">
-                <p class="story-kicker">Data in</p>
+                <p class="story-kicker">Signals in</p>
                 <ul class="story-list">
                   <li>Sensors &amp; GIS</li>
                   <li>Hospital systems</li>
                   <li>Agency feeds</li>
+                  <li>Cloud signals</li>
+                  <li>Compliance evidence</li>
                 </ul>
               </div>
               <div class="story-arrow" aria-hidden="true">→</div>
               <div class="story-zone story-zone-core" data-zone="core">
-                <p class="story-kicker">Coordinate</p>
-                <p class="story-core-label">Mainoo<br>Coordination Engine</p>
+                <p class="story-kicker">Glass board</p>
+                <p class="story-core-label">Mainoo<br>Coordination Board</p>
               </div>
               <div class="story-arrow" aria-hidden="true">→</div>
               <div class="story-zone story-zone-out" data-zone="out">
@@ -122,10 +124,12 @@
                   <li>Lives protected</li>
                   <li>Damage reduced</li>
                   <li>Evacuation success</li>
+                  <li>Risk reduced</li>
+                  <li>Trust ensured</li>
                 </ul>
               </div>
             </div>
-            <p class="platform-hint">Scroll or tap a stage — watch the story move from data in to impact out</p>
+            <p class="platform-hint">Scroll or tap a stage — signals move into the glass board, then impact comes out</p>
           </div>
 
           <div class="platform-chrome">
@@ -168,25 +172,39 @@
         Illustrative outcomes—not a feature checklist of the internals. Figures show the kind of impact the architecture is designed to enable.
       </p>
       <div class="row">
-        <div class="col-md-4 mb-4">
+        <div class="col-6 col-md-4 col-lg mb-4">
           <div class="impact-panel h-100">
             <div class="impact-icon"><i class="fas fa-heart" aria-hidden="true"></i></div>
-            <h3 class="h4">Lives protected</h3>
+            <h3 class="h5">Lives protected</h3>
             <p class="mb-0">e.g. <strong>100 lives saved</strong> in a coordinated emergency response.</p>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-6 col-md-4 col-lg mb-4">
           <div class="impact-panel h-100">
             <div class="impact-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
-            <h3 class="h4">Damage reduced</h3>
+            <h3 class="h5">Damage reduced</h3>
             <p class="mb-0">e.g. <strong>property damage reduced by X%</strong> through earlier coordinated action.</p>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-6 col-md-4 col-lg mb-4">
           <div class="impact-panel h-100">
             <div class="impact-icon"><i class="fas fa-route" aria-hidden="true"></i></div>
-            <h3 class="h4">Evacuation success</h3>
+            <h3 class="h5">Evacuation success</h3>
             <p class="mb-0">e.g. <strong>higher evacuation success</strong> when agencies share one operating picture.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+            <h3 class="h5">Risk reduced</h3>
+            <p class="mb-0">e.g. compliance and operational <strong>risk reduced</strong> through continuous control visibility.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg mb-4">
+          <div class="impact-panel h-100">
+            <div class="impact-icon"><i class="fas fa-handshake" aria-hidden="true"></i></div>
+            <h3 class="h5">Trust ensured</h3>
+            <p class="mb-0">e.g. regulator and stakeholder <strong>trust ensured</strong> with local-first evidence and audit trails.</p>
           </div>
         </div>
       </div>

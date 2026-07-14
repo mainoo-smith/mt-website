@@ -136,47 +136,29 @@
   100% { top: 110%; opacity: 0.2; }
 }
 
-.fallback-core-wrap {
-  position: relative;
-  width: 110px;
-  height: 110px;
+.fallback-board {
+  width: min(220px, 70%);
+  min-height: 110px;
+  border-radius: 14px;
+  border: 2px solid rgba(211, 117, 6, 0.75);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(211, 117, 6, 0.12));
+  box-shadow: 0 0 30px rgba(211, 117, 6, 0.25), inset 0 0 24px rgba(255, 255, 255, 0.08);
   display: grid;
   place-items: center;
-  transform: scale(calc(0.95 + var(--flow) * 0.35));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  transform: scale(calc(0.95 + var(--flow) * 0.12));
 }
 
-.fallback-core {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffc878, #D37506 60%, #8a4a04);
-  box-shadow: 0 0 40px rgba(211, 117, 6, 0.9), 0 0 80px rgba(211, 117, 6, 0.4);
-  animation: core-pulse 2.2s ease-in-out infinite;
-  z-index: 2;
+.fallback-nodes {
+  gap: 0.65rem;
 }
 
-.fallback-ring {
-  position: absolute;
-  inset: 8px;
-  border: 2px solid rgba(255, 230, 192, 0.45);
-  border-radius: 50%;
-  animation: ring-spin 8s linear infinite;
-}
-
-.fallback-ring-2 {
-  inset: -6px;
-  border-color: rgba(211, 117, 6, 0.55);
-  animation-duration: 12s;
-  animation-direction: reverse;
-}
-
-@keyframes core-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-@keyframes ring-spin {
-  to { transform: rotate(360deg); }
+.fallback-nodes span {
+  width: 11px;
+  height: 11px;
 }
 
 /* ---- Overlay / copy / chrome ---- */

@@ -1,17 +1,34 @@
 /**
  * Mainoo Platform Showcase
- * Sticky scroll + tap stages. Target: obviously visible ingest → impact flow.
+ * Simple narrative: 5 signal sources → glass coordination board → impacts
+ * (ops + compliance). Scroll + tap stages.
  */
 (function () {
   'use strict';
 
+  var SOURCES = [
+    { label: 'Sensors & GIS', color: 0xffe6c0 },
+    { label: 'Hospital systems', color: 0xf0c090 },
+    { label: 'Agency feeds', color: 0xd37506 },
+    { label: 'Cloud signals', color: 0xffc878 },
+    { label: 'Compliance evidence', color: 0xe0943a }
+  ];
+
+  var IMPACTS = [
+    { label: 'Lives protected', color: 0xd37506 },
+    { label: 'Damage reduced', color: 0xe0943a },
+    { label: 'Evacuation success', color: 0xffc878 },
+    { label: 'Risk reduced', color: 0xf0c090 },
+    { label: 'Trust ensured', color: 0xffe6c0 }
+  ];
+
   var STAGE_COPY = [
-    { title: 'Data comes in', caption: 'Sensors, hospital systems, and agency feeds enter the coordination fabric.', zone: 'in' },
-    { title: 'Shared context forms', caption: 'Scattered inputs become one picture teams can act on together.', zone: 'in' },
-    { title: 'Teams coordinate', caption: 'Agencies move on the same operating picture—in real time.', zone: 'core' },
-    { title: 'Decisions land faster', caption: 'Operators see what matters when it matters—without losing local control.', zone: 'core' },
-    { title: 'Action is orchestrated', caption: 'Responses trigger across units so effort compounds instead of colliding.', zone: 'out' },
-    { title: 'Impact you can name', caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.', zone: 'out' }
+    { title: 'Signals arrive', caption: 'Five live sources stream into the coordination board.', zone: 'in' },
+    { title: 'Signals unify', caption: 'Fragmented inputs land on one shared glass board.', zone: 'in' },
+    { title: 'Teams coordinate', caption: 'The board becomes the shared operating picture.', zone: 'core' },
+    { title: 'Decisions form', caption: 'Operators act from one view—without losing local control.', zone: 'core' },
+    { title: 'Action leaves the board', caption: 'Coordinated responses fan out to people and systems.', zone: 'out' },
+    { title: 'Impact you can name', caption: 'Ops + compliance outcomes: lives, damage, evacuation, risk reduced, trust ensured.', zone: 'out' }
   ];
 
   var showcase = document.querySelector('.platform-showcase');
@@ -146,199 +163,207 @@
   renderer.setClearColor(0x050505, 1);
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050505, 0.028);
+  scene.fog = new THREE.FogExp2(0x050505, 0.022);
 
-  var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(isPortrait ? 0 : -0.4, 0, isPortrait ? 7.2 : 6.8);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-  var key = new THREE.PointLight(0xd37506, 3.2, 60);
-  key.position.set(2, 2.5, 5);
-  scene.add(key);
-  var fill = new THREE.PointLight(0xffe6c0, 1.2, 50);
-  fill.position.set(-3, -1, 3);
-  scene.add(fill);
-
+  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
   var root = new THREE.Group();
-  // Desktop: keep core/impact to the right of marketing copy
-  root.position.x = isPortrait ? 0 : 2.15;
+  root.position.x = isPortrait ? 0 : 1.6;
   scene.add(root);
 
-  // Oversized bright core — must read on phone behind overlay gaps
-  var coreInner = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.05, 2),
-    new THREE.MeshStandardMaterial({
-      color: 0xd37506,
-      emissive: 0xd37506,
-      emissiveIntensity: 1.1,
-      metalness: 0.4,
-      roughness: 0.18,
-      flatShading: true
-    })
-  );
-  root.add(coreInner);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  var key = new THREE.PointLight(0xd37506, 2.4, 50);
+  key.position.set(2, 3, 5);
+  scene.add(key);
+  var fill = new THREE.PointLight(0xffffff, 0.8, 40);
+  fill.position.set(-3, 1, 4);
+  scene.add(fill);
 
-  var coreShell = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.4, 1),
-    new THREE.MeshStandardMaterial({
-      color: 0xffc878,
-      emissive: 0xd37506,
-      emissiveIntensity: 0.45,
-      metalness: 0.6,
-      roughness: 0.12,
+  // ---- Glass coordination board ----
+  var boardGroup = new THREE.Group();
+  root.add(boardGroup);
+
+  var board = new THREE.Mesh(
+    new THREE.BoxGeometry(isPortrait ? 2.6 : 2.2, isPortrait ? 3.2 : 2.8, 0.12),
+    new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      metalness: 0.05,
+      roughness: 0.05,
+      transmission: 0.85,
       transparent: true,
-      opacity: 0.4,
-      flatShading: true
+      opacity: 0.35,
+      reflectivity: 0.6
     })
   );
-  root.add(coreShell);
+  // MeshPhysicalMaterial transmission may not exist in r128 — fallback material
+  if (board.material.transmission === undefined) {
+    board.material = new THREE.MeshStandardMaterial({
+      color: 0xd8e4ef,
+      metalness: 0.15,
+      roughness: 0.08,
+      transparent: true,
+      opacity: 0.28,
+      emissive: 0xd37506,
+      emissiveIntensity: 0.08
+    });
+  }
+  boardGroup.add(board);
 
-  var coreWire = new THREE.LineSegments(
-    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.55, 1)),
-    new THREE.LineBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.55 })
+  // Glass rim
+  var rim = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(isPortrait ? 2.62 : 2.22, isPortrait ? 3.22 : 2.82, 0.14)),
+    new THREE.LineBasicMaterial({ color: 0xd37506, transparent: true, opacity: 0.85 })
   );
-  root.add(coreWire);
+  boardGroup.add(rim);
 
-  var rings = [];
-  for (var r = 0; r < 3; r++) {
-    var ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.0 + r * 0.7, 0.04, 12, 96),
-      new THREE.MeshBasicMaterial({
-        color: r % 2 ? 0xffe6c0 : 0xd37506,
-        transparent: true,
-        opacity: 0.55
-      })
-    );
-    ring.rotation.x = Math.PI / 2.2 + r * 0.25;
-    root.add(ring);
-    rings.push(ring);
+  // Subtle grid on board face
+  var grid = new THREE.GridHelper(2.4, 6, 0xd37506, 0x665544);
+  grid.rotation.x = Math.PI / 2;
+  grid.position.z = 0.08;
+  grid.material.transparent = true;
+  grid.material.opacity = 0.35;
+  boardGroup.add(grid);
+
+  var boardGlow = new THREE.Mesh(
+    new THREE.PlaneGeometry(isPortrait ? 2.4 : 2.0, isPortrait ? 3.0 : 2.6),
+    new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: 0.12 })
+  );
+  boardGlow.position.z = -0.02;
+  boardGroup.add(boardGlow);
+
+  function makeLabelSprite(text, colorHex) {
+    var c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 128;
+    var ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+    // pill background
+    ctx.fillStyle = 'rgba(0,0,0,0.72)';
+    roundRect(ctx, 16, 28, 480, 72, 18);
+    ctx.fill();
+    ctx.strokeStyle = '#' + colorHex.toString(16).padStart(6, '0');
+    ctx.lineWidth = 4;
+    roundRect(ctx, 16, 28, 480, 72, 18);
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 36px Montserrat, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 256, 66);
+    var tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    var mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+    var sprite = new THREE.Sprite(mat);
+    sprite.scale.set(1.55, 0.39, 1);
+    return sprite;
   }
 
-  var particleCount = 280;
-  var particlePositions = new Float32Array(particleCount * 3);
-  var particleSeeds = new Float32Array(particleCount);
-  for (var i = 0; i < particleCount; i++) {
-    particleSeeds[i] = Math.random() * Math.PI * 2;
-    var radius = 1.4 + Math.random() * 5;
-    var theta = Math.random() * Math.PI * 2;
-    var phi = Math.acos(2 * Math.random() - 1);
-    particlePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-    particlePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.75;
-    particlePositions[i * 3 + 2] = radius * Math.cos(phi);
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
   }
-  var particleGeo = new THREE.BufferGeometry();
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-  var particles = new THREE.Points(
-    particleGeo,
-    new THREE.PointsMaterial({
-      color: 0xffe6c0,
-      size: 0.07,
-      transparent: true,
-      opacity: 0.9,
-      depthWrite: false
-    })
-  );
-  root.add(particles);
 
-  var ingestGroup = new THREE.Group();
+  var sourceGroup = new THREE.Group();
   var impactGroup = new THREE.Group();
-  var beamGroup = new THREE.Group();
-  root.add(ingestGroup);
+  root.add(sourceGroup);
   root.add(impactGroup);
-  root.add(beamGroup);
-  var ingestNodes = [];
-  var impactOrbs = [];
-  var beamsIn = [];
-  var beamsOut = [];
 
-  function layout() {
-    return isPortrait
-      ? {
-        ins: [[0, 3.1, 0], [-1.1, 2.7, 0.35], [1.1, 2.8, -0.25]],
-        outs: [[0, -3.15, 0], [-1.15, -2.7, 0.3], [1.15, -2.75, -0.2]]
+  var sourceNodes = [];
+  var impactNodes = [];
+  var homeSources = [];
+  var homeImpacts = [];
+
+  function layoutHomes() {
+    homeSources = [];
+    homeImpacts = [];
+    var n = SOURCES.length;
+    for (var i = 0; i < n; i++) {
+      var t = n === 1 ? 0.5 : i / (n - 1);
+      if (isPortrait) {
+        homeSources.push(new THREE.Vector3((t - 0.5) * 2.2, 3.35, 0.3));
+        homeImpacts.push(new THREE.Vector3((t - 0.5) * 2.4, -3.4, 0.35));
+      } else {
+        homeSources.push(new THREE.Vector3(-3.7, (0.5 - t) * 2.6, 0.25));
+        homeImpacts.push(new THREE.Vector3(3.7, (0.5 - t) * 2.8, 0.3));
       }
-      : {
-        ins: [[-4.9, 1.35, 0.3], [-5.15, 0.05, -0.45], [-4.8, -1.25, 0.5]],
-        outs: [[3.9, 1.3, 0], [4.15, 0.05, 0], [3.95, -1.2, 0]]
-      };
+    }
   }
 
-  function makeBeam(from, to, opacity) {
-    var mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
-    if (isPortrait) mid.z += 0.55;
-    else mid.y += 0.55;
-    var curve = new THREE.QuadraticBezierCurve3(from.clone(), mid, to.clone());
-    return new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 64, 0.035, 8, false),
-      new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: opacity })
-    );
-  }
-
-  function rebuildAnchors() {
-    while (ingestGroup.children.length) ingestGroup.remove(ingestGroup.children[0]);
+  function buildNodes() {
+    while (sourceGroup.children.length) sourceGroup.remove(sourceGroup.children[0]);
     while (impactGroup.children.length) impactGroup.remove(impactGroup.children[0]);
-    while (beamGroup.children.length) beamGroup.remove(beamGroup.children[0]);
-    ingestNodes = [];
-    impactOrbs = [];
-    beamsIn = [];
-    beamsOut = [];
+    sourceNodes = [];
+    impactNodes = [];
+    layoutHomes();
 
-    var L = layout();
-    L.ins.forEach(function (p, idx) {
-      var n = new THREE.Mesh(
-        new THREE.OctahedronGeometry(0.28 - idx * 0.03, 0),
+    SOURCES.forEach(function (src, i) {
+      var g = new THREE.Group();
+      var orb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.18, 20, 20),
         new THREE.MeshStandardMaterial({
-          color: 0xffe6c0,
-          emissive: 0xd37506,
-          emissiveIntensity: 0.9,
-          metalness: 0.3,
-          roughness: 0.25
+          color: src.color,
+          emissive: src.color,
+          emissiveIntensity: 0.65,
+          metalness: 0.25,
+          roughness: 0.3
         })
       );
-      n.position.set(p[0], p[1], p[2]);
-      ingestGroup.add(n);
-      ingestNodes.push(n);
-      var b = makeBeam(n.position, new THREE.Vector3(0, 0, 0), 0.65);
-      beamGroup.add(b);
-      beamsIn.push(b);
+      g.add(orb);
+      var label = makeLabelSprite(src.label, src.color);
+      label.position.set(isPortrait ? 0 : -0.15, isPortrait ? 0.42 : 0.38, 0);
+      g.add(label);
+      g.position.copy(homeSources[i]);
+      g.userData.home = homeSources[i].clone();
+      g.userData.orb = orb;
+      sourceGroup.add(g);
+      sourceNodes.push(g);
     });
 
-    L.outs.forEach(function (p, idx) {
-      var size = 0.48 + (idx === 1 ? 0.12 : 0);
+    IMPACTS.forEach(function (imp, i) {
+      var g = new THREE.Group();
       var orb = new THREE.Mesh(
-        new THREE.SphereGeometry(size, 28, 28),
+        new THREE.SphereGeometry(0.22, 22, 22),
         new THREE.MeshStandardMaterial({
-          color: 0xd37506,
-          emissive: 0xd37506,
-          emissiveIntensity: 0.55,
-          metalness: 0.25,
-          roughness: 0.2,
+          color: imp.color,
+          emissive: imp.color,
+          emissiveIntensity: 0.35,
+          metalness: 0.2,
+          roughness: 0.28,
           transparent: true,
-          opacity: 0.95
+          opacity: 0.85
         })
       );
-      orb.position.set(p[0], p[1], p[2]);
-      orb.add(new THREE.Mesh(
-        new THREE.SphereGeometry(size * 1.7, 16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: 0.2 })
+      g.add(orb);
+      g.add(new THREE.Mesh(
+        new THREE.SphereGeometry(0.36, 16, 16),
+        new THREE.MeshBasicMaterial({ color: imp.color, transparent: true, opacity: 0.12 })
       ));
-      impactGroup.add(orb);
-      impactOrbs.push(orb);
-      var b = makeBeam(new THREE.Vector3(0, 0, 0), orb.position, 0.35);
-      beamGroup.add(b);
-      beamsOut.push(b);
+      var label = makeLabelSprite(imp.label, imp.color);
+      label.position.set(isPortrait ? 0 : 0.1, isPortrait ? -0.45 : 0.4, 0);
+      g.add(label);
+      g.position.copy(homeImpacts[i]);
+      g.userData.home = homeImpacts[i].clone();
+      g.userData.orb = orb;
+      impactGroup.add(g);
+      impactNodes.push(g);
     });
   }
-  rebuildAnchors();
+  buildNodes();
 
+  // Packets flowing source → board → impact
   var packets = [];
-  for (var p = 0; p < 28; p++) {
+  for (var p = 0; p < 20; p++) {
     var packet = new THREE.Mesh(
-      new THREE.SphereGeometry(0.08, 10, 10),
-      new THREE.MeshBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.9 })
+      new THREE.SphereGeometry(0.06, 10, 10),
+      new THREE.MeshBasicMaterial({ color: 0xffe6c0, transparent: true, opacity: 0.95 })
     );
     packet.userData.t = Math.random();
-    packet.userData.lane = p % 3;
+    packet.userData.lane = p % SOURCES.length;
+    packet.userData.half = p % 2; // 0 = to board, 1 = from board
     root.add(packet);
     packets.push(packet);
   }
@@ -349,7 +374,12 @@
     isPortrait = window.matchMedia('(orientation: portrait), (max-width: 900px)').matches;
     if (isPortrait !== lastPortrait) {
       lastPortrait = isPortrait;
-      rebuildAnchors();
+      // rebuild board size + node homes
+      board.geometry.dispose();
+      board.geometry = new THREE.BoxGeometry(isPortrait ? 2.6 : 2.2, isPortrait ? 3.2 : 2.8, 0.12);
+      rim.geometry.dispose();
+      rim.geometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(isPortrait ? 2.62 : 2.22, isPortrait ? 3.22 : 2.82, 0.14));
+      buildNodes();
     }
     var w = canvas.clientWidth || showcase.clientWidth;
     var h = canvas.clientHeight || window.innerHeight;
@@ -364,102 +394,81 @@
 
   function applyNarrative(p) {
     var e = ease(p);
-    var stageF = p * 5; // 0..5 continuous
+    var stageF = p * 5;
 
-    // Stage-aware camera targets so ingest → impact is readable
-    var camTarget;
+    // Camera: pull back enough to read source → glass → impact
+    var cam;
     if (isPortrait) {
-      if (stageF < 1.2) camTarget = { x: 0, y: 1.6, z: 7.8 };       // look at ingest
-      else if (stageF < 3.2) camTarget = { x: 0, y: 0.15, z: 6.2 };  // core
-      else if (stageF < 4.4) camTarget = { x: 0, y: -0.6, z: 5.8 }; // action
-      else camTarget = { x: 0, y: -1.9, z: 7.0 };                     // impact orbs
+      cam = { x: 0, y: 0.15 - e * 0.35, z: 9.2 - e * 0.6 };
     } else {
-      if (stageF < 1.2) camTarget = { x: -1.5, y: 0.3, z: 7.2 };
-      else if (stageF < 3.2) camTarget = { x: 0.8, y: 0.1, z: 6.0 };
-      else if (stageF < 4.4) camTarget = { x: 1.6, y: 0, z: 5.6 };
-      else camTarget = { x: 2.6, y: 0, z: 6.8 };
+      cam = { x: -0.2, y: 0.2, z: 8.4 };
     }
 
-    pointer.x += (pointer.tx - pointer.x) * 0.1;
-    pointer.y += (pointer.ty - pointer.y) * 0.1;
+    pointer.x += (pointer.tx - pointer.x) * 0.08;
+    pointer.y += (pointer.ty - pointer.y) * 0.08;
+    camera.position.x += (cam.x + pointer.x * 0.35 - camera.position.x) * 0.08;
+    camera.position.y += (cam.y - pointer.y * 0.25 - camera.position.y) * 0.08;
+    camera.position.z += (cam.z - camera.position.z) * 0.08;
+    camera.lookAt(root.position.x * 0.3, 0, 0);
 
-    var wantX = camTarget.x + pointer.x * (isPortrait ? 0.3 : 0.55);
-    var wantY = camTarget.y - pointer.y * 0.28;
-    var wantZ = camTarget.z;
-    camera.position.x += (wantX - camera.position.x) * 0.08;
-    camera.position.y += (wantY - camera.position.y) * 0.08;
-    camera.position.z += (wantZ - camera.position.z) * 0.08;
+    root.position.x += ((isPortrait ? 0 : 1.45) - root.position.x) * 0.08;
 
-    var lookY = isPortrait ? (1.2 - e * 3.0) : 0;
-    var lookX = isPortrait ? 0 : (-1.2 + e * 3.4);
-    camera.lookAt(lookX + pointer.x * 0.1, lookY, 0);
+    // Board presence
+    var boardPulse = 1 + Math.sin(performance.now() * 0.002) * 0.015;
+    boardGroup.scale.setScalar(boardPulse);
+    boardGroup.rotation.y = Math.sin(performance.now() * 0.0006) * 0.08 + pointer.x * 0.05;
+    boardGlow.material.opacity = 0.08 + (1 - Math.abs(e - 0.5)) * 0.12;
 
-    root.position.x += ((isPortrait ? 0 : 2.15) - root.position.x) * 0.08;
+    // Sources emphasize early; impacts emphasize late
+    var inStrength = Math.max(0.35, 1 - Math.max(0, stageF - 0.5) / 3);
+    var outStrength = Math.max(0.2, (stageF - 2.2) / 2.8);
 
-    var pulse = 1 + Math.sin(performance.now() * 0.0026) * 0.04;
-    var coreScale = (1.05 + Math.sin(Math.min(e, 1) * Math.PI) * 0.35) * pulse;
-    coreInner.scale.setScalar(coreScale);
-    coreShell.scale.setScalar(coreScale);
-    coreWire.scale.setScalar(coreScale * 1.05);
-    coreInner.material.emissiveIntensity = 0.7 + (1 - Math.abs(e - 0.5)) * 0.7;
-    coreInner.rotation.y += 0.01;
-    coreShell.rotation.y -= 0.007;
-    coreWire.rotation.y += 0.005;
-
-    rings.forEach(function (ring, idx) {
-      ring.rotation.z += 0.006 + idx * 0.002;
-      ring.scale.setScalar(1 + e * (0.4 + idx * 0.1));
-      ring.material.opacity = 0.25 + (1 - Math.abs(e - 0.45)) * 0.45;
+    sourceNodes.forEach(function (node, i) {
+      var home = node.userData.home;
+      // Drift slightly toward board as story progresses
+      var pull = Math.min(1, Math.max(0, (stageF - 0.2) / 3.5));
+      var toward = new THREE.Vector3().copy(home).lerp(new THREE.Vector3(0, home.y * 0.35, 0.4), pull * 0.35);
+      node.position.lerp(toward, 0.06);
+      node.userData.orb.material.emissiveIntensity = 0.4 + inStrength * 0.7;
+      node.scale.setScalar(0.9 + inStrength * 0.25 + Math.sin(performance.now() * 0.003 + i) * 0.04);
     });
 
-    // Ingest dominant early
-    var ingestStrength = Math.max(0.2, 1 - Math.max(0, stageF - 0.4) / 2.8);
-    ingestNodes.forEach(function (n, idx) {
-      n.rotation.y += 0.045;
-      n.scale.setScalar(1.05 + ingestStrength * 0.95 + Math.sin(performance.now() * 0.005 + idx) * 0.12);
-      n.material.emissiveIntensity = 0.4 + ingestStrength * 1.1;
-      n.visible = true;
-    });
-    beamsIn.forEach(function (b) {
-      b.material.opacity = 0.15 + ingestStrength * 0.7;
-    });
-
-    // Impact dominant late — three outcome orbs must blow up at the end
-    var impactStrength = Math.max(0, (stageF - 2.8) / 2.2);
-    impactOrbs.forEach(function (orb, idx) {
-      var local = Math.max(0, impactStrength - idx * 0.05);
-      orb.scale.setScalar(0.45 + local * 1.55);
-      orb.material.emissiveIntensity = 0.25 + local * 1.6;
-      orb.material.opacity = 0.45 + local * 0.55;
-    });
-    beamsOut.forEach(function (b) {
-      b.material.opacity = 0.08 + impactStrength * 0.8;
+    impactNodes.forEach(function (node, i) {
+      var home = node.userData.home;
+      var emerge = Math.max(0, outStrength - i * 0.04);
+      node.position.lerp(home, 0.08);
+      node.scale.setScalar(0.55 + emerge * 0.7);
+      node.userData.orb.material.emissiveIntensity = 0.2 + emerge * 1.1;
+      node.userData.orb.material.opacity = 0.4 + emerge * 0.6;
+      node.visible = emerge > 0.05 || stageF > 2;
+      if (stageF < 2) {
+        node.scale.setScalar(0.35);
+        node.userData.orb.material.opacity = 0.25;
+      }
     });
 
-    root.rotation.y = (isPortrait ? e * 0.18 : e * 0.35) + pointer.x * 0.08;
-    particles.rotation.y += 0.0015;
-
+    // Packets: lane from source home → board center → impact home
     packets.forEach(function (packet, idx) {
-      packet.userData.t += 0.009 + e * 0.012;
+      packet.userData.t += 0.006 + e * 0.008;
       if (packet.userData.t > 1) packet.userData.t -= 1;
       var t = packet.userData.t;
-      var lane = packet.userData.lane - 1;
-      if (isPortrait) {
-        packet.position.set(
-          lane * 0.75 + Math.sin(t * Math.PI * 2 + idx) * 0.18,
-          3.15 - t * 6.3,
-          Math.cos(t * Math.PI + idx) * 0.28
-        );
+      var lane = packet.userData.lane % SOURCES.length;
+      var from = homeSources[lane];
+      var mid = new THREE.Vector3(0, from.y * 0.25, 0.5);
+      var to = homeImpacts[lane];
+      var pos;
+      if (t < 0.5) {
+        var u = t / 0.5;
+        pos = new THREE.Vector3().copy(from).lerp(mid, u);
+        // only show inbound strongly early
+        packet.material.opacity = 0.35 + inStrength * 0.65;
       } else {
-        packet.position.set(
-          -4.2 + t * 8.5,
-          lane * 0.7 + Math.sin(t * Math.PI * 2 + idx) * 0.22,
-          Math.cos(t * Math.PI + idx) * 0.28
-        );
+        var v = (t - 0.5) / 0.5;
+        pos = new THREE.Vector3().copy(mid).lerp(to, v);
+        packet.material.opacity = 0.2 + outStrength * 0.8;
       }
-      packet.scale.setScalar(1.05 + e * 0.9);
-      // Emphasize packets near the active region of the story
-      packet.material.opacity = 0.35 + (1 - Math.abs(t - Math.min(Math.max(e, 0.05), 0.95))) * 0.65;
+      packet.position.copy(pos);
+      packet.scale.setScalar(0.85 + e * 0.5);
     });
   }
 
@@ -471,10 +480,6 @@
   }
 
   window.addEventListener('resize', resize);
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) tick();
-  });
-
   setStageUI(0, false);
   resize();
   syncFromScroll();
