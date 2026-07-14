@@ -32,13 +32,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0a0a0a;
-  padding: 2rem 1rem;
+  background: #050505;
+  padding: 5rem 1rem 8rem;
+  --flow: 0;
 }
 
 .platform-fallback svg {
-  width: min(900px, 100%);
+  width: min(420px, 88%);
   height: auto;
+  max-height: 70vh;
+}
+
+.platform-fallback .fallback-core {
+  transform-origin: 180px 285px;
+  animation: fallback-pulse 2.4s ease-in-out infinite;
+}
+
+.platform-fallback .fallback-path {
+  stroke-dasharray: 8 10;
+  animation: fallback-dash 1.4s linear infinite;
+}
+
+.platform-fallback .fallback-impact {
+  opacity: calc(0.25 + var(--flow) * 0.75);
+  transition: opacity 0.3s ease;
+}
+
+.platform-fallback .fallback-ingest {
+  opacity: calc(1 - var(--flow) * 0.45);
+}
+
+@keyframes fallback-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 0.85; }
+}
+
+@keyframes fallback-dash {
+  to { stroke-dashoffset: -36; }
 }
 
 .platform-overlay {
@@ -323,17 +353,17 @@
   color: #D37506;
 }
 
-/* Soft gradient wash behind overlay text for readability */
+/* Soft gradient wash — keep center of canvas readable */
 .platform-overlay::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    105deg,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.45) 42%,
-    rgba(0, 0, 0, 0.15) 70%,
-    rgba(0, 0, 0, 0.35) 100%
+    180deg,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.28) 38%,
+    rgba(0, 0, 0, 0.12) 55%,
+    rgba(0, 0, 0, 0.72) 100%
   );
   z-index: -1;
   pointer-events: none;
@@ -346,23 +376,64 @@
 
   .platform-showcase .hero-heading {
     max-width: none;
+    font-size: clamp(1.35rem, 5.5vw, 1.85rem);
+  }
+
+  .platform-showcase .hero-subheading {
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .platform-overlay {
-    padding-top: calc(5rem + 40px);
-  }
-
-  .platform-stage-rail {
-    margin-top: 1.25rem;
-  }
-
-  .platform-scroll-panel {
-    height: 70vh;
-    min-height: 420px;
+    padding-top: calc(4.25rem + 36px);
+    padding-bottom: 1rem;
   }
 
   .platform-overlay-grid {
-    min-height: calc(100svh - 4rem);
+    min-height: calc(100svh - 3.5rem);
+    gap: 0.75rem;
+  }
+
+  /* Leave a clear band in the middle for the 3D scene */
+  .platform-copy {
+    max-width: none;
+  }
+
+  .platform-visual-gap {
+    flex: 1 1 auto;
+    min-height: 28vh;
+    pointer-events: none;
+  }
+
+  .platform-chrome {
+    max-width: none;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55) 30%);
+    padding-top: 1rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .platform-stage-rail {
+    margin-top: 0.35rem;
+  }
+
+  .platform-scroll-panel {
+    height: 80vh;
+    min-height: 480px;
+  }
+
+  .platform-hint {
+    font-size: 0.8rem;
+  }
+
+  .hero-cta-group .btn-xl {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.95rem;
   }
 
   .solution-actions .btn {
@@ -372,12 +443,20 @@
 
 @media (max-width: 575.98px) {
   .platform-brand {
-    font-size: 2.1rem;
+    font-size: 1.85rem;
   }
 
   .platform-stage-btn {
-    font-size: 0.7rem;
-    padding: 0.4rem 0.55rem;
+    font-size: 0.65rem;
+    padding: 0.38rem 0.5rem;
+  }
+
+  .platform-stage-title {
+    font-size: 1rem;
+  }
+
+  .platform-stage-caption {
+    font-size: 0.88rem;
   }
 }
 

@@ -57,29 +57,33 @@
     <div class="platform-showcase-sticky">
       <canvas id="platform-canvas" class="platform-canvas" aria-hidden="true"></canvas>
 
-      <!-- SVG fallback for reduced motion / low-end devices -->
-      <div class="platform-fallback" id="platform-fallback" hidden>
-        <svg viewBox="0 0 800 420" role="img" aria-label="Coordination architecture flowing from ingest to impact">
+      <!-- SVG fallback when WebGL / reduced-motion is unavailable -->
+      <div class="platform-fallback" id="platform-fallback" hidden data-stage="0">
+        <svg viewBox="0 0 360 640" role="img" aria-label="Coordination flow from ingest to impact">
           <defs>
             <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#D37506" stop-opacity="0.85"/>
+              <stop offset="0%" stop-color="#D37506" stop-opacity="0.9"/>
               <stop offset="100%" stop-color="#D37506" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <rect width="800" height="420" fill="#0a0a0a"/>
-          <circle cx="400" cy="210" r="90" fill="url(#coreGlow)"/>
-          <circle cx="400" cy="210" r="36" fill="#D37506"/>
-          <g stroke="#D37506" stroke-width="2" fill="none" opacity="0.55">
-            <path d="M120 210 C220 120, 280 120, 364 190"/>
-            <path d="M120 260 C230 300, 300 280, 364 230"/>
-            <path d="M436 190 C520 120, 600 140, 680 160"/>
-            <path d="M436 230 C540 280, 620 270, 680 250"/>
+          <rect width="360" height="640" fill="#050505"/>
+          <g class="fallback-ingest" fill="#ffe6c0">
+            <circle cx="120" cy="90" r="9"/>
+            <circle cx="180" cy="70" r="11"/>
+            <circle cx="240" cy="95" r="8"/>
           </g>
-          <circle cx="120" cy="210" r="10" fill="#f8ead9"/>
-          <circle cx="120" cy="260" r="10" fill="#f8ead9"/>
-          <circle cx="680" cy="160" r="12" fill="#D37506"/>
-          <circle cx="680" cy="250" r="12" fill="#D37506"/>
-          <text x="400" y="320" text-anchor="middle" fill="#fff" font-family="Montserrat, sans-serif" font-size="16">Ingest → Coordinate → Impact</text>
+          <g stroke="#D37506" stroke-width="2" fill="none" opacity="0.7">
+            <path class="fallback-path" d="M180 90 C180 160, 180 200, 180 250"/>
+            <path class="fallback-path" d="M180 320 C180 380, 180 430, 180 500"/>
+          </g>
+          <circle cx="180" cy="285" r="70" fill="url(#coreGlow)"/>
+          <circle class="fallback-core" cx="180" cy="285" r="28" fill="#D37506"/>
+          <g class="fallback-impact" fill="#D37506">
+            <circle cx="120" cy="545" r="14"/>
+            <circle cx="180" cy="565" r="18"/>
+            <circle cx="240" cy="545" r="12"/>
+          </g>
+          <text x="180" y="620" text-anchor="middle" fill="#fff" font-family="Montserrat, sans-serif" font-size="13">Ingest → Coordinate → Impact</text>
         </svg>
       </div>
 
@@ -95,8 +99,10 @@
               <a class="btn btn-primary btn-xl mr-md-3 mb-3 mb-md-0" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
               <a class="btn btn-outline-light btn-xl" href="#solutions">View Live Demos</a>
             </div>
-            <p class="platform-hint mt-4 mb-0">Move your cursor · Scroll to enter the system · Click a stage</p>
+            <p class="platform-hint mt-3 mb-0">Scroll to enter the system · Tap or click a stage</p>
           </div>
+
+          <div class="platform-visual-gap" aria-hidden="true"></div>
 
           <div class="platform-chrome">
             <div class="platform-progress" aria-hidden="true">
