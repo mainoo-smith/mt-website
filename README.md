@@ -2,6 +2,16 @@
 
 Digital coordination experience for Mainoo Technologies.
 
+## Current status
+
+| Item | State |
+|------|-------|
+| **Phase** | Phase 1 scroll experience (continent → isolation → connect) |
+| **Active branch** | `cursor/platform-infrastructure-pivot-c262` |
+| **Production (`main`)** | Legacy static KontrolIQ homepage until pivot merged |
+
+MXDS v1.0 (design system spec) is maintained **outside this repo** — not deployed with the site.
+
 ## GitHub Pages
 
 Yes — this Next.js app is configured for GitHub Pages via **static export**.
@@ -10,6 +20,8 @@ Yes — this Next.js app is configured for GitHub Pages via **static export**.
 2. `.github/workflows/pages.yml` builds and deploys `/out` on push to `main`.
 3. After merge, switch the repo Pages settings from **Deploy from a branch** to **GitHub Actions** (one-time).
 4. Custom domain (`CNAME` in `/public`) continues to work.
+
+Only `/out` is deployed. Source files, including any local `docs/`, are not published.
 
 Local product pages remain available as static files:
 
