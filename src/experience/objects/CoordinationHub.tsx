@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
-import * as THREE from "three";
+import { RoundedBox } from "@react-three/drei";
 import type { Mesh } from "three";
-import { brand, sceneColors } from "@/config/brand";
+import { brand } from "@/config/brand";
 
 type CoordinationHubProps = {
   hubRingARef?: React.RefObject<Mesh | null>;
@@ -9,70 +9,68 @@ type CoordinationHubProps = {
   coreGlowRef?: React.RefObject<Mesh | null>;
 };
 
+/**
+ * Central coordination hub: a solid orange glossy box (the branded core) with a
+ * raised cream emblem square on top. Simple boxes wire into it via flat pipes.
+ */
 export const CoordinationHub = forwardRef<import("three").Group, CoordinationHubProps>(
   function CoordinationHub({ hubRingARef, hubRingBRef, coreGlowRef }, ref) {
     return (
-      <group ref={ref} position={[0, 0, 0.15]}>
-        <mesh position={[0, 0, -0.12]}>
-          <circleGeometry args={[0.98, 64]} />
-          <meshBasicMaterial
+      <group ref={ref} position={[0, 0, 0]}>
+        {/* Branded orange body. */}
+        <RoundedBox args={[0.9, 0.42, 0.9]} radius={0.08} smoothness={5}>
+          <meshPhysicalMaterial
             color={brand.orange}
-            transparent
-            opacity={0.12}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-            toneMapped={false}
-          />
-        </mesh>
-        <mesh>
-          <torusGeometry args={[0.72, 0.06, 20, 90]} />
-          <meshStandardMaterial color={sceneColors.darkMetal} metalness={0.85} roughness={0.35} />
-        </mesh>
-        <mesh>
-          <torusGeometry args={[0.72, 0.016, 16, 90]} />
-          <meshStandardMaterial
-            color={sceneColors.hubGlow}
-            emissive={sceneColors.hubGlow}
-            emissiveIntensity={1.4}
-            toneMapped={false}
-          />
-        </mesh>
-        <mesh ref={hubRingARef}>
-          <torusGeometry args={[0.58, 0.032, 8, 14]} />
-          <meshStandardMaterial
-            color={brand.orange}
-            emissive={brand.orange}
-            emissiveIntensity={0.85}
-            metalness={0.6}
+            metalness={0.3}
             roughness={0.3}
-            toneMapped={false}
+            clearcoat={1}
+            clearcoatRoughness={0.16}
+            emissive={brand.orangeDark}
+            emissiveIntensity={0.18}
           />
+        </RoundedBox>
+
+        {/* Darker recessed band near the base for depth. */}
+        <mesh position={[0, -0.14, 0]}>
+          <boxGeometry args={[0.92, 0.05, 0.92]} />
+          <meshStandardMaterial color={brand.orangeDark} roughness={0.5} metalness={0.2} />
         </mesh>
-        <mesh ref={hubRingBRef}>
-          <torusGeometry args={[0.46, 0.01, 8, 60]} />
-          <meshStandardMaterial
-            color={sceneColors.cityCool}
-            emissive={sceneColors.cityCool}
-            emissiveIntensity={0.7}
-            toneMapped={false}
+
+        {/* Raised cream emblem platform on top. */}
+        <RoundedBox args={[0.46, 0.12, 0.46]} radius={0.05} smoothness={5} position={[0, 0.25, 0]}>
+          <meshPhysicalMaterial
+            color={brand.cream}
+            metalness={0.08}
+            roughness={0.3}
+            clearcoat={0.95}
+            clearcoatRoughness={0.2}
           />
-        </mesh>
-        <mesh position={[0, 0, -0.02]}>
-          <circleGeometry args={[0.36, 56]} />
-          <meshStandardMaterial color="#0b0705" metalness={0.7} roughness={0.4} />
-        </mesh>
-        <mesh ref={coreGlowRef} position={[0, 0, 0.02]}>
-          <torusGeometry args={[0.17, 0.036, 20, 56]} />
+        </RoundedBox>
+
+        {/* Orange brand mark inset on the emblem (pulses via coreGlowRef). */}
+        <mesh ref={coreGlowRef} position={[0, 0.315, 0]}>
+          <boxGeometry args={[0.22, 0.03, 0.22]} />
           <meshStandardMaterial
             color={brand.orange}
             emissive={brand.orange}
-            emissiveIntensity={2.4}
-            toneMapped={false}
+            emissiveIntensity={1.0}
+            toneMapped
           />
         </mesh>
-        <mesh position={[0, 0, 0.02]}>
-          <sphereGeometry args={[0.045, 16, 16]} />
-          <meshBasicMaterial color={sceneColors.hubCore} toneMapped={false} />
+        {/* Thin cream center to give the mark a debossed square-in-square read. */}
+        <mesh position={[0, 0.332, 0]}>
+          <boxGeometry args={[0.1, 0.02, 0.1]} />
+          <meshBasicMaterial color={brand.cream} toneMapped={false} />
+        </mesh>
+
+        {/* Hidden helper meshes kept for ref compatibility. */}
+        <mesh ref={hubRingARef} visible={false}>
+          <torusGeometry args={[0.28, 0.006, 8, 40]} />
+          <meshBasicMaterial color={brand.orange} toneMapped={false} />
+        </mesh>
+        <mesh ref={hubRingBRef} visible={false}>
+          <torusGeometry args={[0.2, 0.005, 8, 40]} />
+          <meshBasicMaterial color={brand.cream} toneMapped={false} />
         </mesh>
       </group>
     );

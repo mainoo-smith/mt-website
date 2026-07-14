@@ -8,6 +8,13 @@ export const brand = {
   alert: "#FF8A00",
   critical: "#FF3355",
   resilience: "#00E5A0",
+  keycapBody: "#0e0b09",
+  keycapTop: "#141010",
+  keycapEdge: "#ff8a1e",
+  slabBody: "#100c0a",
+  slabEdge: "#ff8a1e",
+  chrome: "#c7c2ba",
+  keyLight: "#fff1df",
 } as const;
 
 /** Warm accent spectrum used in sector nodes and scene lighting. */
@@ -36,4 +43,5 @@ export const sceneColors = {
   spotlight: "#d37506",
   fillWarm: "#ffe6c0",
   fillAccent: "#e0943a",
+  keyLight: "#fff1df",
 } as const;

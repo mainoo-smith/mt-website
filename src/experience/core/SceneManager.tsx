@@ -17,11 +17,9 @@ import { flowEase, lerp, smoothstep } from "@/experience/animations/math";
 import { ExperienceLighting, Starfield } from "@/experience/core/ExperienceLighting";
 import { AfricaMap } from "@/experience/objects/AfricaMap";
 import { CoordinationHub } from "@/experience/objects/CoordinationHub";
-import { GridFloor } from "@/experience/objects/GridFloor";
+import { SectorCard } from "@/experience/objects/SectorCard";
 import {
-  buildSectorCurves,
   buildSectorPositions,
-  buildTubeGeometries,
   DataPackets,
   NetworkConnections,
 } from "@/experience/objects/NetworkConnections";
@@ -29,9 +27,18 @@ import { SectorNode } from "@/experience/objects/SectorNode";
 import { FrameworkScene } from "@/experience/scenes/FrameworkScene";
 import { PlatformScene } from "@/experience/scenes/PlatformScene";
 
+const HUB_STAND_Y = LAYOUT.groundY + 0.34;
+/** Height the boxes + pipes float above the stage. */
+const CARD_FLOAT_Y = LAYOUT.groundY + 0.16;
+/** Radius of the hub body footprint (pipes dock to this edge). */
+const HUB_DOCK_RADIUS = 0.44;
+/** Radius of a card footprint toward the hub (pipes start from this edge). */
+const CARD_DOCK_INSET = 0.28;
+
 export function SceneManager({ progress }: { progress: number }) {
   const continentGroup = useRef<THREE.Group>(null);
   const sectors = useRef<THREE.Group>(null);
+  const cards = useRef<THREE.Group>(null);
   const links = useRef<THREE.Group>(null);
   const packets = useRef<THREE.Group>(null);
   const hub = useRef<THREE.Group>(null);
@@ -48,23 +55,64 @@ export function SceneManager({ progress }: { progress: number }) {
   const showOrgLabels =
     progress > SCENE_TIMING.orgLabels.showAfter && progress < SCENE_TIMING.orgLabels.hideAfter;
 
+  // Scene 2 vertical ring (kept as-is) and Scene 3+ ground ring.
   const basePositions = useMemo(
     () => buildSectorPositions(SECTOR_ORGS.length, LAYOUT.sectorRadiusX, LAYOUT.sectorRadiusY),
     [],
   );
+  const groundPositions = useMemo(
+    () =>
+      SECTOR_ORGS.map((_, i) => {
+        const a = (i / SECTOR_ORGS.length) * Math.PI * 2 - Math.PI / 2;
+        return new THREE.Vector3(
+          Math.cos(a) * LAYOUT.groundRadius,
+          LAYOUT.groundY,
+          Math.sin(a) * LAYOUT.groundRadius,
+        );
+      }),
+    [],
+  );
 
-  const curves = useMemo(() => buildSectorCurves(basePositions, LAYOUT.hubZ), [basePositions]);
-  const tubeGeos = useMemo(() => buildTubeGeometries(curves), [curves]);
-  const packetOffsets = useMemo(() => curves.map(() => [0, 0.33, 0.66]), [curves]);
-  const packetCount = curves.length * 3;
+  // Flat pipes run across the stage from each box edge to the hub edge.
+  const groundCurves = useMemo(() => {
+    return groundPositions.map((p) => {
+      const dir = new THREE.Vector2(p.x, p.z).normalize();
+      const start = new THREE.Vector3(
+        p.x - dir.x * CARD_DOCK_INSET,
+        CARD_FLOAT_Y,
+        p.z - dir.y * CARD_DOCK_INSET,
+      );
+      const end = new THREE.Vector3(dir.x * HUB_DOCK_RADIUS, CARD_FLOAT_Y, dir.y * HUB_DOCK_RADIUS);
+      const mid = start.clone().lerp(end, 0.5);
+      mid.y = CARD_FLOAT_Y + 0.03;
+      return new THREE.QuadraticBezierCurve3(start, mid, end);
+    });
+  }, [groundPositions]);
+
+  const tubeGeos = useMemo(
+    () => groundCurves.map((curve) => new THREE.TubeGeometry(curve, 40, 0.042, 14, false)),
+    [groundCurves],
+  );
+  const packetOffsets = useMemo(() => groundCurves.map(() => [0, 0.33, 0.66]), [groundCurves]);
+  const packetCount = groundCurves.length * 3;
 
   useFrame(({ camera, clock }) => {
     const t = progressRef.current;
-    const weights = computeSceneWeights(t);
-    const { continent, isolation, connect, challenge, platform, framework, gridFloor } = weights;
+    const w = computeSceneWeights(t);
+    const { continent, isolation, connect, challenge, platform, framework } = w;
+    const iso = smoothstep(SCENE_TIMING.iso.start, SCENE_TIMING.iso.end, t);
 
     const sectorPhase = Math.max(isolation, connect, challenge);
-    const showCoordination = connect > SCENE_TIMING.hub.showAfter && challenge < 0.15;
+    // Smoothly dissolve the Act I stage as the Platform scene arrives (no hard pop).
+    const actIExit = 1 - smoothstep(0.55, 0.61, t);
+    const coordinationVisible = sectorPhase > 0.02 && actIExit > 0.02;
+    const hubVisible =
+      connect > SCENE_TIMING.hub.showAfter && challenge < 0.15 && actIExit > 0.02;
+
+    const spread = 1 + challenge * (LAYOUT.challengeSpreadMax - 1);
+    // Crossfade: Scene 2 flat badges (iso=0) → dimensional system boxes (iso=1).
+    const badgeVisibility = 1 - smoothstep(0.2, 0.55, iso);
+    const cardVisibility = smoothstep(0.4, 0.78, iso);
 
     if (continentGroup.current) {
       continentGroup.current.visible = continent > 0.02;
@@ -83,31 +131,32 @@ export function SceneManager({ progress }: { progress: number }) {
     }
 
     if (sectors.current) {
-      const visible = sectorPhase > 0.02 && platform < 0.2;
-      sectors.current.visible = visible;
-      const enter = lerp(SECTOR_MOTION.scale.start, SECTOR_MOTION.scale.end, sectorPhase);
-      sectors.current.scale.setScalar(enter);
+      sectors.current.visible = coordinationVisible && badgeVisibility > 0.02;
+      sectors.current.scale.setScalar(lerp(SECTOR_MOTION.scale.start, SECTOR_MOTION.scale.end, sectorPhase));
       sectors.current.position.y = lerp(
-        SECTOR_MOTION.positionY.start,
-        SECTOR_MOTION.positionY.end,
-        Math.max(isolation, connect),
+        lerp(SECTOR_MOTION.positionY.start, SECTOR_MOTION.positionY.end, Math.max(isolation, connect)),
+        0,
+        iso,
       );
 
       sectors.current.children.forEach((child, i) => {
         const g = child as THREE.Group;
-        const spread = 1 + challenge * (LAYOUT.challengeSpreadMax - 1);
-        const base = basePositions[i];
-        g.position.x = base.x * spread;
-        g.position.y = base.y * spread;
+        const vert = basePositions[i];
+        const gnd = groundPositions[i];
 
-        const idleY = Math.sin(clock.elapsedTime * 0.9 + i * 0.7) * SECTOR_MOTION.idleBob;
-        const idleRot = Math.sin(clock.elapsedTime * 0.5 + i) * SECTOR_MOTION.idleRot;
+        const px = lerp(vert.x, gnd.x * spread, iso);
+        const py = lerp(vert.y, gnd.y + 0.16, iso);
+        const pz = lerp(vert.z, gnd.z * spread, iso);
+
+        const idle = Math.sin(clock.elapsedTime * 0.9 + i * 0.7) * SECTOR_MOTION.idleBob;
         const bob =
           isolation > SECTOR_MOTION.bobThreshold.isolation && connect < SECTOR_MOTION.bobThreshold.connect
             ? Math.sin(clock.elapsedTime * (1.5 + i * 0.4) + i) * 0.1
             : 0;
-        g.position.z = bob + idleY;
-        g.rotation.z = idleRot;
+
+        g.position.set(px, py + idle, pz + bob * (1 - iso));
+        g.scale.setScalar(badgeVisibility);
+        g.rotation.z = Math.sin(clock.elapsedTime * 0.5 + i) * SECTOR_MOTION.idleRot;
 
         const pulse = g.children.find((c) => c.userData?.kind === "pulse") as THREE.Mesh | undefined;
         if (pulse) {
@@ -120,19 +169,31 @@ export function SceneManager({ progress }: { progress: number }) {
       });
     }
 
+    if (cards.current) {
+      cards.current.visible = coordinationVisible && cardVisibility > 0.02;
+      cards.current.children.forEach((child, i) => {
+        const g = child as THREE.Group;
+        const gnd = groundPositions[i];
+        const idle = Math.sin(clock.elapsedTime * 0.8 + i * 0.8) * 0.02;
+        g.position.set(gnd.x * spread, CARD_FLOAT_Y + idle, gnd.z * spread);
+        g.scale.setScalar(cardVisibility * actIExit);
+      });
+    }
+
     if (links.current) {
-      links.current.visible = showCoordination && connect > SCENE_TIMING.links.showAfter;
+      links.current.visible = hubVisible && connect > SCENE_TIMING.links.showAfter;
       links.current.children.forEach((child, i) => {
         const mesh = child as THREE.Mesh;
         const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.opacity = Math.min(1, connect * 1.6) * (0.65 + 0.35 * Math.sin(clock.elapsedTime * 2.2 + i));
+        mat.opacity =
+          Math.min(1, connect * 1.6) * actIExit * (0.7 + 0.3 * Math.sin(clock.elapsedTime * 2.2 + i));
       });
     }
 
     if (packets.current) {
-      packets.current.visible = showCoordination && connect > SCENE_TIMING.packets.showAfter;
+      packets.current.visible = hubVisible && connect > SCENE_TIMING.packets.showAfter;
       let idx = 0;
-      curves.forEach((curve, cIdx) => {
+      groundCurves.forEach((curve, cIdx) => {
         for (let p = 0; p < 3; p++) {
           const mesh = packets.current!.children[idx] as THREE.Mesh;
           idx += 1;
@@ -141,59 +202,46 @@ export function SceneManager({ progress }: { progress: number }) {
             (clock.elapsedTime * (0.2 + p * 0.035) + packetOffsets[cIdx][p] + cIdx * 0.11) % 1;
           const u = flowEase(raw);
           mesh.position.copy(curve.getPoint(u));
-          mesh.visible = showCoordination && connect > SCENE_TIMING.packets.showAfter;
           const mat = mesh.material as THREE.MeshBasicMaterial;
-          mat.opacity = 0.4 + connect * 0.6;
+          mat.opacity = (0.4 + connect * 0.6) * actIExit;
           mesh.scale.setScalar(0.85 + (1 - u) * 0.4);
         }
       });
     }
 
     if (hub.current) {
-      hub.current.visible = showCoordination;
+      hub.current.visible = hubVisible;
       const pulse = 1 + Math.sin(clock.elapsedTime * 2.6) * MOTION.hubPulse;
-      hub.current.scale.setScalar(lerp(0.05, 1, connect) * pulse);
+      hub.current.scale.setScalar(lerp(0.05, lerp(0.9, 1, iso), connect) * pulse * actIExit);
+      hub.current.position.set(0, lerp(LAYOUT.hubZ, HUB_STAND_Y, iso), 0);
+      // Static: pipes dock to fixed hub edges, so the hub must not spin.
+      hub.current.rotation.y = 0;
     }
     if (hubRingA.current) hubRingA.current.rotation.z += MOTION.hubRingSpeedA;
     if (hubRingB.current) hubRingB.current.rotation.z -= MOTION.hubRingSpeedB;
 
     if (coreGlow.current) {
       (coreGlow.current.material as THREE.MeshStandardMaterial).emissiveIntensity =
-        1.4 + connect * 1.8 + Math.sin(clock.elapsedTime * 2.6) * 0.25;
+        0.75 + connect * 0.55 + Math.sin(clock.elapsedTime * 2.6) * 0.15;
     }
 
-    const camZ = lerp(
-      CAMERA_CONFIG.z.start,
-      framework > 0.2
-        ? CAMERA_CONFIG.z.framework
-        : platform > 0.2
-          ? CAMERA_CONFIG.z.platform
-          : CAMERA_CONFIG.z.connect,
-      Math.max(connect, platform, framework),
-    );
-    const camY = lerp(
-      CAMERA_CONFIG.y.start,
-      framework > 0.2
-        ? CAMERA_CONFIG.y.framework
-        : platform > 0.2
-          ? CAMERA_CONFIG.y.platform
-          : CAMERA_CONFIG.y.isolation,
-      Math.max(isolation, platform, framework),
-    );
-    const camXTarget =
-      framework > 0.2
-        ? CAMERA_CONFIG.x.framework
-        : platform > 0.2
-          ? CAMERA_CONFIG.x.platform
-          : lerp(0, CAMERA_CONFIG.x.connect, connect);
-
-    camera.position.x += (camXTarget - camera.position.x) * CAMERA_CONFIG.damping;
-    camera.position.y += (camY - camera.position.y) * CAMERA_CONFIG.damping;
-    camera.position.z += (camZ - camera.position.z) * CAMERA_CONFIG.damping;
-    camera.lookAt(...CAMERA_CONFIG.lookAt);
+    // Camera: front elevation (Scenes 1-2) → product-demo 3/4 over compact stage (Scenes 3-6).
+    // The stage lives at world x = cx, but the camera looks left of it (framing bias)
+    // so the composition sits in the right half and clears the left-hand copy column.
+    const cx = offsetX + iso * LAYOUT.stageOffsetIso;
+    const framedX = cx - iso * LAYOUT.stageFramingBias;
+    const targetX = lerp(0, framedX + CAMERA_CONFIG.iso.x, iso);
+    const targetY = lerp(CAMERA_CONFIG.front.y, CAMERA_CONFIG.iso.y, iso);
+    const targetZ = lerp(CAMERA_CONFIG.front.z, CAMERA_CONFIG.iso.z, iso);
+    camera.position.x += (targetX - camera.position.x) * CAMERA_CONFIG.damping;
+    camera.position.y += (targetY - camera.position.y) * CAMERA_CONFIG.damping;
+    camera.position.z += (targetZ - camera.position.z) * CAMERA_CONFIG.damping;
+    camera.lookAt(lerp(0, framedX, iso), lerp(0, CAMERA_CONFIG.iso.lookY, iso), 0);
   });
 
   const weights = computeSceneWeights(progress);
+  const isoProgress = smoothstep(SCENE_TIMING.iso.start, SCENE_TIMING.iso.end, progress);
+  const stageOffsetX = offsetX + isoProgress * LAYOUT.stageOffsetIso;
 
   return (
     <group>
@@ -204,9 +252,7 @@ export function SceneManager({ progress }: { progress: number }) {
         <AfricaMap />
       </group>
 
-      <GridFloor intensity={weights.gridFloor * (1 - weights.framework * 0.3)} />
-
-      <group position={[offsetX, 0, 0]}>
+      <group position={[stageOffsetX, isoProgress * LAYOUT.stageOffsetY, 0]}>
         <group ref={sectors}>
           {SECTOR_ORGS.map((org, i) => (
             <SectorNode
@@ -215,6 +261,12 @@ export function SceneManager({ progress }: { progress: number }) {
               position={basePositions[i]}
               showLabel={showOrgLabels}
             />
+          ))}
+        </group>
+
+        <group ref={cards}>
+          {SECTOR_ORGS.map((org) => (
+            <SectorCard key={org.id} org={org} />
           ))}
         </group>
 

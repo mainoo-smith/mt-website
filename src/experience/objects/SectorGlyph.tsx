@@ -50,15 +50,24 @@ BOLT_GEO.center();
 const PEDIMENT_GEO = new THREE.ExtrudeGeometry(pedimentShape(), { ...EXTRUDE_OPTS, depth: 0.26 });
 PEDIMENT_GEO.center();
 
-export function SectorGlyph({ icon, color }: { icon: SectorIcon; color: string }) {
+export function SectorGlyph({
+  icon,
+  color,
+  emissiveIntensity = 0.85,
+}: {
+  icon: SectorIcon;
+  color: string;
+  /** Lower for cube-top glyphs that bloom under post-processing. */
+  emissiveIntensity?: number;
+}) {
   const matProps = {
     color,
     emissive: color,
-    emissiveIntensity: 0.85,
+    emissiveIntensity,
     metalness: 0.35,
     roughness: 0.25,
-    toneMapped: false as const,
-  };
+    toneMapped: emissiveIntensity < 0.6,
+  } as const;
 
   switch (icon) {
     case "cross":

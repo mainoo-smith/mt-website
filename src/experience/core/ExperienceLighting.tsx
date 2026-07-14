@@ -4,17 +4,23 @@ import { sceneColors } from "@/config/brand";
 export function ExperienceLighting() {
   return (
     <>
-      <ambientLight intensity={0.28} />
-      <hemisphereLight args={[sceneColors.hemisphereSky, sceneColors.hemisphereGround, 0.55]} />
+      <ambientLight intensity={0.22} />
+      <hemisphereLight args={[sceneColors.hemisphereSky, sceneColors.hemisphereGround, 0.4]} />
+      {/* Key light — crisp studio highlight for glossy plastic/chrome. */}
       <spotLight
-        position={[4.5, 5, 6]}
-        intensity={3.4}
-        angle={0.48}
-        penumbra={0.9}
-        color={sceneColors.spotlight}
+        position={[5, 7.5, 5.5]}
+        intensity={4.2}
+        angle={0.5}
+        penumbra={0.85}
+        color={sceneColors.keyLight}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0002}
       />
-      <pointLight position={[-4, 1.5, 4]} intensity={1.8} color={sceneColors.fillWarm} />
-      <pointLight position={[0, -3.5, 2]} intensity={1.1} color={sceneColors.fillAccent} />
+      {/* Warm rim from behind-right to separate objects from the ink void. */}
+      <pointLight position={[3.5, 2.2, -3]} intensity={2.2} color={sceneColors.spotlight} />
+      <pointLight position={[-4, 1.5, 4]} intensity={1.4} color={sceneColors.fillWarm} />
+      <pointLight position={[0, -2.5, 2]} intensity={0.7} color={sceneColors.fillAccent} />
     </>
   );
 }

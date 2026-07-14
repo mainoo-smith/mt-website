@@ -96,6 +96,8 @@ export const SCENE_TIMING = {
   isolationFadeOut: { start: 0.26, end: 0.3 },
   connect: { start: 0.28, end: 0.34 },
   connectFadeOut: { start: 0.4, end: 0.46 },
+  /** Isometric camera + ground layout ramp (Scene 3 onward). */
+  iso: { start: 0.24, end: 0.36 },
   // Act II — 4a
   challenge: { start: 0.44, end: 0.5 },
   challengeFadeOut: { start: 0.56, end: 0.62 },
@@ -103,11 +105,11 @@ export const SCENE_TIMING = {
   platformFadeOut: { start: 0.7, end: 0.76 },
   framework: { start: 0.74, end: 0.8 },
   // Shared
-  orgLabels: { showAfter: 0.14, hideAfter: 0.62 },
+  orgLabels: { showAfter: 0.14, hideAfter: 0.31 },
   links: { showAfter: 0.05 },
   packets: { showAfter: 0.12 },
   hub: { showAfter: 0.08 },
-  gridFloor: { showAfter: 0.42 },
+  gridFloor: { showAfter: 0.3 },
 } as const;
 
 /** Critical-sector nodes feeding the coordination hub. */
@@ -141,9 +143,18 @@ export const LAYOUT = {
   coordinationOffsetAspect: 1,
   sectorRadiusX: 1.3,
   sectorRadiusY: 1.55,
-  challengeSpreadMax: 2.05,
+  challengeSpreadMax: 1.22,
   hubZ: 0.15,
-  frameworkSpanX: 5.2,
+  frameworkSpanX: 3.05,
+  /** Compact right-side product stage (Scenes 3-6). */
+  groundRadius: 1.12,
+  groundY: -0.42,
+  hubCenterY: 0.34,
+  stageOffsetIso: 1.05,
+  /** How far left of the stage the iso camera looks, so the stage sits in the right half. */
+  stageFramingBias: 1.4,
+  /** Lift the floating (padless) composition up so it centres in frame. */
+  stageOffsetY: 0.22,
 } as const;
 
 export const EXPERIENCE_SCROLL_HEIGHT = "900vh" as const;
@@ -155,11 +166,11 @@ export const SCROLL_TRIGGER = {
 } as const;
 
 export const CAMERA_CONFIG = {
-  z: { start: 8.0, connect: 6.4, platform: 7.2, framework: 7.0 },
-  y: { start: 0.25, isolation: 0.05, platform: 0.35, framework: 0.2 },
-  x: { connect: 0.08, platform: 0.12, framework: 0.1 },
-  damping: 0.06,
-  lookAt: [0, 0, 0] as const,
+  /** Scenes 1-2 — front elevation on the Africa map. */
+  front: { y: 0.2, z: 8.5 },
+  /** Scenes 3-6 — product-demo camera over a compact stage. */
+  iso: { x: 0.15, y: 2.25, z: 7.1, lookY: -0.05 },
+  damping: 0.07,
 } as const;
 
 export const CONTINENT_MOTION = {

@@ -32,3 +32,6 @@ next-env.d.ts
 
 # MXDS design system — maintained outside this repo (see Cursor plans)
 /docs/
+
+# Local visual QA captures
+/.cursor-screenshots/

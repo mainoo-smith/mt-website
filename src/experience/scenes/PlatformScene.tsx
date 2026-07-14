@@ -1,48 +1,92 @@
 "use client";
 
-import { RoundedBox } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import { brand } from "@/config/brand";
 import { PLATFORM_LAYERS } from "@/config/scenes";
 import { smoothstep } from "@/experience/animations/math";
+import { DeviceNode, HubTower } from "@/experience/objects/WorkflowKit";
 
 type PlatformSceneProps = {
   weight: number;
 };
 
+const HUB_POS: [number, number, number] = [0, -0.12, -0.2];
+
+/** Floating device-node slots around the hub — calm, symmetric, uncluttered. */
+const NODE_SLOTS: [number, number, number][] = [
+  [-1.1, 0.04, 0.15],
+  [1.1, 0.04, 0.15],
+  [-0.78, -0.16, 0.72],
+  [0.78, -0.16, 0.72],
+];
+
 export function PlatformScene({ weight }: PlatformSceneProps) {
+  const panels = useRef<THREE.Group>(null);
+  const glow = useRef<THREE.Mesh>(null);
+
+  const pipeGeos = useMemo(() => {
+    const hub = new THREE.Vector3(...HUB_POS);
+    return NODE_SLOTS.map((pos) => {
+      const end = new THREE.Vector3(...pos);
+      const mid = hub.clone().lerp(end, 0.5);
+      mid.y += 0.04;
+      return new THREE.TubeGeometry(
+        new THREE.QuadraticBezierCurve3(hub.clone(), mid, end),
+        24,
+        0.02,
+        10,
+        false,
+      );
+    });
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (panels.current) {
+      panels.current.children.forEach((child, i) => {
+        const g = child as THREE.Group;
+        const appear = smoothstep(0.12 + i * 0.12, 0.5 + i * 0.12, weight);
+        g.scale.setScalar(appear);
+        g.position.y = NODE_SLOTS[i][1] + Math.sin(clock.elapsedTime * 0.7 + i) * 0.02;
+      });
+    }
+    if (glow.current) {
+      (glow.current.material as THREE.MeshStandardMaterial).emissiveIntensity =
+        0.75 + Math.sin(clock.elapsedTime * 2.4) * 0.2;
+    }
+  });
+
   if (weight < 0.02) return null;
 
   return (
     <group>
-      {PLATFORM_LAYERS.map((layer, i) => {
-        const stagger = smoothstep(i * 0.18, i * 0.18 + 0.55, weight);
-        const y = -1.35 + i * 0.58 * stagger;
-        const opacity = 0.22 + stagger * 0.35;
+      <group position={HUB_POS} scale={0.74 * smoothstep(0, 0.35, weight)}>
+        <HubTower glowRef={glow} />
+      </group>
 
-        return (
-          <RoundedBox
-            key={layer.id}
-            args={[3.1, 0.14, 1.75]}
-            radius={0.05}
-            smoothness={4}
-            position={[0, y, 0]}
-            scale={[stagger, stagger, stagger]}
-          >
-            <meshPhysicalMaterial
-              color={layer.color}
-              transparent
-              opacity={opacity}
-              roughness={0.12}
-              metalness={0.2}
-              transmission={0.65}
-              thickness={0.4}
-              emissive={layer.color}
-              emissiveIntensity={0.15 * stagger}
-              clearcoat={1}
-              clearcoatRoughness={0.1}
-            />
-          </RoundedBox>
-        );
-      })}
+      {pipeGeos.map((geo, i) => (
+        <mesh key={i} geometry={geo}>
+          <meshStandardMaterial
+            color={brand.orange}
+            emissive={brand.orange}
+            emissiveIntensity={0.5}
+            metalness={0.3}
+            roughness={0.35}
+            transparent
+            opacity={0.9 * smoothstep(0.2, 0.6, weight)}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+
+      <group ref={panels}>
+        {PLATFORM_LAYERS.map((layer, i) => (
+          <group key={layer.id} position={NODE_SLOTS[i]}>
+            <DeviceNode label={layer.label} accent={layer.color} size={0.5} />
+          </group>
+        ))}
+      </group>
     </group>
   );
 }

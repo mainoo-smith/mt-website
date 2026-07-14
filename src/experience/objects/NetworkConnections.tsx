@@ -9,11 +9,11 @@ export function NetworkConnections({ tubeGeos }: { tubeGeos: THREE.BufferGeometr
           <meshStandardMaterial
             color={sceneColors.conduit}
             emissive={sceneColors.conduit}
-            emissiveIntensity={2.2}
+            emissiveIntensity={0.55}
+            metalness={0.3}
+            roughness={0.35}
             transparent
-            opacity={0.78}
-            depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            opacity={0.95}
             toneMapped={false}
           />
         </mesh>
