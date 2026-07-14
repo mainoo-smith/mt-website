@@ -1,0 +1,337 @@
+/* Mainoo Platform Hub — extends brand tokens from kontroliq.css */
+
+.platform-showcase {
+  position: relative;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.platform-showcase-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 560px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.platform-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+.platform-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  padding: 2rem 1rem;
+}
+
+.platform-fallback svg {
+  width: min(900px, 100%);
+  height: auto;
+}
+
+.platform-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-top: calc(4.5rem + 54px);
+  padding-bottom: 2rem;
+  pointer-events: none;
+}
+
+.platform-overlay .btn,
+.platform-overlay .platform-stage-btn {
+  pointer-events: auto;
+}
+
+.platform-brand {
+  font-family: "Noto Sans", "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+}
+
+.platform-showcase .hero-heading {
+  max-width: 18ch;
+  font-size: clamp(1.65rem, 3.2vw, 2.75rem);
+}
+
+.platform-showcase .hero-subheading {
+  max-width: 42rem;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.platform-hint {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.92rem;
+}
+
+.platform-stage-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  max-width: 42rem;
+}
+
+.platform-stage-btn {
+  appearance: none;
+  border: 1px solid rgba(211, 117, 6, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.platform-stage-btn:hover,
+.platform-stage-btn:focus {
+  border-color: #D37506;
+  color: #fff;
+  outline: none;
+}
+
+.platform-stage-btn.is-active {
+  background: #D37506;
+  border-color: #D37506;
+  color: #fff;
+}
+
+.platform-stage-caption {
+  margin-top: 1rem;
+  max-width: 36rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  min-height: 1.5em;
+}
+
+.platform-scroll-track {
+  position: relative;
+  z-index: 1;
+}
+
+.platform-scroll-panel {
+  height: 70vh;
+  min-height: 420px;
+}
+
+/* Impact */
+.impact-panel {
+  background: var(--surface-0, #fff);
+  border: 1px solid var(--border-subtle, #ddd);
+  border-radius: 12px;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 4px 14px rgba(15, 31, 51, 0.06);
+  text-align: center;
+}
+
+.impact-icon {
+  font-size: 2rem;
+  color: var(--accent-500, #D37506);
+  margin-bottom: 0.85rem;
+}
+
+.impact-panel h3 {
+  color: var(--navy-800, #161616);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.impact-panel p {
+  color: var(--slate-600, #4b4b4b);
+  margin-bottom: 0;
+}
+
+/* Solutions */
+.solution-module {
+  background: var(--surface-0, #fff);
+  border: 1px solid var(--border-subtle, #ddd);
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 6px 18px rgba(15, 31, 51, 0.07);
+  display: flex;
+  flex-direction: column;
+}
+
+.solution-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: rgba(211, 117, 6, 0.12);
+  border: 1px solid rgba(211, 117, 6, 0.4);
+  color: var(--navy-800, #161616);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 4px;
+}
+
+.solution-module h3 {
+  color: var(--navy-800, #161616);
+  font-weight: 700;
+}
+
+.solution-module p {
+  color: var(--slate-600, #4b4b4b);
+  flex-grow: 1;
+}
+
+.solution-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.btn-outline-dark {
+  border: 2px solid #161616;
+  color: #161616;
+  background: transparent;
+  font-weight: 700;
+}
+
+.btn-outline-dark:hover {
+  background: #161616;
+  color: #fff;
+  text-decoration: none;
+}
+
+.btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  background: transparent;
+  font-weight: 700;
+}
+
+.btn-outline-light:hover {
+  background: #fff;
+  color: #161616;
+  text-decoration: none;
+}
+
+/* Labs */
+.labs-section {
+  background: linear-gradient(160deg, #000 0%, #1a1a1a 55%, #2a1a08 100%);
+  color: #fff;
+}
+
+.labs-section .section-heading::after {
+  background: #D37506;
+}
+
+.labs-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.labs-panel-primary {
+  border-color: rgba(211, 117, 6, 0.55);
+  background: rgba(211, 117, 6, 0.1);
+}
+
+.labs-panel h3,
+.labs-panel h5 {
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.labs-panel p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.labs-sovereignty {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.labs-sovereignty li {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.labs-sovereignty li i {
+  color: #D37506;
+}
+
+/* Soft gradient wash behind overlay text for readability */
+.platform-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.45) 42%,
+    rgba(0, 0, 0, 0.15) 70%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (max-width: 991.98px) {
+  .platform-showcase-sticky {
+    min-height: 100svh;
+  }
+
+  .platform-showcase .hero-heading {
+    max-width: none;
+  }
+
+  .platform-overlay {
+    padding-top: calc(5rem + 40px);
+  }
+
+  .platform-stage-rail {
+    margin-top: 1.25rem;
+  }
+
+  .platform-scroll-panel {
+    height: 55vh;
+    min-height: 320px;
+  }
+
+  .solution-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .platform-brand {
+    font-size: 2.1rem;
+  }
+
+  .platform-stage-btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-canvas {
+    display: none;
+  }
+}
