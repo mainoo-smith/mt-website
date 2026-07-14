@@ -84,7 +84,7 @@
       </div>
 
       <div class="platform-overlay">
-        <div class="container">
+        <div class="container platform-overlay-grid">
           <div class="platform-copy" data-stage="0">
             <p class="platform-brand">Mainoo</p>
             <h1 class="hero-heading mb-3">Digital Coordination Infrastructure for Critical Sectors.</h1>
@@ -95,33 +95,38 @@
               <a class="btn btn-primary btn-xl mr-md-3 mb-3 mb-md-0" href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener">Request a Pilot</a>
               <a class="btn btn-outline-light btn-xl" href="#solutions">View Live Demos</a>
             </div>
-            <p class="platform-hint mt-4 mb-0">Scroll to follow the flow · Click a stage to inspect</p>
+            <p class="platform-hint mt-4 mb-0">Move your cursor · Scroll to enter the system · Click a stage</p>
           </div>
 
-          <div class="platform-stage-rail" role="tablist" aria-label="Architecture stages">
-            <button type="button" class="platform-stage-btn is-active" data-stage="0" role="tab" aria-selected="true">Ingest</button>
-            <button type="button" class="platform-stage-btn" data-stage="1" role="tab" aria-selected="false">Normalize</button>
-            <button type="button" class="platform-stage-btn" data-stage="2" role="tab" aria-selected="false">Coordinate</button>
-            <button type="button" class="platform-stage-btn" data-stage="3" role="tab" aria-selected="false">Decide</button>
-            <button type="button" class="platform-stage-btn" data-stage="4" role="tab" aria-selected="false">Act</button>
-            <button type="button" class="platform-stage-btn" data-stage="5" role="tab" aria-selected="false">Impact</button>
-          </div>
-
-          <div class="platform-stage-caption" id="platform-stage-caption" aria-live="polite">
-            Disparate signals enter the coordination fabric.
+          <div class="platform-chrome">
+            <div class="platform-progress" aria-hidden="true">
+              <div class="platform-progress-fill" id="platform-progress-fill"></div>
+            </div>
+            <div class="platform-stage-rail" role="tablist" aria-label="Architecture stages">
+              <button type="button" class="platform-stage-btn is-active" data-stage="0" role="tab" aria-selected="true">Ingest</button>
+              <button type="button" class="platform-stage-btn" data-stage="1" role="tab" aria-selected="false">Normalize</button>
+              <button type="button" class="platform-stage-btn" data-stage="2" role="tab" aria-selected="false">Coordinate</button>
+              <button type="button" class="platform-stage-btn" data-stage="3" role="tab" aria-selected="false">Decide</button>
+              <button type="button" class="platform-stage-btn" data-stage="4" role="tab" aria-selected="false">Act</button>
+              <button type="button" class="platform-stage-btn" data-stage="5" role="tab" aria-selected="false">Impact</button>
+            </div>
+            <p class="platform-stage-title" id="platform-stage-title">Signals come in</p>
+            <div class="platform-stage-caption" id="platform-stage-caption" aria-live="polite">
+              Environment, operations, and agency data enter one coordination fabric.
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Scroll track drives the 3D narrative -->
+    <!-- Longer scroll track for cinematic scrubbing -->
     <div class="platform-scroll-track" aria-hidden="true">
-      <div class="platform-scroll-panel" data-caption="Disparate signals enter the coordination fabric."></div>
-      <div class="platform-scroll-panel" data-caption="Fragmented records become usable, shared context."></div>
-      <div class="platform-scroll-panel" data-caption="Teams and systems move on a shared operating picture."></div>
-      <div class="platform-scroll-panel" data-caption="Operators get the right information when it matters."></div>
-      <div class="platform-scroll-panel" data-caption="Workflows trigger across agencies and response units."></div>
-      <div class="platform-scroll-panel" data-caption="Illustrative outcomes: lives protected, damage reduced, response success."></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
+      <div class="platform-scroll-panel"></div>
     </div>
   </section>
 

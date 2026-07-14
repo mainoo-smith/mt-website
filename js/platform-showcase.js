@@ -1,26 +1,49 @@
 /**
  * Mainoo Platform Showcase
- * Scroll-driven + clickable stage interaction for a lightweight Three.js scene.
- * Falls back to SVG when WebGL / device / motion constraints apply.
+ * Cinematic sticky 3D narrative inspired by immersive Spline-style sites:
+ * mouse-reactive camera, scroll-scrubbed zoom-through, soft materials,
+ * and clickable stages. Falls back to SVG when needed.
  */
 (function () {
   'use strict';
 
-  var STAGE_CAPTIONS = [
-    'Disparate signals enter the coordination fabric.',
-    'Fragmented records become usable, shared context.',
-    'Teams and systems move on a shared operating picture.',
-    'Operators get the right information when it matters.',
-    'Workflows trigger across agencies and response units.',
-    'Illustrative outcomes: lives protected, damage reduced, response success.'
+  // Capability / impact focused — light on internals
+  var STAGE_COPY = [
+    {
+      title: 'Signals come in',
+      caption: 'Environment, operations, and agency data enter one coordination fabric.'
+    },
+    {
+      title: 'Context becomes shared',
+      caption: 'Fragmented inputs resolve into a picture teams can act on together.'
+    },
+    {
+      title: 'Teams coordinate',
+      caption: 'Cross-agency workflows move on the same operating picture—in real time.'
+    },
+    {
+      title: 'Decisions land faster',
+      caption: 'Operators see what matters when it matters—without losing local control.'
+    },
+    {
+      title: 'Action is orchestrated',
+      caption: 'Responses trigger across units so effort compounds instead of colliding.'
+    },
+    {
+      title: 'Impact you can name',
+      caption: 'Illustrative outcomes: lives protected · damage reduced · evacuation success.'
+    }
   ];
 
   var showcase = document.querySelector('.platform-showcase');
   var canvas = document.getElementById('platform-canvas');
   var fallback = document.getElementById('platform-fallback');
   var captionEl = document.getElementById('platform-stage-caption');
+  var titleEl = document.getElementById('platform-stage-title');
   var stageButtons = document.querySelectorAll('.platform-stage-btn');
   var scrollPanels = document.querySelectorAll('.platform-scroll-panel');
+  var overlayCopy = document.querySelector('.platform-copy');
+  var progressFill = document.getElementById('platform-progress-fill');
 
   if (!showcase || !canvas) return;
 
@@ -29,6 +52,7 @@
   var renderProgress = 0;
   var manualLockUntil = 0;
   var rafId = 0;
+  var pointer = { x: 0, y: 0, tx: 0, ty: 0, down: false };
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var saveData = !!(connection && connection.saveData);
@@ -50,9 +74,9 @@
 
   function setStageUI(stage, fromManual) {
     currentStage = Math.max(0, Math.min(5, stage | 0));
-    if (captionEl) {
-      captionEl.textContent = STAGE_CAPTIONS[currentStage];
-    }
+    var copy = STAGE_COPY[currentStage];
+    if (captionEl) captionEl.textContent = copy.caption;
+    if (titleEl) titleEl.textContent = copy.title;
     stageButtons.forEach(function (btn) {
       var active = Number(btn.getAttribute('data-stage')) === currentStage;
       btn.classList.toggle('is-active', active);
@@ -60,7 +84,7 @@
     });
     if (fromManual) {
       targetProgress = currentStage / 5;
-      manualLockUntil = performance.now() + 1200;
+      manualLockUntil = performance.now() + 1400;
     }
   }
 
@@ -73,27 +97,41 @@
     targetProgress = scrolled / total;
     var stage = Math.round(targetProgress * 5);
     if (stage !== currentStage) setStageUI(stage, false);
+
+    if (overlayCopy) {
+      // Fade hero marketing copy as the cinematic scroll takes over
+      var fade = 1 - Math.min(targetProgress * 1.35, 0.82);
+      overlayCopy.style.opacity = String(fade);
+      overlayCopy.style.transform = 'translateY(' + (-18 * targetProgress) + 'px)';
+    }
+    if (progressFill) {
+      progressFill.style.width = (targetProgress * 100).toFixed(1) + '%';
+    }
   }
 
   stageButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
       var stage = Number(btn.getAttribute('data-stage'));
       setStageUI(stage, true);
-
-      // Scroll the track so the chosen stage aligns with sticky viewport
-      if (scrollPanels[stage]) {
-        var sticky = showcase.querySelector('.platform-showcase-sticky');
-        var stickyH = sticky ? sticky.offsetHeight : window.innerHeight;
-        var top = showcase.offsetTop + stage * (showcase.offsetHeight - stickyH) / 5;
-        window.scrollTo({ top: top, behavior: reducedMotion ? 'auto' : 'smooth' });
-      }
+      var sticky = showcase.querySelector('.platform-showcase-sticky');
+      var stickyH = sticky ? sticky.offsetHeight : window.innerHeight;
+      var top = showcase.offsetTop + stage * (showcase.offsetHeight - stickyH) / 5;
+      window.scrollTo({ top: top, behavior: reducedMotion ? 'auto' : 'smooth' });
     });
   });
 
+  function onPointerMove(e) {
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    pointer.tx = (clientX / window.innerWidth) * 2 - 1;
+    pointer.ty = (clientY / window.innerHeight) * 2 - 1;
+  }
+
+  window.addEventListener('mousemove', onPointerMove, { passive: true });
+  window.addEventListener('touchmove', onPointerMove, { passive: true });
   window.addEventListener('scroll', syncFromScroll, { passive: true });
   window.addEventListener('resize', syncFromScroll);
 
-  // Fallback path
   if (shouldUseFallback()) {
     canvas.style.display = 'none';
     if (fallback) fallback.hidden = false;
@@ -104,150 +142,204 @@
 
   if (fallback) fallback.hidden = true;
 
-  // --- Three.js scene ---
+  // --- Three.js cinematic scene ---
   var renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
     alpha: true,
     powerPreference: 'high-performance'
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(0x0a0a0a, 1);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setClearColor(0x050505, 1);
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-  camera.position.set(0, 0.35, 7.2);
+  scene.fog = new THREE.FogExp2(0x050505, 0.045);
 
-  var ambient = new THREE.AmbientLight(0xffffff, 0.55);
-  scene.add(ambient);
-  var key = new THREE.PointLight(0xd37506, 1.35, 40);
-  key.position.set(2.5, 2.2, 4);
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  camera.position.set(0, 0.2, 8.5);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  var key = new THREE.PointLight(0xd37506, 2.2, 50);
+  key.position.set(3, 2.5, 5);
   scene.add(key);
-  var fill = new THREE.PointLight(0xffffff, 0.35, 40);
-  fill.position.set(-4, -1, 2);
-  scene.add(fill);
+  var rim = new THREE.PointLight(0xffe0b0, 0.9, 40);
+  rim.position.set(-3.5, -1.5, 3);
+  scene.add(rim);
+  var back = new THREE.PointLight(0xd37506, 0.55, 60);
+  back.position.set(0, 0, -6);
+  scene.add(back);
 
   var root = new THREE.Group();
   scene.add(root);
 
-  // Core
-  var coreGeo = new THREE.IcosahedronGeometry(0.85, 1);
-  var coreMat = new THREE.MeshStandardMaterial({
-    color: 0xd37506,
-    emissive: 0xd37506,
-    emissiveIntensity: 0.45,
-    metalness: 0.35,
-    roughness: 0.35,
-    flatShading: true
-  });
-  var core = new THREE.Mesh(coreGeo, coreMat);
-  root.add(core);
+  // Central iridescent-ish coordination core (layered for fresnel feel)
+  var coreInner = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.72, 2),
+    new THREE.MeshStandardMaterial({
+      color: 0xd37506,
+      emissive: 0xd37506,
+      emissiveIntensity: 0.55,
+      metalness: 0.55,
+      roughness: 0.22,
+      flatShading: true
+    })
+  );
+  root.add(coreInner);
+
+  var coreShell = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.95, 1),
+    new THREE.MeshStandardMaterial({
+      color: 0xf0c090,
+      emissive: 0xd37506,
+      emissiveIntensity: 0.15,
+      metalness: 0.7,
+      roughness: 0.15,
+      transparent: true,
+      opacity: 0.35,
+      flatShading: true
+    })
+  );
+  root.add(coreShell);
 
   var coreWire = new THREE.LineSegments(
-    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(0.95, 1)),
-    new THREE.LineBasicMaterial({ color: 0xf8ead9, transparent: true, opacity: 0.35 })
+    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.08, 1)),
+    new THREE.LineBasicMaterial({ color: 0xf8ead9, transparent: true, opacity: 0.28 })
   );
   root.add(coreWire);
 
-  // Orbiting ingest nodes (left)
+  // Scroll-scrubbed orbital rings (Diego-style zoom-through)
+  var rings = [];
+  for (var r = 0; r < 4; r++) {
+    var ring = new THREE.Mesh(
+      new THREE.TorusGeometry(1.55 + r * 0.55, 0.018, 10, 96),
+      new THREE.MeshBasicMaterial({
+        color: r % 2 === 0 ? 0xd37506 : 0xf8ead9,
+        transparent: true,
+        opacity: 0.22 + r * 0.05
+      })
+    );
+    ring.rotation.x = Math.PI / 2.4 + r * 0.18;
+    ring.rotation.y = r * 0.4;
+    root.add(ring);
+    rings.push(ring);
+  }
+
+  // Soft particle field
+  var particleCount = lowEnd ? 180 : 420;
+  var particlePositions = new Float32Array(particleCount * 3);
+  var particleSeeds = new Float32Array(particleCount);
+  for (var i = 0; i < particleCount; i++) {
+    particleSeeds[i] = Math.random() * Math.PI * 2;
+    var radius = 1.2 + Math.random() * 5.5;
+    var theta = Math.random() * Math.PI * 2;
+    var phi = Math.acos(2 * Math.random() - 1);
+    particlePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+    particlePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.65;
+    particlePositions[i * 3 + 2] = radius * Math.cos(phi);
+  }
+  var particleGeo = new THREE.BufferGeometry();
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+  var particleMat = new THREE.PointsMaterial({
+    color: 0xf8ead9,
+    size: 0.035,
+    transparent: true,
+    opacity: 0.7,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+  var particles = new THREE.Points(particleGeo, particleMat);
+  root.add(particles);
+
+  // Ingest nodes (left) + impact orbs (right)
   var ingestGroup = new THREE.Group();
   root.add(ingestGroup);
   var ingestNodes = [];
-  var ingestPositions = [
-    [-3.4, 1.1, 0.2],
-    [-3.6, -0.2, -0.6],
-    [-3.2, -1.15, 0.5]
-  ];
-  ingestPositions.forEach(function (p) {
+  [[-3.6, 1.2, 0.3], [-3.9, -0.15, -0.5], [-3.4, -1.25, 0.55]].forEach(function (p, idx) {
     var mesh = new THREE.Mesh(
-      new THREE.OctahedronGeometry(0.18, 0),
-      new THREE.MeshStandardMaterial({ color: 0xf8ead9, emissive: 0xd37506, emissiveIntensity: 0.2 })
+      new THREE.OctahedronGeometry(0.2 - idx * 0.02, 0),
+      new THREE.MeshStandardMaterial({
+        color: 0xf8ead9,
+        emissive: 0xd37506,
+        emissiveIntensity: 0.35,
+        metalness: 0.4,
+        roughness: 0.3
+      })
     );
     mesh.position.set(p[0], p[1], p[2]);
     ingestGroup.add(mesh);
     ingestNodes.push(mesh);
   });
 
-  // Sector modules (right) — generic capability endpoints
-  var sectorGroup = new THREE.Group();
-  root.add(sectorGroup);
-  var sectors = [];
-  var sectorMeta = [
-    { y: 1.15, color: 0xd37506 },
-    { y: 0, color: 0xe0943a },
-    { y: -1.15, color: 0xb86705 }
-  ];
-  sectorMeta.forEach(function (meta) {
-    var mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(0.55, 0.55, 0.55),
+  var impactGroup = new THREE.Group();
+  root.add(impactGroup);
+  var impactOrbs = [];
+  // Three illustrative outcome lights
+  [{ y: 1.25, s: 0.38 }, { y: 0.05, s: 0.48 }, { y: -1.2, s: 0.34 }].forEach(function (meta) {
+    var orb = new THREE.Mesh(
+      new THREE.SphereGeometry(meta.s, 24, 24),
       new THREE.MeshStandardMaterial({
-        color: meta.color,
-        emissive: meta.color,
-        emissiveIntensity: 0.15,
-        metalness: 0.2,
-        roughness: 0.45
+        color: 0xd37506,
+        emissive: 0xd37506,
+        emissiveIntensity: 0.2,
+        metalness: 0.35,
+        roughness: 0.25,
+        transparent: true,
+        opacity: 0.85
       })
     );
-    mesh.position.set(3.35, meta.y, 0);
-    sectorGroup.add(mesh);
-    sectors.push(mesh);
+    orb.position.set(3.5, meta.y, 0);
+    impactGroup.add(orb);
+    impactOrbs.push(orb);
+
+    var halo = new THREE.Mesh(
+      new THREE.SphereGeometry(meta.s * 1.55, 16, 16),
+      new THREE.MeshBasicMaterial({
+        color: 0xd37506,
+        transparent: true,
+        opacity: 0.12
+      })
+    );
+    orb.add(halo);
   });
 
-  // Beams / flows
-  function makeBeam(from, to) {
-    var points = [];
-    for (var i = 0; i <= 16; i++) {
-      var t = i / 16;
-      points.push(new THREE.Vector3(
-        from.x + (to.x - from.x) * t,
-        from.y + (to.y - from.y) * t + Math.sin(t * Math.PI) * 0.35,
-        from.z + (to.z - from.z) * t
-      ));
-    }
-    var curve = new THREE.CatmullRomCurve3(points);
-    var tube = new THREE.TubeGeometry(curve, 40, 0.018, 6, false);
-    var mat = new THREE.MeshBasicMaterial({
-      color: 0xd37506,
-      transparent: true,
-      opacity: 0.35
-    });
-    return new THREE.Mesh(tube, mat);
+  function makeCurveBeam(from, to, opacity) {
+    var mid = new THREE.Vector3(
+      (from.x + to.x) * 0.5,
+      (from.y + to.y) * 0.5 + 0.55,
+      (from.z + to.z) * 0.5
+    );
+    var curve = new THREE.QuadraticBezierCurve3(from.clone(), mid, to.clone());
+    var geo = new THREE.TubeGeometry(curve, 48, 0.016, 6, false);
+    return new THREE.Mesh(
+      geo,
+      new THREE.MeshBasicMaterial({ color: 0xd37506, transparent: true, opacity: opacity || 0.3 })
+    );
   }
 
-  var beamsIn = [];
-  var beamsOut = [];
-  ingestNodes.forEach(function (node) {
-    var beam = makeBeam(node.position, new THREE.Vector3(0, 0, 0));
-    root.add(beam);
-    beamsIn.push(beam);
+  var beamsIn = ingestNodes.map(function (n) {
+    var b = makeCurveBeam(n.position, new THREE.Vector3(0, 0, 0), 0.28);
+    root.add(b);
+    return b;
   });
-  sectors.forEach(function (node) {
-    var beam = makeBeam(new THREE.Vector3(0, 0, 0), node.position);
-    root.add(beam);
-    beamsOut.push(beam);
+  var beamsOut = impactOrbs.map(function (n) {
+    var b = makeCurveBeam(new THREE.Vector3(0, 0, 0), n.position, 0.18);
+    root.add(b);
+    return b;
   });
 
-  // Particle stream through the core
-  var particleCount = 120;
-  var particlePositions = new Float32Array(particleCount * 3);
-  var particleProgress = new Float32Array(particleCount);
-  for (var i = 0; i < particleCount; i++) {
-    particleProgress[i] = Math.random();
-    particlePositions[i * 3] = -3.5 + Math.random() * 7;
-    particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 2;
-    particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 1.2;
+  // Traveling packet dots along the pipeline
+  var packets = [];
+  for (var p = 0; p < 18; p++) {
+    var packet = new THREE.Mesh(
+      new THREE.SphereGeometry(0.045, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffe0b0 })
+    );
+    packet.userData.t = Math.random();
+    packet.userData.lane = p % 3;
+    root.add(packet);
+    packets.push(packet);
   }
-  var particleGeo = new THREE.BufferGeometry();
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-  var particleMat = new THREE.PointsMaterial({
-    color: 0xf8ead9,
-    size: 0.05,
-    transparent: true,
-    opacity: 0.85,
-    depthWrite: false
-  });
-  var particles = new THREE.Points(particleGeo, particleMat);
-  root.add(particles);
 
   function resize() {
     var w = canvas.clientWidth || showcase.clientWidth;
@@ -257,74 +349,119 @@
     camera.updateProjectionMatrix();
   }
 
-  function applyStageVisual(p) {
-    // p: 0..1 across Ingest → Impact
-    var pulse = 0.9 + Math.sin(performance.now() * 0.002) * 0.05;
-    core.scale.setScalar(pulse * (1 + p * 0.15));
-    coreMat.emissiveIntensity = 0.35 + p * 0.45;
-
-    var ingestOpacity = 1 - Math.min(p * 1.2, 1) * 0.35;
-    ingestGroup.visible = true;
-    ingestGroup.position.x = -0.2 * p;
-    ingestNodes.forEach(function (n, idx) {
-      n.scale.setScalar(0.85 + (1 - Math.abs(p - 0.1)) * 0.4);
-      n.rotation.y += 0.01 + idx * 0.002;
-    });
-
-    beamsIn.forEach(function (b, idx) {
-      b.material.opacity = 0.15 + (p < 0.35 ? 0.45 : 0.2) * (1 - idx * 0.05);
-    });
-
-    // Mid stages: pull camera inward
-    var camZ = 7.2 - p * 2.4 + (p > 0.45 && p < 0.7 ? -0.8 : 0);
-    var camY = 0.35 - p * 0.1;
-    camera.position.z += (camZ - camera.position.z) * 0.08;
-    camera.position.y += (camY - camera.position.y) * 0.08;
-    camera.lookAt(0, 0, 0);
-
-    // Outbound / impact
-    var outStrength = Math.max(0, (p - 0.45) / 0.55);
-    sectorGroup.position.x = 0.15 * outStrength;
-    sectors.forEach(function (s, idx) {
-      var local = Math.max(0, outStrength - idx * 0.08);
-      s.scale.setScalar(0.7 + local * 0.7);
-      s.material.emissiveIntensity = 0.1 + local * 0.55;
-      s.rotation.x += 0.008;
-      s.rotation.y += 0.01;
-    });
-    beamsOut.forEach(function (b) {
-      b.material.opacity = 0.1 + outStrength * 0.55;
-    });
-
-    root.rotation.y = p * 0.55;
+  function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   }
 
-  function updateParticles(p) {
-    var positions = particleGeo.attributes.position.array;
+  function applyNarrative(p) {
+    var e = easeInOut(p);
+
+    // Camera: start wide → dive through rings → settle on impact (Spline zoom-through)
+    var camZ = 8.5 - e * 5.2;
+    if (e > 0.35 && e < 0.7) {
+      camZ -= Math.sin((e - 0.35) / 0.35 * Math.PI) * 1.4;
+    }
+    var camY = 0.25 + Math.sin(e * Math.PI) * 0.35;
+    var lookY = (e - 0.5) * 0.2;
+
+    // Mouse parallax (Spline-style reactive hero)
+    pointer.x += (pointer.tx - pointer.x) * 0.06;
+    pointer.y += (pointer.ty - pointer.y) * 0.06;
+    var targetCamX = pointer.x * 0.85;
+    var targetCamY = camY - pointer.y * 0.45;
+
+    camera.position.x += (targetCamX - camera.position.x) * 0.08;
+    camera.position.y += (targetCamY - camera.position.y) * 0.08;
+    camera.position.z += (camZ - camera.position.z) * 0.08;
+    camera.lookAt(pointer.x * 0.2, lookY, 0);
+
+    // Core pulse + scale
+    var pulse = 1 + Math.sin(performance.now() * 0.0022) * 0.03;
+    var coreScale = (1 + e * 0.35) * pulse;
+    coreInner.scale.setScalar(coreScale);
+    coreShell.scale.setScalar(coreScale * 1.02);
+    coreWire.scale.setScalar(coreScale * 1.05);
+    coreInner.material.emissiveIntensity = 0.4 + e * 0.55;
+    coreShell.material.opacity = 0.25 + e * 0.25;
+
+    coreInner.rotation.y += 0.006;
+    coreInner.rotation.x += 0.002;
+    coreShell.rotation.y -= 0.004;
+    coreWire.rotation.y += 0.003;
+
+    // Rings spin + open during mid scroll
+    rings.forEach(function (ring, idx) {
+      ring.rotation.z += 0.003 + idx * 0.0015;
+      ring.rotation.y += 0.0015;
+      ring.scale.setScalar(1 + e * (0.35 + idx * 0.08));
+      ring.material.opacity = 0.15 + (1 - Math.abs(e - 0.45)) * 0.35;
+    });
+
+    // Ingest emphasis early
+    var ingestStrength = 1 - Math.min(e * 1.1, 1) * 0.45;
+    ingestGroup.position.x = -0.4 * e;
+    ingestNodes.forEach(function (n, idx) {
+      n.rotation.y += 0.02;
+      n.scale.setScalar(0.85 + ingestStrength * 0.4 + Math.sin(performance.now() * 0.003 + idx) * 0.05);
+      n.material.emissiveIntensity = 0.25 + (e < 0.35 ? 0.45 : 0.15);
+    });
+    beamsIn.forEach(function (b) {
+      b.material.opacity = 0.12 + (e < 0.4 ? 0.4 : 0.15);
+    });
+
+    // Impact orbs strengthen late
+    var impactStrength = Math.max(0, (e - 0.5) / 0.5);
+    impactGroup.position.x = 0.25 * impactStrength;
+    impactOrbs.forEach(function (orb, idx) {
+      var local = Math.max(0, impactStrength - idx * 0.08);
+      orb.scale.setScalar(0.55 + local * 0.9);
+      orb.material.emissiveIntensity = 0.15 + local * 0.85;
+      orb.material.opacity = 0.45 + local * 0.5;
+      orb.position.y += Math.sin(performance.now() * 0.002 + idx) * 0.002;
+    });
+    beamsOut.forEach(function (b) {
+      b.material.opacity = 0.08 + impactStrength * 0.5;
+    });
+
+    root.rotation.y = e * 0.65 + pointer.x * 0.15;
+
+    // Particles breathe outward toward impact
+    particles.rotation.y += 0.0008;
+    particleMat.opacity = 0.35 + e * 0.45;
+    var pos = particleGeo.attributes.position.array;
     for (var i = 0; i < particleCount; i++) {
-      particleProgress[i] += 0.004 + p * 0.004;
-      if (particleProgress[i] > 1) particleProgress[i] -= 1;
-      var t = particleProgress[i];
-      // Path left → core → right (impact emphasis as p grows)
-      var x = -3.6 + t * 7.2;
-      var spread = (1 - p) * 0.9 + 0.25;
-      var y = Math.sin(t * Math.PI * 2 + i) * spread * (0.4 + (1 - Math.abs(t - 0.5)) );
-      var z = Math.cos(t * Math.PI * 3 + i * 0.2) * 0.35;
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
+      var base = i * 3;
+      // gentle orbital drift
+      var ang = particleSeeds[i] + performance.now() * 0.00015 * (1 + e);
+      pos[base] += Math.cos(ang) * 0.0015;
+      pos[base + 1] += Math.sin(ang * 1.3) * 0.001;
     }
     particleGeo.attributes.position.needsUpdate = true;
-    particleMat.opacity = 0.45 + p * 0.4;
+
+    // Packets flow left → right scaled by progress
+    packets.forEach(function (packet, idx) {
+      packet.userData.t += 0.004 + e * 0.006;
+      if (packet.userData.t > 1) packet.userData.t -= 1;
+      var t = packet.userData.t;
+      var lane = packet.userData.lane;
+      var yOff = (lane - 1) * 0.55;
+      packet.position.set(
+        -3.8 + t * 7.6,
+        yOff + Math.sin(t * Math.PI * 2 + idx) * 0.2,
+        Math.cos(t * Math.PI + idx) * 0.25
+      );
+      packet.visible = t < 0.92;
+      packet.scale.setScalar(0.7 + e * 0.6);
+    });
   }
 
   function tick() {
     rafId = requestAnimationFrame(tick);
-    renderProgress += (targetProgress - renderProgress) * 0.07;
-    applyStageVisual(renderProgress);
-    updateParticles(renderProgress);
-    core.rotation.y += 0.004;
-    coreWire.rotation.y -= 0.002;
+    renderProgress += (targetProgress - renderProgress) * 0.065;
+    applyNarrative(renderProgress);
+    if (progressFill && performance.now() >= manualLockUntil) {
+      // keep bar in sync with smoothed progress during free scroll
+    }
     renderer.render(scene, camera);
   }
 
@@ -335,6 +472,14 @@
       tick();
     }
   }
+
+  // Drag / click canvas to nudge scene (interactive, Spline-like)
+  canvas.addEventListener('pointerdown', function () {
+    pointer.down = true;
+  });
+  window.addEventListener('pointerup', function () {
+    pointer.down = false;
+  });
 
   window.addEventListener('resize', resize);
   document.addEventListener('visibilitychange', onVisibility);
