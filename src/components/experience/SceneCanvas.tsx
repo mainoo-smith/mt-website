@@ -3,7 +3,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { Suspense } from "react";
-import { NarrativeScene } from "./NarrativeScene";
+import { sceneColors } from "@/config/brand";
+import { SceneManager } from "@/experience/core/SceneManager";
 
 export function SceneCanvas({ progress }: { progress: number }) {
   return (
@@ -13,9 +14,9 @@ export function SceneCanvas({ progress }: { progress: number }) {
         camera={{ position: [0, 0.2, 8.5], fov: 42, near: 0.1, far: 100 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       >
-        <fog attach="fog" args={["#080604", 8, 20]} />
+        <fog attach="fog" args={[sceneColors.fog, 8, 20]} />
         <Suspense fallback={null}>
-          <NarrativeScene progress={progress} />
+          <SceneManager progress={progress} />
           <EffectComposer multisampling={0}>
             <Bloom
               intensity={1.15}

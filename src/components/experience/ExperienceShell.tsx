@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { EXPERIENCE_SCROLL_HEIGHT, SCROLL_CHAPTERS } from "@/config/scenes";
 import { ChapterCopy } from "./ChapterCopy";
 import { useScrollProgress } from "./useScrollProgress";
 
@@ -10,36 +11,6 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-brand-ink" />,
 });
-
-const CHAPTERS = [
-  {
-    id: "continent",
-    range: [0, 0.28] as const,
-    lines: [
-      "Africa runs on digital systems.",
-      "Hospitals. Agencies. Utilities. Cities.",
-      "The continent is already online.",
-    ],
-  },
-  {
-    id: "isolation",
-    range: [0.28, 0.55] as const,
-    lines: [
-      "Hospital. Fire. Police. Utility. Government. Finance.",
-      "Each system pulses alone.",
-      "No shared picture. No coordination.",
-    ],
-  },
-  {
-    id: "connect",
-    range: [0.55, 0.92] as const,
-    lines: [
-      "Mainoo sits at the center.",
-      "Signals flow into one shared board.",
-      "Isolated systems become one operating network.",
-    ],
-  },
-];
 
 export function ExperienceShell() {
   const { progress, scrollRef } = useScrollProgress();
@@ -56,8 +27,8 @@ export function ExperienceShell() {
 
   const activeChapter = useMemo(() => {
     return (
-      CHAPTERS.find((c) => progress >= c.range[0] && progress < c.range[1]) ??
-      CHAPTERS[CHAPTERS.length - 1]
+      SCROLL_CHAPTERS.find((c) => progress >= c.range[0] && progress < c.range[1]) ??
+      SCROLL_CHAPTERS[SCROLL_CHAPTERS.length - 1]
     );
   }, [progress]);
 
@@ -111,7 +82,7 @@ export function ExperienceShell() {
       </header>
 
       <main id="top">
-        <section id="experience" ref={scrollRef} className="relative h-[360vh]">
+        <section id="experience" ref={scrollRef} className="relative" style={{ height: EXPERIENCE_SCROLL_HEIGHT }}>
           <div className="sticky top-0 h-[100svh] overflow-hidden">
             {!reducedMotion ? (
               <SceneCanvas progress={progress} />

@@ -50,5 +50,5 @@ export const AFRICA_COUNTRIES: CountryShape[] = ${JSON.stringify(
 )};
 `;
 
-writeFileSync("src/components/experience/africaShapes.ts", out);
+writeFileSync("src/experience/data/africaShapes.ts", out);
 console.log(`wrote ${countries.length} countries, ${totalPts} points`);

@@ -1,0 +1,39 @@
+/** Centralized brand color tokens for 3D scenes and UI (MXDS orange theme). */
+export const brand = {
+  ink: "#050505",
+  charcoal: "#161616",
+  orange: "#D37506",
+  orangeDark: "#b86705",
+  cream: "#f8ead9",
+  alert: "#FF8A00",
+  critical: "#FF3355",
+  resilience: "#00E5A0",
+} as const;
+
+/** Warm accent spectrum used in sector nodes and scene lighting. */
+export const sceneColors = {
+  hospital: "#ff9d5c",
+  fire: "#ff7a2f",
+  police: "#ffd7a0",
+  utility: "#ffc061",
+  government: "#f8ead9",
+  finance: "#ffb347",
+  landmass: "#241505",
+  landmassEmissive: "#c26a05",
+  borderGlow: "#ff9e3d",
+  cityWarm: "#ffb347",
+  cityCool: "#ffe6c0",
+  hubGlow: "#ff9e3d",
+  hubCore: "#fff2dc",
+  conduit: "#d37506",
+  packet: "#fff2dc",
+  darkSurface: "#0c0805",
+  darkMetal: "#1b120a",
+  starfield: "#f8ead9",
+  fog: "#080604",
+  hemisphereSky: "#f8ead9",
+  hemisphereGround: "#120a04",
+  spotlight: "#d37506",
+  fillWarm: "#ffe6c0",
+  fillAccent: "#e0943a",
+} as const;
