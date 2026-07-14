@@ -16,7 +16,7 @@ export function ChapterCopy({ chapter, progress }: { chapter: Chapter; progress:
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-end px-5 pb-24 pt-28 md:items-center md:px-12 md:pb-0">
-      <div className="chapter-copy max-w-xl">
+      <div className="chapter-copy max-w-md">
         <p className="mb-3 font-display text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-orange">
           {chapter.id === "continent"
             ? "Scene 1"
