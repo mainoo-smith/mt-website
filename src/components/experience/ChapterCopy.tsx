@@ -1,0 +1,47 @@
+"use client";
+
+type Chapter = {
+  id: string;
+  range: readonly [number, number];
+  lines: string[];
+};
+
+export function ChapterCopy({ chapter, progress }: { chapter: Chapter; progress: number }) {
+  const local =
+    (progress - chapter.range[0]) / Math.max(0.0001, chapter.range[1] - chapter.range[0]);
+  const clamped = Math.min(1, Math.max(0, local));
+
+  // Reveal lines one after another within the chapter
+  const lineIndex = Math.min(chapter.lines.length - 1, Math.floor(clamped * chapter.lines.length));
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 flex items-end px-5 pb-24 pt-28 md:items-center md:px-12 md:pb-0">
+      <div className="chapter-copy max-w-xl">
+        <p className="mb-3 font-display text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-orange">
+          {chapter.id === "continent"
+            ? "Scene 1"
+            : chapter.id === "isolation"
+              ? "Scene 2"
+              : "Scene 3"}
+        </p>
+        <div className="space-y-3">
+          {chapter.lines.map((line, i) => {
+            const visible = i <= lineIndex;
+            return (
+              <p
+                key={line}
+                className="font-display text-2xl font-semibold leading-snug transition-all duration-500 md:text-4xl"
+                style={{
+                  opacity: visible ? 1 : 0.15,
+                  transform: visible ? "translateY(0)" : "translateY(12px)",
+                }}
+              >
+                {line}
+              </p>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
