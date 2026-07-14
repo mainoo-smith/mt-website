@@ -3,7 +3,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { LAYOUT, SCENE_TIMING, SECTOR_ORGS } from "@/config/scenes";
+import { CAMERA_CONFIG, CONTINENT_MOTION, LAYOUT, SCENE_TIMING, SECTOR_MOTION, SECTOR_ORGS } from "@/config/scenes";
 import { computeSceneWeights } from "@/experience/animations/sceneWeights";
 import { flowEase, lerp, smoothstep } from "@/experience/animations/math";
 import { ExperienceLighting, Starfield } from "@/experience/core/ExperienceLighting";
@@ -54,23 +54,34 @@ export function SceneManager({ progress }: { progress: number }) {
     if (continentGroup.current) {
       continentGroup.current.visible = continent > 0.02;
       continentGroup.current.rotation.z = Math.sin(clock.elapsedTime * 0.2) * 0.03;
-      continentGroup.current.rotation.y = lerp(0.2, -0.05, smoothstep(0, 0.25, t));
-      continentGroup.current.scale.setScalar(
-        lerp(0.95, 1.25, smoothstep(0, 0.18, t)) * Math.max(continent, 0.001),
+      continentGroup.current.rotation.y = lerp(
+        CONTINENT_MOTION.rotationY.start,
+        CONTINENT_MOTION.rotationY.end,
+        smoothstep(0, CONTINENT_MOTION.rotationY.progressEnd, t),
       );
-      continentGroup.current.position.y = lerp(0.15, -1.5, 1 - continent);
-      continentGroup.current.position.z = lerp(0, -2.2, 1 - continent);
+      continentGroup.current.scale.setScalar(
+        lerp(CONTINENT_MOTION.scale.start, CONTINENT_MOTION.scale.peak, smoothstep(0, CONTINENT_MOTION.scale.progressEnd, t)) *
+          Math.max(continent, 0.001),
+      );
+      continentGroup.current.position.y = lerp(CONTINENT_MOTION.positionY.start, CONTINENT_MOTION.positionY.end, 1 - continent);
+      continentGroup.current.position.z = lerp(CONTINENT_MOTION.positionZ.start, CONTINENT_MOTION.positionZ.end, 1 - continent);
     }
 
     if (sectors.current) {
       sectors.current.visible = isolation + connect > 0.02;
-      sectors.current.scale.setScalar(lerp(0.12, 1, Math.max(isolation, connect)));
-      sectors.current.position.y = lerp(1.15, 0, Math.max(isolation, connect));
+      sectors.current.scale.setScalar(
+        lerp(SECTOR_MOTION.scale.start, SECTOR_MOTION.scale.end, Math.max(isolation, connect)),
+      );
+      sectors.current.position.y = lerp(
+        SECTOR_MOTION.positionY.start,
+        SECTOR_MOTION.positionY.end,
+        Math.max(isolation, connect),
+      );
 
       sectors.current.children.forEach((child, i) => {
         const g = child as THREE.Group;
         const bob =
-          isolation > 0.3 && connect < 0.25
+          isolation > SECTOR_MOTION.bobThreshold.isolation && connect < SECTOR_MOTION.bobThreshold.connect
             ? Math.sin(clock.elapsedTime * (1.5 + i * 0.4) + i) * 0.1
             : 0;
         g.position.z = bob;
@@ -127,12 +138,13 @@ export function SceneManager({ progress }: { progress: number }) {
         1.4 + connect * 1.8 + Math.sin(clock.elapsedTime * 2.6) * 0.25;
     }
 
-    const camZ = lerp(8.0, 6.4, connect);
-    const camY = lerp(0.25, 0.05, isolation);
-    camera.position.x += (lerp(0, 0.08, connect) - camera.position.x) * 0.06;
-    camera.position.y += (camY - camera.position.y) * 0.06;
-    camera.position.z += (camZ - camera.position.z) * 0.06;
-    camera.lookAt(0, 0, 0);
+    const camZ = lerp(CAMERA_CONFIG.z.start, CAMERA_CONFIG.z.connect, connect);
+    const camY = lerp(CAMERA_CONFIG.y.start, CAMERA_CONFIG.y.isolation, isolation);
+    camera.position.x +=
+      (lerp(0, CAMERA_CONFIG.x.connect, connect) - camera.position.x) * CAMERA_CONFIG.damping;
+    camera.position.y += (camY - camera.position.y) * CAMERA_CONFIG.damping;
+    camera.position.z += (camZ - camera.position.z) * CAMERA_CONFIG.damping;
+    camera.lookAt(...CAMERA_CONFIG.lookAt);
   });
 
   return (

@@ -82,3 +82,35 @@ export const LAYOUT = {
 } as const;
 
 export const EXPERIENCE_SCROLL_HEIGHT = "360vh" as const;
+
+/** GSAP ScrollTrigger binding for the cinematic scroll section. */
+export const SCROLL_TRIGGER = {
+  start: "top top",
+  end: "bottom bottom",
+  /** Slight scrub lag for cinematic scroll (seconds). */
+  scrub: 0.4,
+} as const;
+
+/** Camera interpolation driven by scene weights in SceneManager. */
+export const CAMERA_CONFIG = {
+  z: { start: 8.0, connect: 6.4 },
+  y: { start: 0.25, isolation: 0.05 },
+  x: { connect: 0.08 },
+  damping: 0.06,
+  lookAt: [0, 0, 0] as const,
+} as const;
+
+/** Continent scene motion keyed to raw scroll progress (0–1). */
+export const CONTINENT_MOTION = {
+  rotationY: { start: 0.2, end: -0.05, progressEnd: 0.25 },
+  scale: { start: 0.95, peak: 1.25, progressEnd: 0.18 },
+  positionY: { start: 0.15, end: -1.5 },
+  positionZ: { start: 0, end: -2.2 },
+} as const;
+
+/** Sector network motion keyed to isolation/connect weights. */
+export const SECTOR_MOTION = {
+  scale: { start: 0.12, end: 1 },
+  positionY: { start: 1.15, end: 0 },
+  bobThreshold: { isolation: 0.3, connect: 0.25 },
+} as const;
