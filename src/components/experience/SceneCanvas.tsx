@@ -6,10 +6,15 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { Suspense } from "react";
 import { sceneColors } from "@/config/brand";
 import { SceneManager } from "@/experience/core/SceneManager";
+import { useExperienceLayout } from "@/hooks/useExperienceLayout";
 
 export function SceneCanvas({ progress }: { progress: number }) {
+  const { layout } = useExperienceLayout();
+  const bloomIntensity = layout === "desktop" ? 1 : layout === "tablet" ? 0.72 : 0.55;
+  const bloomThreshold = layout === "desktop" ? 0.42 : 0.56;
+
   return (
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_58%_40%,#241406_0%,#0b0805_38%,#050505_72%)]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,#241406_0%,#0b0805_38%,#050505_72%)] lg:bg-[radial-gradient(circle_at_58%_40%,#241406_0%,#0b0805_38%,#050505_72%)]">
       <Canvas
         dpr={[1, 1.75]}
         camera={{ position: [0, 0.2, 8.5], fov: 40, near: 0.1, far: 100 }}
@@ -21,8 +26,8 @@ export function SceneCanvas({ progress }: { progress: number }) {
           <SceneManager progress={progress} />
           <EffectComposer multisampling={0}>
             <Bloom
-              intensity={1.0}
-              luminanceThreshold={0.42}
+              intensity={bloomIntensity}
+              luminanceThreshold={bloomThreshold}
               luminanceSmoothing={0.8}
               mipmapBlur
             />

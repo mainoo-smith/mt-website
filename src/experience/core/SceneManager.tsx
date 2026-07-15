@@ -14,6 +14,7 @@ import {
 } from "@/config/scenes";
 import { computeSceneWeights } from "@/experience/animations/sceneWeights";
 import { flowEase, lerp, smoothstep } from "@/experience/animations/math";
+import { getCameraTargets, getExperienceFraming } from "@/experience/core/experienceFraming";
 import { ExperienceLighting, Starfield } from "@/experience/core/ExperienceLighting";
 import { AfricaMap } from "@/experience/objects/AfricaMap";
 import { CoordinationHub } from "@/experience/objects/CoordinationHub";
@@ -49,8 +50,7 @@ export function SceneManager({ progress }: { progress: number }) {
   progressRef.current = progress;
 
   const { size } = useThree();
-  const offsetX =
-    size.width / size.height >= LAYOUT.coordinationOffsetAspect ? LAYOUT.coordinationOffsetX : 0;
+  const framing = getExperienceFraming(size.width, size.height);
 
   const showOrgLabels =
     progress > SCENE_TIMING.orgLabels.showAfter && progress < SCENE_TIMING.orgLabels.hideAfter;
@@ -236,20 +236,25 @@ export function SceneManager({ progress }: { progress: number }) {
     // Camera: front elevation (Scenes 1-2) → product-demo 3/4 over compact stage (Scenes 3-6).
     // The stage lives at world x = cx, but the camera looks left of it (framing bias)
     // so the composition sits in the right half and clears the left-hand copy column.
-    const cx = offsetX + iso * LAYOUT.stageOffsetIso;
-    const framedX = cx - iso * LAYOUT.stageFramingBias;
-    const targetX = lerp(0, framedX + CAMERA_CONFIG.iso.x, iso);
-    const targetY = lerp(CAMERA_CONFIG.front.y, CAMERA_CONFIG.iso.y, iso);
-    const targetZ = lerp(CAMERA_CONFIG.front.z, CAMERA_CONFIG.iso.z, iso);
-    camera.position.x += (targetX - camera.position.x) * CAMERA_CONFIG.damping;
-    camera.position.y += (targetY - camera.position.y) * CAMERA_CONFIG.damping;
-    camera.position.z += (targetZ - camera.position.z) * CAMERA_CONFIG.damping;
-    camera.lookAt(lerp(0, framedX, iso), lerp(0, CAMERA_CONFIG.iso.lookY, iso), 0);
+    const cameraTargets = getCameraTargets(framing, iso);
+    camera.position.x += (cameraTargets.x - camera.position.x) * CAMERA_CONFIG.damping;
+    camera.position.y += (cameraTargets.y - camera.position.y) * CAMERA_CONFIG.damping;
+    camera.position.z += (cameraTargets.z - camera.position.z) * CAMERA_CONFIG.damping;
+    camera.lookAt(cameraTargets.lookX, cameraTargets.lookY, 0);
   });
 
   const weights = computeSceneWeights(progress);
   const isoProgress = smoothstep(SCENE_TIMING.iso.start, SCENE_TIMING.iso.end, progress);
-  const stageOffsetX = offsetX + isoProgress * LAYOUT.stageOffsetIso;
+  const stageOffsetX = framing.stageOffsetX + isoProgress * framing.stageOffsetIso;
+  const stageY =
+    framing.layout === "desktop"
+      ? isoProgress * framing.stageOffsetY
+      : framing.stageOffsetY * lerp(0.42, 1, isoProgress);
+  const stageScale = lerp(
+    framing.layout === "desktop" ? 1 : framing.stageScale * 0.9,
+    framing.stageScale,
+    isoProgress,
+  );
 
   return (
     <group>
@@ -260,7 +265,7 @@ export function SceneManager({ progress }: { progress: number }) {
         <AfricaMap />
       </group>
 
-      <group position={[stageOffsetX, isoProgress * LAYOUT.stageOffsetY, 0]}>
+      <group position={[stageOffsetX, stageY, 0]} scale={stageScale}>
         <group ref={sectors}>
           {SECTOR_ORGS.map((org, i) => (
             <SectorNode

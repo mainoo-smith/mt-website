@@ -90,7 +90,7 @@ export function ExperienceShell() {
               <ReducedMotionFallback progress={progress} />
             )}
             <ChapterCopy chapter={activeChapter} progress={progress} />
-            <div className="pointer-events-none absolute bottom-5 left-1/2 z-20 -translate-x-1/2 text-center text-[11px] uppercase tracking-[0.2em] text-white/55">
+            <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 -translate-x-1/2 text-center text-[10px] uppercase tracking-[0.18em] text-white/45 sm:bottom-5 sm:text-[11px] sm:tracking-[0.2em] lg:text-white/55">
               Scroll to continue
             </div>
             <div className="absolute bottom-0 left-0 right-0 z-20 h-1 bg-white/10">
