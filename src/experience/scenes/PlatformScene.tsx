@@ -35,8 +35,8 @@ export function PlatformScene({ weight }: PlatformSceneProps) {
       return new THREE.TubeGeometry(
         new THREE.QuadraticBezierCurve3(hub.clone(), mid, end),
         24,
-        0.02,
-        10,
+        0.012,
+        8,
         false,
       );
     });

@@ -27,7 +27,7 @@ export function DataPackets({ count }: { count: number }) {
     <>
       {Array.from({ length: count }, (_, i) => (
         <mesh key={i}>
-          <sphereGeometry args={[0.055, 12, 12]} />
+          <sphereGeometry args={[0.034, 10, 10]} />
           <meshBasicMaterial
             color={sceneColors.packet}
             transparent

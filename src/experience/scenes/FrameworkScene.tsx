@@ -43,7 +43,7 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
     [positions],
   );
   const trackGeo = useMemo(
-    () => new THREE.TubeGeometry(trackCurve, 160, 0.022, 12, true),
+    () => new THREE.TubeGeometry(trackCurve, 160, 0.013, 10, true),
     [trackCurve],
   );
 
@@ -102,7 +102,7 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
       <group ref={packets}>
         {Array.from({ length: PACKET_COUNT }, (_, i) => (
           <mesh key={i}>
-            <sphereGeometry args={[0.032, 10, 10]} />
+            <sphereGeometry args={[0.022, 10, 10]} />
             <meshBasicMaterial
               color={brand.cream}
               transparent

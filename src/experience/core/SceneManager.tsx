@@ -98,7 +98,7 @@ export function SceneManager({ progress }: { progress: number }) {
   }, [groundPositions]);
 
   const tubeGeos = useMemo(
-    () => groundCurves.map((curve) => new THREE.TubeGeometry(curve, 40, 0.042, 14, false)),
+    () => groundCurves.map((curve) => new THREE.TubeGeometry(curve, 40, 0.024, 12, false)),
     [groundCurves],
   );
   const packetOffsets = useMemo(() => groundCurves.map(() => [0, 0.33, 0.66]), [groundCurves]);

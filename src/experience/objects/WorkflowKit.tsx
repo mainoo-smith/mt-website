@@ -152,26 +152,12 @@ export function DeviceNode({
 }
 
 /**
- * Central branded hub tower — the "Workflows"-style core. A tall orange glossy
- * cube on a wider base slab, capped with the Mainoo orange mark on cream.
+ * Central branded hub tower — the "Workflows"-style core. A floating orange
+ * glossy cube capped with the Mainoo orange mark on cream.
  */
 export function HubTower({ glowRef }: { glowRef?: React.RefObject<THREE.Mesh | null> }) {
   return (
     <group>
-      {/* Base slab. */}
-      <RoundedBox args={[0.98, 0.14, 0.98]} radius={0.05} smoothness={5} position={[0, -0.24, 0]}>
-        <meshPhysicalMaterial
-          color={brand.keycapBody}
-          metalness={0.4}
-          roughness={0.34}
-          clearcoat={0.9}
-        />
-      </RoundedBox>
-      <mesh position={[0, -0.17, 0]}>
-        <boxGeometry args={[1, 0.015, 1]} />
-        <meshBasicMaterial color={brand.orange} toneMapped={false} />
-      </mesh>
-
       {/* Branded tower. */}
       <RoundedBox args={[0.62, 0.52, 0.62]} radius={0.07} smoothness={5} position={[0, 0.1, 0]}>
         <meshPhysicalMaterial
