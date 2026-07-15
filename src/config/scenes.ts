@@ -33,7 +33,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   {
     id: "continent",
     range: [0, 0.12],
-    sceneLabel: "Scene 1",
+    sceneLabel: "The Digital Continent",
     lines: [
       "Africa runs on digital systems.",
       "Hospitals. Agencies. Utilities. Cities.",
@@ -43,7 +43,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   {
     id: "isolation",
     range: [0.12, 0.24],
-    sceneLabel: "Scene 2",
+    sceneLabel: "Systems in Isolation",
     lines: [
       "Hospital. Fire. Police. Utility. Government. Finance.",
       "Each system pulses alone.",
@@ -63,7 +63,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   {
     id: "connect",
     range: [0.32, 0.44],
-    sceneLabel: "Scene 3",
+    sceneLabel: "Coordination Emerges",
     lines: [
       "Signals flow into one coordination layer.",
       "Isolated systems begin to connect.",

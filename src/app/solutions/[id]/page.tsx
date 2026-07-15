@@ -18,6 +18,12 @@ const SECTOR_LABELS: Record<string, string> = {
   flood: "Flood operations sector engine",
 };
 
+const CRUMBS: Record<string, string> = {
+  health: "Health",
+  emergency: "Emergency",
+  flood: "Flood",
+};
+
 type SolutionBridgePageProps = {
   params: Promise<{ id: string }>;
 };
@@ -44,7 +50,11 @@ export default async function SolutionBridgePage({ params }: SolutionBridgePageP
   if (!solution || !demoUrl) notFound();
 
   return (
-    <SolutionShell sector={SECTOR_LABELS[id] ?? "Sector engine"} title={solution.title}>
+    <SolutionShell
+      crumb={CRUMBS[id] ?? solution.title}
+      sector={SECTOR_LABELS[id] ?? "Sector engine"}
+      title={solution.title}
+    >
       <Section id="overview">
         <SectionTitle>Explore the live MVP</SectionTitle>
         <SectionLead>{solution.description}</SectionLead>

@@ -65,11 +65,17 @@ const FAQ = [
 
 export function KontrolIQContent() {
   return (
-    <SolutionShell sector="Governance sector engine" title="KontrolIQ" active="kontroliq">
+    <SolutionShell
+      crumb="KontrolIQ"
+      sector="Governance sector engine"
+      title="KontrolIQ"
+      active="kontroliq"
+    >
       <Section id="overview" className="border-b border-white/[0.06]">
         <SectionEyebrow>Global compliance edition</SectionEyebrow>
         <SectionTitle>
-          Automate SOC 2 and ISO 27001 compliance without exporting sensitive data.
+          Automate SOC 2, ISO 27001, and Ghana Data Protection Act compliance without exporting
+          sensitive data.
         </SectionTitle>
         <SectionLead>
           KontrolIQ is a compliance control plane for security-conscious cloud infrastructure — helping
@@ -93,8 +99,8 @@ export function KontrolIQContent() {
           </a>
         </div>
         <p className="mt-6 max-w-3xl text-sm text-white/55">
-          Built with practitioner input and mapped to SOC 2 and ISO 27001 control requirements for teams
-          that need audit readiness speed and data control.
+          Built with practitioner input and mapped to SOC 2, ISO 27001, and Ghana Data Protection Act
+          control requirements for teams that need audit readiness speed and data control.
         </p>
       </Section>
 
@@ -114,7 +120,7 @@ export function KontrolIQContent() {
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-2">
-          {["SOC 2", "ISO 27001"].map((framework) => (
+          {["SOC 2", "ISO 27001", "Ghana Data Protection Act"].map((framework) => (
             <span
               key={framework}
               className="rounded-full border border-brand-orange/30 bg-brand-orange/10 px-4 py-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.16em] text-brand-cream"

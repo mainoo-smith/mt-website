@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HOMEPAGE_NAV } from "@/config/homepage";
@@ -19,8 +20,15 @@ export function SiteHeader({ active }: SiteHeaderProps) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-brand-ink/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="font-display text-sm font-extrabold uppercase tracking-[0.18em]">
-          Mainoo
+        <Link href="/" aria-label="Mainoo Technologies" className="flex items-center">
+          <Image
+            src="/assets/IMG_0090.png"
+            alt="Mainoo Technologies"
+            width={44}
+            height={44}
+            priority
+            className="h-9 w-9 rounded-full bg-brand-cream/95 p-0.5"
+          />
         </Link>
         <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.14em] lg:flex">
           <a
@@ -30,7 +38,15 @@ export function SiteHeader({ active }: SiteHeaderProps) {
             Experience
           </a>
           {DESKTOP_NAV.map((item) => (
-            <a key={item.href} href={`/${item.href}`} className="opacity-80 hover:opacity-100">
+            <a
+              key={item.href}
+              href={`/${item.href}`}
+              className={
+                active === "solutions" && item.href === "#solutions"
+                  ? "text-brand-orange"
+                  : "opacity-80 hover:opacity-100"
+              }
+            >
               {item.label}
             </a>
           ))}
@@ -62,11 +78,20 @@ export function SiteHeader({ active }: SiteHeaderProps) {
         <div className="border-t border-white/10 px-4 py-3 lg:hidden">
           <div className="flex flex-col gap-3 text-sm uppercase tracking-wider">
             {HOMEPAGE_NAV.map((item) => (
-              <a key={item.href} href={`/${item.href}`} onClick={closeMenu}>
+              <a
+                key={item.href}
+                href={`/${item.href}`}
+                onClick={closeMenu}
+                className={active === "solutions" && item.href === "#solutions" ? "text-brand-orange" : ""}
+              >
                 {item.label}
               </a>
             ))}
-            <Link href="/kontroliq/" onClick={closeMenu}>
+            <Link
+              href="/kontroliq/"
+              onClick={closeMenu}
+              className={active === "kontroliq" ? "text-brand-orange" : ""}
+            >
               KontrolIQ
             </Link>
             <a href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener noreferrer">
