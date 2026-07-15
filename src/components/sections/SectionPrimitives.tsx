@@ -81,7 +81,7 @@ export function GlassCard({
 export function PoweredBadge() {
   return (
     <span className="mt-4 inline-block font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-orange/90">
-      Powered by Mainoo Platform
+      Powered by Nyansapo
     </span>
   );
 }

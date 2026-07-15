@@ -17,7 +17,7 @@ const body = Lato({
 export const metadata: Metadata = {
   title: "Mainoo Technologies | Digital Coordination Architecture for Africa",
   description:
-    "Mainoo builds digital coordination infrastructure for critical sectors—interoperable platforms for healthcare, emergency operations, and compliance.",
+    "Mainoo Technologies builds Nyansapo — digital coordination infrastructure for critical sectors, including healthcare, emergency operations, flood intelligence, and compliance.",
 };
 
 export default function RootLayout({

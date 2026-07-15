@@ -15,7 +15,7 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
 });
 
 const DESKTOP_NAV = HOMEPAGE_NAV.filter((item) =>
-  ["#platform", "#solutions", "#industries", "#research"].includes(item.href),
+  ["#nyansapo", "#solutions", "#industries", "#research"].includes(item.href),
 );
 
 export function ExperienceShell() {
@@ -129,7 +129,7 @@ function ReducedMotionFallback({ progress }: { progress: number }) {
     "Systems in isolation",
     "Coordination emerges",
     "The challenge",
-    "The platform",
+    "Nyansapo",
     "The framework",
   ];
   const step = Math.min(labels.length - 1, Math.floor(progress * labels.length));

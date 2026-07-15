@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FRAMEWORK_STEPS, PLATFORM_LAYERS, SECTOR_ORGS } from "@/config/scenes";
-import { HOMEPAGE_NAV, INDUSTRIES, LABS, SOLUTIONS } from "@/config/homepage";
+import { HOMEPAGE_NAV, INDUSTRIES, LABS, NYANSAPO, SOLUTIONS } from "@/config/homepage";
 import {
   AccentRule,
   GlassCard,
@@ -66,12 +66,13 @@ function ChallengeSection() {
 
 function PlatformSection() {
   return (
-    <Section id="platform" className="border-t border-white/[0.06]">
-      <SectionEyebrow>The Platform</SectionEyebrow>
-      <SectionTitle>One platform. Multiple sectors.</SectionTitle>
+    <Section id="nyansapo" className="border-t border-white/[0.06]">
+      <SectionEyebrow>{NYANSAPO.name}</SectionEyebrow>
+      <SectionTitle>One architecture. Multiple sectors.</SectionTitle>
       <SectionLead>
-        Applications, coordination, trust, and infrastructure — layered so every sector can plug in
-        without rebuilding from scratch. Endless possibilities from a single operating model.
+        {NYANSAPO.name} is Mainoo&apos;s {NYANSAPO.descriptor} — applications, coordination, trust,
+        and infrastructure layered so every sector can plug in without rebuilding from scratch.
+        Health, emergency, flood intelligence, and governance engines all run on the same core.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 space-y-3">
@@ -105,8 +106,8 @@ function FrameworkSection() {
       <SectionEyebrow>The Framework</SectionEyebrow>
       <SectionTitle>How coordination actually works.</SectionTitle>
       <SectionLead>
-        From raw signals to governed action — six capabilities that turn disconnected data into
-        trusted, coordinated operations.
+        From raw signals to governed action — six capabilities at the heart of {NYANSAPO.name} that
+        turn disconnected data into trusted, coordinated operations.
       </SectionLead>
       <AccentRule />
       <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -133,11 +134,11 @@ function SolutionsSection() {
       <SectionEyebrow>Solutions</SectionEyebrow>
       <SectionTitle>Solutions in action.</SectionTitle>
       <SectionLead>
-        Sector-specific capabilities built on the same coordination core — deployable where the
-        stakes are highest.
+        Sector engines built on {NYANSAPO.name} — deployable where the stakes are highest. Each
+        solution inherits interoperability, sovereignty, and operational clarity from the core.
       </SectionLead>
       <AccentRule />
-      <div className="mt-10 grid gap-5 lg:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
         {SOLUTIONS.map((solution) => (
           <GlassCard key={solution.id} className="flex flex-col">
             <h3 className="font-display text-xl font-bold text-white">{solution.title}</h3>
@@ -166,8 +167,8 @@ function IndustriesSection() {
       <SectionEyebrow>Industries</SectionEyebrow>
       <SectionTitle>Built for sectors that cannot afford silos.</SectionTitle>
       <SectionLead>
-        Mainoo meets institutions where they operate — with interoperability, sovereignty, and
-        operational clarity designed in from the start.
+        {NYANSAPO.name} meets institutions where they operate — with interoperability, sovereignty,
+        and operational clarity designed in from the start.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 flex flex-wrap gap-3">
@@ -194,7 +195,7 @@ function SovereigntySection() {
           data.&rdquo;
         </blockquote>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-          Trusted connections, not centralized ownership. Mainoo enables coordination across
+          Trusted connections, not centralized ownership. {NYANSAPO.name} enables coordination across
           institutions while each organization retains authority over its own information.
         </p>
       </div>
@@ -206,10 +207,10 @@ function LabsSection() {
   return (
     <Section id="research" className="border-t border-white/[0.06]">
       <SectionEyebrow>Mainoo Labs</SectionEyebrow>
-      <SectionTitle>Research that feeds the platform.</SectionTitle>
+      <SectionTitle>Research that feeds {NYANSAPO.name}.</SectionTitle>
       <SectionLead>
         Applied research in AI, spatial intelligence, and digital infrastructure — translated into
-        capabilities the platform can ship.
+        capabilities the architecture can ship to sector engines.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -230,8 +231,8 @@ function ContactSection() {
       <SectionEyebrow>Contact</SectionEyebrow>
       <SectionTitle>The future belongs to connected systems.</SectionTitle>
       <SectionLead>
-        Mainoo Technologies is building the infrastructure that allows organizations and sectors to
-        work together intelligently.
+        Mainoo Technologies builds {NYANSAPO.name} — the infrastructure that allows organizations
+        and sectors to work together intelligently.
       </SectionLead>
       <div className="mt-10 flex flex-wrap gap-3">
         <a
