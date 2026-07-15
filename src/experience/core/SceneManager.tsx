@@ -65,11 +65,12 @@ export function SceneManager({ progress }: { progress: number }) {
   const groundPositions = useMemo(
     () =>
       SECTOR_ORGS.map((_, i) => {
-        const a = (i / SECTOR_ORGS.length) * Math.PI * 2 - Math.PI / 2;
+        const n = SECTOR_ORGS.length;
+        const nx = n === 1 ? 0 : (i / (n - 1)) * 2 - 1; // -1 .. 1
         return new THREE.Vector3(
-          Math.cos(a) * LAYOUT.groundRadius,
+          nx * LAYOUT.groundFanX,
           LAYOUT.groundY,
-          Math.sin(a) * LAYOUT.groundRadius,
+          LAYOUT.groundFanFront - nx * nx * LAYOUT.groundFanBow,
         );
       }),
     [],

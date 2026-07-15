@@ -143,11 +143,17 @@ export const LAYOUT = {
   coordinationOffsetAspect: 1,
   sectorRadiusX: 1.3,
   sectorRadiusY: 1.55,
-  challengeSpreadMax: 1.22,
+  challengeSpreadMax: 1.05,
   hubZ: 0.15,
   frameworkSpanX: 3.05,
-  /** Compact right-side product stage (Scenes 3-6). */
+  /** Scenes 3-6 nodes fan across the front so each is clearly visible w/ label. */
   groundRadius: 1.12,
+  /** Half-width of the node fan (x spread from -X to +X). */
+  groundFanX: 1.72,
+  /** Depth of the nearest (centre) nodes toward the camera. */
+  groundFanFront: 0.6,
+  /** How much the outer nodes bow back from the centre. */
+  groundFanBow: 0.55,
   groundY: -0.42,
   hubCenterY: 0.34,
   stageOffsetIso: 1.05,
