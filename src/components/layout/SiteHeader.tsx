@@ -35,8 +35,8 @@ function resolveFromPath(pathname: string | null): NavKey | null {
 
 function navClass(isActive: boolean) {
   return isActive
-    ? "rounded-full bg-brand-orange px-3 py-1.5 text-white"
-    : "rounded-full px-3 py-1.5 text-white/70 hover:bg-white/10 hover:text-white";
+    ? "px-1 py-1.5 text-brand-orange underline decoration-brand-orange decoration-2 underline-offset-8"
+    : "px-1 py-1.5 text-white/70 hover:text-white";
 }
 
 export function SiteHeader({ active: activeOverride }: SiteHeaderProps) {
@@ -112,7 +112,7 @@ export function SiteHeader({ active: activeOverride }: SiteHeaderProps) {
             className="h-9 w-9 rounded-full bg-brand-cream/95 p-0.5"
           />
         </Link>
-        <nav className="hidden items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] lg:flex">
+        <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.14em] lg:flex">
           <a href="/#experience" className={navClass(active === "experience")}>
             Experience
           </a>
@@ -131,7 +131,7 @@ export function SiteHeader({ active: activeOverride }: SiteHeaderProps) {
             href="https://calendly.com/mainootechnologies"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-2 rounded-full bg-brand-orange px-4 py-2 text-white hover:bg-brand-orangeDark"
+            className="ml-1 rounded-full border border-brand-orange bg-transparent px-4 py-2 text-brand-orange hover:bg-brand-orange hover:text-white"
           >
             Schedule a Demo
           </a>

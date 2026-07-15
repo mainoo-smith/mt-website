@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { DataStreamLabel, GlassPanel } from "@/components/ui";
 
 /** Shared section chrome — matches cinematic chapter copy typography and brand palette. */
 export function HomepageCanvas({ children }: { children: ReactNode }) {
@@ -58,6 +59,7 @@ export function AccentRule() {
   return <div className="mt-8 h-px w-16 bg-gradient-to-r from-brand-orange to-transparent" aria-hidden />;
 }
 
+/** @deprecated Prefer GlassPanel from @/components/ui — kept for existing imports. */
 export function GlassCard({
   children,
   className = "",
@@ -68,22 +70,15 @@ export function GlassCard({
   accent?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-brand-orange/30 hover:bg-white/[0.06] sm:p-7 ${
-        accent ? "border-l-2 border-l-brand-orange pl-5 sm:pl-6" : ""
-      } ${className}`}
-    >
+    <GlassPanel className={className} accent={accent}>
       {children}
-    </div>
+    </GlassPanel>
   );
 }
 
+/** @deprecated Prefer DataStreamLabel from @/components/ui. */
 export function PoweredBadge() {
-  return (
-    <span className="mt-4 inline-block font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-orange/90">
-      Powered by Nyansapo
-    </span>
-  );
+  return <DataStreamLabel>Powered by Nyansapo</DataStreamLabel>;
 }
 
 export function StatusBadge({ children }: { children: ReactNode }) {
