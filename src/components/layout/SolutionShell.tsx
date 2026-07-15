@@ -19,7 +19,7 @@ export function SolutionShell({
   sector,
   title,
   children,
-  active = "solutions",
+  active,
 }: SolutionShellProps) {
   return (
     <HomepageCanvas>

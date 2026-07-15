@@ -34,7 +34,7 @@ export function ExperienceShell() {
 
   return (
     <div className="bg-brand-ink text-white">
-      <SiteHeader active="experience" />
+      <SiteHeader />
 
       <main id="top">
         <section id="experience" ref={scrollRef} className="relative" style={{ height: EXPERIENCE_SCROLL_HEIGHT }}>
