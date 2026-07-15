@@ -146,14 +146,11 @@ export const LAYOUT = {
   challengeSpreadMax: 1.05,
   hubZ: 0.15,
   frameworkSpanX: 3.05,
-  /** Scenes 3-6 nodes fan across the front so each is clearly visible w/ label. */
+  /** Scenes 3-4 nodes sit on a tall vertical ellipse facing the camera so all
+   * six nodes + labels are visible at once (upright mesh network). */
   groundRadius: 1.12,
-  /** Half-width of the node fan (x spread from -X to +X). */
-  groundFanX: 1.72,
-  /** Depth of the nearest (centre) nodes toward the camera. */
-  groundFanFront: 0.6,
-  /** How much the outer nodes bow back from the centre. */
-  groundFanBow: 0.55,
+  ringRadiusX: 1.35,
+  ringRadiusY: 1.5,
   groundY: -0.42,
   hubCenterY: 0.34,
   stageOffsetIso: 1.05,

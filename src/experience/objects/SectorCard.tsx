@@ -11,15 +11,15 @@ type SectorCardProps = {
 };
 
 /**
- * Reference-style "system box": a clean cream glossy rounded slab that floats
- * above the stage, with the sector glyph inset on the left of the top face and
- * an upright label. Boxes are wired to the hub by flat orange pipes.
+ * Upright "system tile" that faces the camera: a cream glossy rounded panel with
+ * the sector glyph on the upper front face and the label below it. Arranged in a
+ * vertical ring so all six nodes and labels stay visible at once.
  */
 export function SectorCard({ org, showLabel = true }: SectorCardProps) {
   return (
     <group>
-      {/* Card body — cream glossy rounded slab. */}
-      <RoundedBox args={[0.56, 0.1, 0.36]} radius={0.038} smoothness={5}>
+      {/* Tile body (faces +z / camera). */}
+      <RoundedBox args={[0.66, 0.5, 0.12]} radius={0.05} smoothness={5}>
         <meshPhysicalMaterial
           color={brand.cream}
           metalness={0.08}
@@ -29,29 +29,27 @@ export function SectorCard({ org, showLabel = true }: SectorCardProps) {
         />
       </RoundedBox>
 
-      {/* Thin orange accent seam along the base. */}
-      <mesh position={[0, -0.055, 0]}>
-        <boxGeometry args={[0.52, 0.018, 0.32]} />
+      {/* Orange base seam along the bottom edge. */}
+      <mesh position={[0, -0.25, 0]}>
+        <boxGeometry args={[0.62, 0.02, 0.1]} />
         <meshBasicMaterial color={brand.orange} toneMapped={false} />
       </mesh>
 
-      {/* Glyph flat on the top face. */}
-      <group position={[0, 0.052, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.1}>
-        <SectorGlyph icon={org.icon} color={org.color} />
+      {/* Glyph on the upper front face. */}
+      <group position={[0, 0.1, 0.062]} scale={0.14}>
+        <SectorGlyph icon={org.icon} color={org.color} emissiveIntensity={0.5} />
       </group>
 
-      {/* Upright label facing the camera so it stays legible at the iso angle. */}
+      {/* Label on the lower front face. */}
       {showLabel ? (
         <Text
-          position={[0, 0.14, 0.19]}
-          fontSize={0.075}
-          maxWidth={0.62}
+          position={[0, -0.13, 0.065]}
+          fontSize={0.078}
+          maxWidth={0.6}
           letterSpacing={0.01}
-          color={brand.cream}
+          color={brand.ink}
           anchorX="center"
-          anchorY="bottom"
-          outlineWidth={0.004}
-          outlineColor={brand.ink}
+          anchorY="middle"
         >
           {org.label.toUpperCase()}
         </Text>

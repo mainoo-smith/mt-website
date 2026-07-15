@@ -12,12 +12,12 @@ type FrameworkSceneProps = {
   weight: number;
 };
 
-const STAGE_TOP = LAYOUT.groundY - 0.03;
-const CUBE_Y = LAYOUT.groundY + 0.17;
-const HUB_POS: [number, number, number] = [0, STAGE_TOP + 0.25, 0];
+const RING_CENTER_Y = LAYOUT.groundY + 0.22;
+const HUB_POS: [number, number, number] = [0, RING_CENTER_Y, 0];
 const CUBE_SIZE = 0.32;
-const TRACK_RX = 1.28;
-const TRACK_RZ = 0.86;
+// Tall vertical ellipse (XY plane) so every step + label faces the camera.
+const TRACK_RX = 1.2;
+const TRACK_RY = 1.42;
 const PACKET_COUNT = 10;
 
 export function FrameworkScene({ weight }: FrameworkSceneProps) {
@@ -28,8 +28,12 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
   const positions = useMemo(
     () =>
       FRAMEWORK_STEPS.map((_, i) => {
-        const a = (i / FRAMEWORK_STEPS.length) * Math.PI * 2 - Math.PI / 2;
-        return new THREE.Vector3(Math.cos(a) * TRACK_RX, CUBE_Y, Math.sin(a) * TRACK_RZ);
+        const a = Math.PI / 2 - (i / FRAMEWORK_STEPS.length) * Math.PI * 2;
+        return new THREE.Vector3(
+          Math.cos(a) * TRACK_RX,
+          RING_CENTER_Y + Math.sin(a) * TRACK_RY,
+          0,
+        );
       }),
     [],
   );
@@ -52,7 +56,7 @@ export function FrameworkScene({ weight }: FrameworkSceneProps) {
         const appear = smoothstep(i * 0.06, i * 0.06 + 0.32, weight);
         g.scale.setScalar(appear);
         g.position.copy(positions[i]);
-        g.position.y = CUBE_Y + Math.sin(clock.elapsedTime * 0.9 + i * 0.8) * 0.025;
+        g.position.y = positions[i].y + Math.sin(clock.elapsedTime * 0.9 + i * 0.8) * 0.025;
       });
     }
 

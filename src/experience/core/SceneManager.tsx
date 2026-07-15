@@ -28,8 +28,6 @@ import { FrameworkScene } from "@/experience/scenes/FrameworkScene";
 import { PlatformScene } from "@/experience/scenes/PlatformScene";
 
 const HUB_STAND_Y = LAYOUT.groundY + 0.34;
-/** Height the boxes + pipes float above the stage. */
-const CARD_FLOAT_Y = LAYOUT.groundY + 0.16;
 /** Final display scale of the coordination hub at full connect. */
 const HUB_SCALE = 0.66;
 /** Radius of the hub body footprint at HUB_SCALE (pipes dock to this edge). */
@@ -62,32 +60,39 @@ export function SceneManager({ progress }: { progress: number }) {
     () => buildSectorPositions(SECTOR_ORGS.length, LAYOUT.sectorRadiusX, LAYOUT.sectorRadiusY),
     [],
   );
+  // Nodes sit on a tall vertical ellipse (XY plane) facing the camera.
   const groundPositions = useMemo(
     () =>
       SECTOR_ORGS.map((_, i) => {
         const n = SECTOR_ORGS.length;
-        const nx = n === 1 ? 0 : (i / (n - 1)) * 2 - 1; // -1 .. 1
+        const a = Math.PI / 2 - (i / n) * Math.PI * 2; // node 0 at top, clockwise
         return new THREE.Vector3(
-          nx * LAYOUT.groundFanX,
-          LAYOUT.groundY,
-          LAYOUT.groundFanFront - nx * nx * LAYOUT.groundFanBow,
+          Math.cos(a) * LAYOUT.ringRadiusX,
+          HUB_STAND_Y + Math.sin(a) * LAYOUT.ringRadiusY,
+          0,
         );
       }),
     [],
   );
 
-  // Flat pipes run across the stage from each box edge to the hub edge.
+  // Spoke pipes run in the vertical plane from each tile edge to the hub edge,
+  // bowed slightly toward the camera so they read as connections.
   const groundCurves = useMemo(() => {
+    const hubCenter = new THREE.Vector3(0, HUB_STAND_Y, 0);
     return groundPositions.map((p) => {
-      const dir = new THREE.Vector2(p.x, p.z).normalize();
+      const dir = new THREE.Vector2(p.x - hubCenter.x, p.y - hubCenter.y).normalize();
       const start = new THREE.Vector3(
         p.x - dir.x * CARD_DOCK_INSET,
-        CARD_FLOAT_Y,
-        p.z - dir.y * CARD_DOCK_INSET,
+        p.y - dir.y * CARD_DOCK_INSET,
+        0,
       );
-      const end = new THREE.Vector3(dir.x * HUB_DOCK_RADIUS, CARD_FLOAT_Y, dir.y * HUB_DOCK_RADIUS);
+      const end = new THREE.Vector3(
+        hubCenter.x + dir.x * HUB_DOCK_RADIUS,
+        hubCenter.y + dir.y * HUB_DOCK_RADIUS,
+        0,
+      );
       const mid = start.clone().lerp(end, 0.5);
-      mid.y = CARD_FLOAT_Y + 0.03;
+      mid.z = 0.18;
       return new THREE.QuadraticBezierCurve3(start, mid, end);
     });
   }, [groundPositions]);
@@ -148,8 +153,8 @@ export function SceneManager({ progress }: { progress: number }) {
         const gnd = groundPositions[i];
 
         const px = lerp(vert.x, gnd.x * spread, iso);
-        const py = lerp(vert.y, gnd.y + 0.16, iso);
-        const pz = lerp(vert.z, gnd.z * spread, iso);
+        const py = lerp(vert.y, gnd.y, iso);
+        const pz = lerp(vert.z, gnd.z, iso);
 
         const idle = Math.sin(clock.elapsedTime * 0.9 + i * 0.7) * SECTOR_MOTION.idleBob;
         const bob =
@@ -178,7 +183,7 @@ export function SceneManager({ progress }: { progress: number }) {
         const g = child as THREE.Group;
         const gnd = groundPositions[i];
         const idle = Math.sin(clock.elapsedTime * 0.8 + i * 0.8) * 0.02;
-        g.position.set(gnd.x * spread, CARD_FLOAT_Y + idle, gnd.z * spread);
+        g.position.set(gnd.x * spread, gnd.y + idle, gnd.z);
         g.scale.setScalar(cardVisibility * actIExit);
       });
     }
