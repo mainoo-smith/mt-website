@@ -17,7 +17,6 @@ export type ScrollChapterId =
   | "challenge"
   | "platform"
   | "framework"
-  | "healthcare"
   | "emergency"
   | "compliance"
   | "future";
@@ -102,28 +101,18 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
     ],
   },
   {
-    id: "healthcare",
-    range: [0.74, 0.8],
-    sceneLabel: "Nyansapo Health",
-    lines: [
-      "Patient pathways across facilities.",
-      "Hospitals, clinics, and agencies aligned.",
-      "One health operating picture.",
-    ],
-  },
-  {
     id: "emergency",
-    range: [0.8, 0.86],
-    sceneLabel: "Emergency Coordination",
+    range: [0.74, 0.84],
+    sceneLabel: "Health Emergency Coordination",
     lines: [
       "Multi-agency command in real time.",
       "Hospital. Fire. Police. Utility.",
-      "One operational layer.",
+      "New sectors plug into the same core.",
     ],
   },
   {
     id: "compliance",
-    range: [0.86, 0.92],
+    range: [0.84, 0.92],
     sceneLabel: "KontrolIQ",
     lines: [
       "Governance woven into operations.",
@@ -162,12 +151,10 @@ export const SCENE_TIMING = {
   framework: { start: 0.66, end: 0.72 },
   frameworkFadeOut: { start: 0.72, end: 0.76 },
   // Act III — sector engine demos
-  healthcare: { start: 0.74, end: 0.78 },
-  healthcareFadeOut: { start: 0.8, end: 0.84 },
-  emergency: { start: 0.8, end: 0.84 },
-  emergencyFadeOut: { start: 0.86, end: 0.9 },
-  compliance: { start: 0.86, end: 0.9 },
-  complianceFadeOut: { start: 0.92, end: 0.96 },
+  emergency: { start: 0.76, end: 0.81 },
+  emergencyFadeOut: { start: 0.83, end: 0.87 },
+  compliance: { start: 0.85, end: 0.89 },
+  complianceFadeOut: { start: 0.91, end: 0.95 },
   future: { start: 0.92, end: 0.96 },
   // Shared
   orgLabels: { showAfter: 0.12, hideAfter: 0.28 },

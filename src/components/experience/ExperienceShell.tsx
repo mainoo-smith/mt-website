@@ -127,13 +127,12 @@ function ReducedMotionFallback({ progress }: { progress: number }) {
   const labels = [
     "Digital continent",
     "Systems in isolation",
-    "The flood event",
+    "The event",
     "Coordination emerges",
     "The challenge",
     "Nyansapo",
     "The framework",
-    "Nyansapo Health",
-    "Emergency coordination",
+    "Health emergency coordination",
     "KontrolIQ",
     "The road ahead",
   ];

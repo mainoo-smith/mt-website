@@ -29,9 +29,8 @@ const states = [
   ["scene-4-challenge", 0.49],
   ["scene-5-platform", 0.59],
   ["scene-6-framework", 0.69],
-  ["scene-healthcare", 0.77],
-  ["scene-emergency", 0.83],
-  ["scene-compliance", 0.89],
+  ["scene-emergency", 0.79],
+  ["scene-compliance", 0.88],
   ["scene-future", 0.95],
 ];
 

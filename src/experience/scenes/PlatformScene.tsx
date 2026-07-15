@@ -14,12 +14,15 @@ type PlatformSceneProps = {
 
 const HUB_POS: [number, number, number] = [0, -0.12, -0.2];
 
-/** Floating device-node slots around the hub — calm, symmetric, uncluttered. */
+/**
+ * Floating device-node slots around the hub — a clean 2×2 grid with a wide
+ * vertical gap between rows so every caption stays clear of its neighbours.
+ */
 const NODE_SLOTS: [number, number, number][] = [
-  [-1.1, 0.04, 0.15],
-  [1.1, 0.04, 0.15],
-  [-0.78, -0.16, 0.72],
-  [0.78, -0.16, 0.72],
+  [-1.3, 0.46, 0.15],
+  [1.3, 0.46, 0.15],
+  [-1.3, -0.52, 0.62],
+  [1.3, -0.52, 0.62],
 ];
 
 export function PlatformScene({ weight }: PlatformSceneProps) {

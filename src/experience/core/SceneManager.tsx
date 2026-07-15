@@ -28,7 +28,6 @@ import { SectorNode } from "@/experience/objects/SectorNode";
 import { FrameworkScene } from "@/experience/scenes/FrameworkScene";
 import { PlatformScene } from "@/experience/scenes/PlatformScene";
 import { FloodScene } from "@/experience/scenes/FloodScene";
-import { HealthcareScene } from "@/experience/scenes/HealthcareScene";
 import { EmergencyScene } from "@/experience/scenes/EmergencyScene";
 import { ComplianceScene } from "@/experience/scenes/ComplianceScene";
 import { FutureScene } from "@/experience/scenes/FutureScene";
@@ -309,7 +308,6 @@ export function SceneManager({ progress }: { progress: number }) {
         <FloodScene weight={weights.flood} />
         <PlatformScene weight={weights.platform} />
         <FrameworkScene weight={weights.framework} />
-        <HealthcareScene weight={weights.healthcare} />
         <EmergencyScene weight={weights.emergency} />
         <ComplianceScene weight={weights.compliance} />
         <FutureScene weight={weights.future} />

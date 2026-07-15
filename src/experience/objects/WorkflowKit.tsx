@@ -133,16 +133,18 @@ export function DeviceNode({
         </mesh>
       ))}
 
-      {/* Front-face label. */}
+      {/* Caption below the unit — larger and outlined so it stays legible. */}
       {showLabel && label ? (
         <Text
-          position={[0, -h * 0.12, size * 0.505]}
-          fontSize={size * 0.1}
-          maxWidth={size * 1.5}
-          letterSpacing={0.01}
+          position={[0, -h / 2 - size * 0.24, size * 0.3]}
+          fontSize={size * 0.2}
+          maxWidth={size * 3}
+          letterSpacing={0.02}
           color={brand.cream}
           anchorX="center"
           anchorY="middle"
+          outlineWidth={size * 0.012}
+          outlineColor={brand.ink}
         >
           {label.toUpperCase()}
         </Text>

@@ -9,7 +9,6 @@ export type SceneWeights = {
   challenge: number;
   platform: number;
   framework: number;
-  healthcare: number;
   emergency: number;
   compliance: number;
   future: number;
@@ -79,14 +78,6 @@ export function computeSceneWeights(progress: number): SceneWeights {
     progress,
   );
 
-  const healthcare = gated(
-    SCENE_TIMING.healthcare.start,
-    SCENE_TIMING.healthcare.end,
-    SCENE_TIMING.healthcareFadeOut.start,
-    SCENE_TIMING.healthcareFadeOut.end,
-    progress,
-  );
-
   const emergency = gated(
     SCENE_TIMING.emergency.start,
     SCENE_TIMING.emergency.end,
@@ -115,7 +106,6 @@ export function computeSceneWeights(progress: number): SceneWeights {
     challenge,
     platform,
     framework,
-    healthcare,
     emergency,
     compliance,
     future,

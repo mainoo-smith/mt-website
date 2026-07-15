@@ -10,7 +10,6 @@ import {
   SectionEyebrow,
   SectionLead,
   SectionTitle,
-  StatusBadge,
 } from "./SectionPrimitives";
 
 export function HomepageSections() {
@@ -149,7 +148,7 @@ function SolutionsSection() {
       <SectionTitle>Solutions in action.</SectionTitle>
       <SectionLead>
         Live demos and early products today — each proving coordination patterns on {NYANSAPO.name}.
-        Request a pilot to explore deployment in your environment.
+        Explore each solution or request a pilot for your environment.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
@@ -161,8 +160,7 @@ function SolutionsSection() {
 
           return (
             <GlassCard key={solution.id} className="flex flex-col">
-              <StatusBadge>{solution.statusLabel}</StatusBadge>
-              <h3 className="mt-3 font-display text-xl font-bold text-white">{solution.title}</h3>
+              <h3 className="font-display text-xl font-bold text-white">{solution.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-white/68 sm:text-base">
                 {solution.description}
               </p>

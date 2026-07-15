@@ -8,10 +8,11 @@ import {
 } from "@/experience/core/experienceFraming";
 
 export function useExperienceLayout(): ExperienceFraming {
+  // Always seed with the SSR default so the first client render matches the
+  // server markup (avoids a hydration mismatch). Real framing is measured after
+  // mount in the effect below.
   const [framing, setFraming] = useState<ExperienceFraming>(() =>
-    typeof window === "undefined"
-      ? getExperienceFraming(1440, 900)
-      : getExperienceFraming(window.innerWidth, window.innerHeight),
+    getExperienceFraming(1440, 900),
   );
 
   useEffect(() => {

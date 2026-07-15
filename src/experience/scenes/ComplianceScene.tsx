@@ -38,7 +38,6 @@ export function ComplianceScene({ weight }: ComplianceSceneProps) {
 
   useFrame(({ clock }) => {
     const appear = smoothstep(0, 0.35, weight);
-    if (ring.current) ring.current.rotation.z = clock.elapsedTime * 0.08;
     if (packets.current) {
       packets.current.children.forEach((child, i) => {
         const mesh = child as THREE.Mesh;
@@ -96,11 +95,14 @@ export function ComplianceScene({ weight }: ComplianceSceneProps) {
         <SectorGlyph icon="shield" color={brand.cream} emissiveIntensity={0.55} />
       </group>
       <Text
-        position={[0, -0.38, 0.26]}
-        fontSize={0.09}
+        position={[0, -0.42, 0.26]}
+        fontSize={0.13}
+        letterSpacing={0.02}
         color={brand.cream}
         anchorX="center"
         anchorY="middle"
+        outlineWidth={0.006}
+        outlineColor={brand.ink}
       >
         KONTROLIQ
       </Text>
@@ -108,7 +110,7 @@ export function ComplianceScene({ weight }: ComplianceSceneProps) {
       <group ref={ring}>
         {CHECKPOINTS.map((label, i) => (
           <group key={label} position={positions[i]}>
-            <RoundedBox args={[0.42, 0.28, 0.1]} radius={0.04} smoothness={4}>
+            <RoundedBox args={[0.5, 0.3, 0.1]} radius={0.04} smoothness={4}>
               <meshPhysicalMaterial
                 color={brand.keycapBody}
                 metalness={0.4}
@@ -118,10 +120,13 @@ export function ComplianceScene({ weight }: ComplianceSceneProps) {
             </RoundedBox>
             <Text
               position={[0, 0, 0.06]}
-              fontSize={0.055}
+              fontSize={0.078}
+              letterSpacing={0.01}
               color={brand.cream}
               anchorX="center"
               anchorY="middle"
+              outlineWidth={0.004}
+              outlineColor={brand.ink}
             >
               {label.toUpperCase()}
             </Text>
