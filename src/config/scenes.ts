@@ -72,8 +72,8 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
     sceneLabel: "Nyansapo",
     lines: [
       "One architecture. Multiple sectors.",
-      "Health. Emergency. Flood intelligence. Governance.",
-      "Sector engines on a shared core.",
+      "Live MVPs prove the model today.",
+      "More engines on the roadmap.",
     ],
   },
   {

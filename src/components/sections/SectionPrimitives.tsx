@@ -85,3 +85,11 @@ export function PoweredBadge() {
     </span>
   );
 }
+
+export function StatusBadge({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block rounded-full border border-brand-orange/30 bg-brand-orange/10 px-3 py-1 font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-cream">
+      {children}
+    </span>
+  );
+}

@@ -4,6 +4,10 @@
 export const NYANSAPO = {
   name: "Nyansapo",
   descriptor: "core infrastructure architecture system",
+  today:
+    "Live MVPs and early products prove coordination patterns in health, emergency response, flood operations, and governance — each built to inform the shared core.",
+  direction:
+    "The roadmap extends Nyansapo across government, utilities, finance, and agriculture — one architecture, more sector engines over time.",
 } as const;
 
 export const HOMEPAGE_NAV = [
@@ -15,32 +19,67 @@ export const HOMEPAGE_NAV = [
   { label: "Contact", href: "#contact" },
 ] as const;
 
-export const SOLUTIONS = [
+export type SolutionStatus = "live-demo" | "product";
+
+export type Solution = {
+  id: string;
+  title: string;
+  description: string;
+  status: SolutionStatus;
+  statusLabel: string;
+  href: string;
+  linkLabel: string;
+  external: boolean;
+};
+
+export const SOLUTIONS: Solution[] = [
   {
     id: "health",
     title: "Nyansapo Health",
     description:
-      "Healthcare coordination across facilities, agencies, and patient pathways — one operating picture for clinical and public health response.",
+      "MVP exploring secure exchange, patient routing workflows, and cross-facility visibility for health operations.",
+    status: "live-demo",
+    statusLabel: "Live demo · MVP",
+    href: "https://nyansapo-one.vercel.app/#/hospital",
+    linkLabel: "View live demo",
+    external: true,
   },
   {
     id: "emergency",
     title: "Nyansapo Emergency Coordination Engine",
     description:
-      "Real-time multi-agency coordination during critical events — hospital, fire, police, and utility connected on a single command layer.",
+      "MVP for multi-agency emergency coordination — hospital, fire, police, and utility signals on one operational picture.",
+    status: "live-demo",
+    statusLabel: "Live demo · MVP",
+    href: "https://nyansapo-one.vercel.app/#/emergency",
+    linkLabel: "View live demo",
+    external: true,
   },
   {
     id: "flood",
     title: "Nyansapo Flood Intelligence",
     description:
-      "Predictive flood monitoring and cross-sector response — utilities, government, and emergency services sharing live spatial intelligence.",
+      "MVP for environmental monitoring, unified command views, and cross-agency flood response coordination.",
+    status: "live-demo",
+    statusLabel: "Live demo · MVP",
+    href: "https://flood-xi-five.vercel.app/#/command",
+    linkLabel: "View live demo",
+    external: true,
   },
   {
     id: "kontroliq",
     title: "KontrolIQ",
-    description: "Automated governance and compliance intelligence for regulated environments.",
+    description:
+      "Compliance control plane for regulated businesses — local-first data control, evidence workflows, and remediation tracking.",
+    status: "product",
+    statusLabel: "Product",
     href: "/kontroliq.html",
+    linkLabel: "Explore KontrolIQ",
+    external: false,
   },
-] as const;
+];
+
+export const PILOT_URL = "https://calendly.com/mainootechnologies" as const;
 
 export const INDUSTRIES = [
   "Government",
@@ -56,5 +95,9 @@ export const LABS = [
   { id: "digital-twins", title: "Digital Twins", description: "Live models of cities, networks, and critical infrastructure." },
   { id: "gis", title: "GIS Intelligence", description: "Spatial data woven into operational decision-making." },
   { id: "smart-cities", title: "Smart Cities", description: "Urban coordination platforms for connected municipalities." },
-  { id: "applied-coordination", title: "Applied Coordination", description: "Research prototypes translated into Nyansapo capabilities." },
+  {
+    id: "applied-coordination",
+    title: "Applied Coordination",
+    description: "Research prototypes that inform the next Nyansapo sector engines.",
+  },
 ] as const;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FRAMEWORK_STEPS, PLATFORM_LAYERS, SECTOR_ORGS } from "@/config/scenes";
-import { HOMEPAGE_NAV, INDUSTRIES, LABS, NYANSAPO, SOLUTIONS } from "@/config/homepage";
+import { HOMEPAGE_NAV, INDUSTRIES, LABS, NYANSAPO, PILOT_URL, SOLUTIONS } from "@/config/homepage";
 import {
   AccentRule,
   GlassCard,
@@ -10,6 +10,7 @@ import {
   SectionEyebrow,
   SectionLead,
   SectionTitle,
+  StatusBadge,
 } from "./SectionPrimitives";
 
 export function HomepageSections() {
@@ -71,9 +72,22 @@ function PlatformSection() {
       <SectionTitle>One architecture. Multiple sectors.</SectionTitle>
       <SectionLead>
         {NYANSAPO.name} is Mainoo&apos;s {NYANSAPO.descriptor} — applications, coordination, trust,
-        and infrastructure layered so every sector can plug in without rebuilding from scratch.
-        Health, emergency, flood intelligence, and governance engines all run on the same core.
+        and infrastructure layered so sector engines can plug in without rebuilding from scratch.
       </SectionLead>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <GlassCard>
+          <p className="font-display text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-orange">
+            Today
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-white/70">{NYANSAPO.today}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="font-display text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-orange">
+            Direction
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-white/70">{NYANSAPO.direction}</p>
+        </GlassCard>
+      </div>
       <AccentRule />
       <div className="mt-10 space-y-3">
         {PLATFORM_LAYERS.map((layer, i) => (
@@ -134,28 +148,46 @@ function SolutionsSection() {
       <SectionEyebrow>Solutions</SectionEyebrow>
       <SectionTitle>Solutions in action.</SectionTitle>
       <SectionLead>
-        Sector engines built on {NYANSAPO.name} — deployable where the stakes are highest. Each
-        solution inherits interoperability, sovereignty, and operational clarity from the core.
+        Live demos and early products today — each proving coordination patterns on {NYANSAPO.name}.
+        Request a pilot to explore deployment in your environment.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
-        {SOLUTIONS.map((solution) => (
-          <GlassCard key={solution.id} className="flex flex-col">
-            <h3 className="font-display text-xl font-bold text-white">{solution.title}</h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-white/68 sm:text-base">
-              {solution.description}
-            </p>
-            <PoweredBadge />
-            {"href" in solution && solution.href ? (
-              <Link
-                href={solution.href}
-                className="mt-5 inline-flex font-display text-xs font-bold uppercase tracking-wider text-brand-orange hover:text-brand-cream"
-              >
-                Explore →
-              </Link>
-            ) : null}
-          </GlassCard>
-        ))}
+        {SOLUTIONS.map((solution) => {
+          const LinkTag = solution.external ? "a" : Link;
+          const linkProps = solution.external
+            ? { href: solution.href, target: "_blank", rel: "noopener noreferrer" }
+            : { href: solution.href };
+
+          return (
+            <GlassCard key={solution.id} className="flex flex-col">
+              <StatusBadge>{solution.statusLabel}</StatusBadge>
+              <h3 className="mt-3 font-display text-xl font-bold text-white">{solution.title}</h3>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-white/68 sm:text-base">
+                {solution.description}
+              </p>
+              <PoweredBadge />
+              <div className="mt-5 flex flex-wrap gap-3">
+                <LinkTag
+                  {...linkProps}
+                  className="inline-flex font-display text-xs font-bold uppercase tracking-wider text-brand-orange hover:text-brand-cream"
+                >
+                  {solution.linkLabel} →
+                </LinkTag>
+                {solution.status === "live-demo" ? (
+                  <a
+                    href={PILOT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex font-display text-xs font-bold uppercase tracking-wider text-white/55 hover:text-white"
+                  >
+                    Request a pilot
+                  </a>
+                ) : null}
+              </div>
+            </GlassCard>
+          );
+        })}
       </div>
     </Section>
   );
@@ -209,8 +241,8 @@ function LabsSection() {
       <SectionEyebrow>Mainoo Labs</SectionEyebrow>
       <SectionTitle>Research that feeds {NYANSAPO.name}.</SectionTitle>
       <SectionLead>
-        Applied research in AI, spatial intelligence, and digital infrastructure — translated into
-        capabilities the architecture can ship to sector engines.
+        Applied research in AI, spatial intelligence, and digital infrastructure — informing the
+        next capabilities {NYANSAPO.name} will generalize across sector engines.
       </SectionLead>
       <AccentRule />
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -231,8 +263,8 @@ function ContactSection() {
       <SectionEyebrow>Contact</SectionEyebrow>
       <SectionTitle>The future belongs to connected systems.</SectionTitle>
       <SectionLead>
-        Mainoo Technologies builds {NYANSAPO.name} — the infrastructure that allows organizations
-        and sectors to work together intelligently.
+        Mainoo Technologies is building {NYANSAPO.name} — coordination infrastructure for
+        organizations and sectors that need to work together, without over-centralizing control.
       </SectionLead>
       <div className="mt-10 flex flex-wrap gap-3">
         <a
