@@ -127,10 +127,15 @@ function ReducedMotionFallback({ progress }: { progress: number }) {
   const labels = [
     "Digital continent",
     "Systems in isolation",
+    "The flood event",
     "Coordination emerges",
     "The challenge",
     "Nyansapo",
     "The framework",
+    "Nyansapo Health",
+    "Emergency coordination",
+    "KontrolIQ",
+    "The road ahead",
   ];
   const step = Math.min(labels.length - 1, Math.floor(progress * labels.length));
   return (

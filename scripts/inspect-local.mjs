@@ -23,11 +23,16 @@ await page.waitForFunction(() => typeof window.__mainooSetProgress === "function
 });
 
 const states = [
-  ["scene-2-isolation", 0.19],
-  ["scene-3-connect", 0.34],
-  ["scene-4-challenge", 0.52],
-  ["scene-5-platform", 0.66],
-  ["scene-6-framework", 0.84],
+  ["scene-2-isolation", 0.18],
+  ["scene-flood", 0.28],
+  ["scene-3-connect", 0.38],
+  ["scene-4-challenge", 0.49],
+  ["scene-5-platform", 0.59],
+  ["scene-6-framework", 0.69],
+  ["scene-healthcare", 0.77],
+  ["scene-emergency", 0.83],
+  ["scene-compliance", 0.89],
+  ["scene-future", 0.95],
 ];
 
 const readings = [];

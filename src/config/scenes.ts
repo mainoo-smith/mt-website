@@ -12,10 +12,15 @@ export type SectorOrg = {
 export type ScrollChapterId =
   | "continent"
   | "isolation"
+  | "flood"
   | "connect"
   | "challenge"
   | "platform"
-  | "framework";
+  | "framework"
+  | "healthcare"
+  | "emergency"
+  | "compliance"
+  | "future";
 
 export type ScrollChapter = {
   id: ScrollChapterId;
@@ -24,11 +29,11 @@ export type ScrollChapter = {
   lines: string[];
 };
 
-/** Full scroll narrative — Act I (Scenes 1–3) + Act II 4a (Scenes 4–6). */
+/** Full scroll narrative — Act I + Act II + Act III (Volume III storyboard). */
 export const SCROLL_CHAPTERS: ScrollChapter[] = [
   {
     id: "continent",
-    range: [0, 0.15],
+    range: [0, 0.12],
     sceneLabel: "Scene 1",
     lines: [
       "Africa runs on digital systems.",
@@ -38,7 +43,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   },
   {
     id: "isolation",
-    range: [0.15, 0.3],
+    range: [0.12, 0.24],
     sceneLabel: "Scene 2",
     lines: [
       "Hospital. Fire. Police. Utility. Government. Finance.",
@@ -47,8 +52,18 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
     ],
   },
   {
+    id: "flood",
+    range: [0.24, 0.32],
+    sceneLabel: "The Event",
+    lines: [
+      "A flood surge reaches the city.",
+      "Each system sees a fragment.",
+      "No shared response. No shared picture.",
+    ],
+  },
+  {
     id: "connect",
-    range: [0.3, 0.45],
+    range: [0.32, 0.44],
     sceneLabel: "Scene 3",
     lines: [
       "Signals flow into one coordination layer.",
@@ -58,7 +73,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   },
   {
     id: "challenge",
-    range: [0.45, 0.6],
+    range: [0.44, 0.54],
     sceneLabel: "The Challenge",
     lines: [
       "The world's most important systems were built separately.",
@@ -68,7 +83,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   },
   {
     id: "platform",
-    range: [0.6, 0.75],
+    range: [0.54, 0.64],
     sceneLabel: "Nyansapo",
     lines: [
       "One architecture. Multiple sectors.",
@@ -78,7 +93,7 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
   },
   {
     id: "framework",
-    range: [0.75, 0.92],
+    range: [0.64, 0.74],
     sceneLabel: "The Framework",
     lines: [
       "Connect. Normalize. Understand.",
@@ -86,26 +101,76 @@ export const SCROLL_CHAPTERS: ScrollChapter[] = [
       "How coordination actually works.",
     ],
   },
+  {
+    id: "healthcare",
+    range: [0.74, 0.8],
+    sceneLabel: "Nyansapo Health",
+    lines: [
+      "Patient pathways across facilities.",
+      "Hospitals, clinics, and agencies aligned.",
+      "One health operating picture.",
+    ],
+  },
+  {
+    id: "emergency",
+    range: [0.8, 0.86],
+    sceneLabel: "Emergency Coordination",
+    lines: [
+      "Multi-agency command in real time.",
+      "Hospital. Fire. Police. Utility.",
+      "One operational layer.",
+    ],
+  },
+  {
+    id: "compliance",
+    range: [0.86, 0.92],
+    sceneLabel: "KontrolIQ",
+    lines: [
+      "Governance woven into operations.",
+      "Evidence, remediation, and trust.",
+      "Compliance without the scramble.",
+    ],
+  },
+  {
+    id: "future",
+    range: [0.92, 0.98],
+    sceneLabel: "The Road Ahead",
+    lines: [
+      "More sectors. More engines.",
+      "One Nyansapo architecture.",
+      "Coordination that scales with Africa.",
+    ],
+  },
 ];
 
 /** Scroll progress thresholds for 3D scene blending (0–1). */
 export const SCENE_TIMING = {
   // Act I
-  continentFade: { start: 0.1, end: 0.16 },
-  isolation: { start: 0.14, end: 0.2 },
-  isolationFadeOut: { start: 0.26, end: 0.3 },
-  connect: { start: 0.28, end: 0.34 },
-  connectFadeOut: { start: 0.4, end: 0.46 },
-  /** Isometric camera + ground layout ramp (Scene 3 onward). */
-  iso: { start: 0.24, end: 0.36 },
-  // Act II — 4a
+  continentFade: { start: 0.08, end: 0.13 },
+  isolation: { start: 0.11, end: 0.17 },
+  isolationFadeOut: { start: 0.22, end: 0.26 },
+  flood: { start: 0.23, end: 0.29 },
+  floodFadeOut: { start: 0.3, end: 0.34 },
+  connect: { start: 0.32, end: 0.38 },
+  connectFadeOut: { start: 0.42, end: 0.48 },
+  iso: { start: 0.28, end: 0.4 },
+  // Act II
   challenge: { start: 0.44, end: 0.5 },
-  challengeFadeOut: { start: 0.56, end: 0.62 },
-  platform: { start: 0.58, end: 0.64 },
-  platformFadeOut: { start: 0.7, end: 0.76 },
-  framework: { start: 0.74, end: 0.8 },
+  challengeFadeOut: { start: 0.52, end: 0.58 },
+  platform: { start: 0.54, end: 0.6 },
+  platformFadeOut: { start: 0.62, end: 0.68 },
+  framework: { start: 0.66, end: 0.72 },
+  frameworkFadeOut: { start: 0.72, end: 0.76 },
+  // Act III — sector engine demos
+  healthcare: { start: 0.74, end: 0.78 },
+  healthcareFadeOut: { start: 0.8, end: 0.84 },
+  emergency: { start: 0.8, end: 0.84 },
+  emergencyFadeOut: { start: 0.86, end: 0.9 },
+  compliance: { start: 0.86, end: 0.9 },
+  complianceFadeOut: { start: 0.92, end: 0.96 },
+  future: { start: 0.92, end: 0.96 },
   // Shared
-  orgLabels: { showAfter: 0.14, hideAfter: 0.31 },
+  orgLabels: { showAfter: 0.12, hideAfter: 0.28 },
   links: { showAfter: 0.05 },
   packets: { showAfter: 0.12 },
   hub: { showAfter: 0.08 },
@@ -160,7 +225,7 @@ export const LAYOUT = {
   stageOffsetY: 0.22,
 } as const;
 
-export const EXPERIENCE_SCROLL_HEIGHT = "900vh" as const;
+export const EXPERIENCE_SCROLL_HEIGHT = "1200vh" as const;
 
 export const SCROLL_TRIGGER = {
   start: "top top",

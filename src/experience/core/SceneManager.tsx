@@ -27,6 +27,11 @@ import {
 import { SectorNode } from "@/experience/objects/SectorNode";
 import { FrameworkScene } from "@/experience/scenes/FrameworkScene";
 import { PlatformScene } from "@/experience/scenes/PlatformScene";
+import { FloodScene } from "@/experience/scenes/FloodScene";
+import { HealthcareScene } from "@/experience/scenes/HealthcareScene";
+import { EmergencyScene } from "@/experience/scenes/EmergencyScene";
+import { ComplianceScene } from "@/experience/scenes/ComplianceScene";
+import { FutureScene } from "@/experience/scenes/FutureScene";
 
 const HUB_STAND_Y = LAYOUT.groundY + 0.34;
 /** Final display scale of the coordination hub at full connect. */
@@ -107,15 +112,17 @@ export function SceneManager({ progress }: { progress: number }) {
   useFrame(({ camera, clock }) => {
     const t = progressRef.current;
     const w = computeSceneWeights(t);
-    const { continent, isolation, connect, challenge, platform, framework } = w;
+    const { continent, isolation, flood, connect, challenge, platform, framework } = w;
     const iso = smoothstep(SCENE_TIMING.iso.start, SCENE_TIMING.iso.end, t);
 
-    const sectorPhase = Math.max(isolation, connect, challenge);
-    // Smoothly dissolve the Act I stage as the Platform scene arrives (no hard pop).
-    const actIExit = 1 - smoothstep(0.55, 0.61, t);
+    const sectorPhase = Math.max(isolation, flood, connect, challenge);
+    const actIExit = 1 - smoothstep(0.5, 0.56, t);
     const coordinationVisible = sectorPhase > 0.02 && actIExit > 0.02;
     const hubVisible =
-      connect > SCENE_TIMING.hub.showAfter && challenge < 0.15 && actIExit > 0.02;
+      connect > SCENE_TIMING.hub.showAfter &&
+      challenge < 0.15 &&
+      flood < 0.12 &&
+      actIExit > 0.02;
 
     const spread = 1 + challenge * (LAYOUT.challengeSpreadMax - 1);
     // Crossfade: Scene 2 flat badges (iso=0) → dimensional system boxes (iso=1).
@@ -158,7 +165,8 @@ export function SceneManager({ progress }: { progress: number }) {
 
         const idle = Math.sin(clock.elapsedTime * 0.9 + i * 0.7) * SECTOR_MOTION.idleBob;
         const bob =
-          isolation > SECTOR_MOTION.bobThreshold.isolation && connect < SECTOR_MOTION.bobThreshold.connect
+          (isolation > SECTOR_MOTION.bobThreshold.isolation || flood > 0.2) &&
+          connect < SECTOR_MOTION.bobThreshold.connect
             ? Math.sin(clock.elapsedTime * (1.5 + i * 0.4) + i) * 0.1
             : 0;
 
@@ -298,8 +306,13 @@ export function SceneManager({ progress }: { progress: number }) {
           <DataPackets count={packetCount} />
         </group>
 
+        <FloodScene weight={weights.flood} />
         <PlatformScene weight={weights.platform} />
         <FrameworkScene weight={weights.framework} />
+        <HealthcareScene weight={weights.healthcare} />
+        <EmergencyScene weight={weights.emergency} />
+        <ComplianceScene weight={weights.compliance} />
+        <FutureScene weight={weights.future} />
       </group>
     </group>
   );
