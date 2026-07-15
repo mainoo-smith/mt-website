@@ -3,7 +3,9 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { HOMEPAGE_NAV } from "@/config/homepage";
 import { EXPERIENCE_SCROLL_HEIGHT, SCROLL_CHAPTERS } from "@/config/scenes";
+import { HomepageSections } from "@/components/sections/HomepageSections";
 import { ChapterCopy } from "./ChapterCopy";
 import { useScrollProgress } from "./useScrollProgress";
 
@@ -11,6 +13,10 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-brand-ink" />,
 });
+
+const DESKTOP_NAV = HOMEPAGE_NAV.filter((item) =>
+  ["#platform", "#solutions", "#industries", "#research"].includes(item.href),
+);
 
 export function ExperienceShell() {
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -32,6 +38,8 @@ export function ExperienceShell() {
     );
   }, [progress]);
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <div className="bg-brand-ink text-white">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-brand-ink/80 backdrop-blur-md">
@@ -39,10 +47,15 @@ export function ExperienceShell() {
           <a href="#top" className="font-display text-sm font-extrabold uppercase tracking-[0.18em]">
             Mainoo
           </a>
-          <nav className="hidden items-center gap-6 text-xs font-semibold uppercase tracking-[0.14em] md:flex">
+          <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.14em] lg:flex">
             <a href="#experience" className="opacity-80 hover:opacity-100">
               Experience
             </a>
+            {DESKTOP_NAV.map((item) => (
+              <a key={item.href} href={item.href} className="opacity-80 hover:opacity-100">
+                {item.label}
+              </a>
+            ))}
             <Link href="/kontroliq.html" className="opacity-80 hover:opacity-100">
               KontrolIQ
             </Link>
@@ -57,7 +70,7 @@ export function ExperienceShell() {
           </nav>
           <button
             type="button"
-            className="rounded bg-brand-orange px-3 py-2 text-xs font-bold uppercase tracking-wider md:hidden"
+            className="rounded bg-brand-orange px-3 py-2 text-xs font-bold uppercase tracking-wider lg:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
           >
@@ -65,12 +78,14 @@ export function ExperienceShell() {
           </button>
         </div>
         {menuOpen ? (
-          <div className="border-t border-white/10 px-4 py-3 md:hidden">
+          <div className="border-t border-white/10 px-4 py-3 lg:hidden">
             <div className="flex flex-col gap-3 text-sm uppercase tracking-wider">
-              <a href="#experience" onClick={() => setMenuOpen(false)}>
-                Experience
-              </a>
-              <Link href="/kontroliq.html" onClick={() => setMenuOpen(false)}>
+              {HOMEPAGE_NAV.map((item) => (
+                <a key={item.href} href={item.href} onClick={closeMenu}>
+                  {item.label}
+                </a>
+              ))}
+              <Link href="/kontroliq.html" onClick={closeMenu}>
                 KontrolIQ
               </Link>
               <a href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener noreferrer">
@@ -102,40 +117,7 @@ export function ExperienceShell() {
           </div>
         </section>
 
-        <section className="relative z-10 border-t border-white/10 bg-gradient-to-b from-brand-ink via-brand-charcoal to-black px-4 py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-brand-orange">
-              Closing
-            </p>
-            <h2 className="mt-4 font-display text-3xl font-bold leading-tight md:text-5xl">
-              Building the digital coordination architecture for Africa
-            </h2>
-            <p className="mt-5 text-base text-white/75 md:text-lg">
-              Phase 1 of the Mainoo experience — the continent, the isolation of critical systems, and the
-              moment coordination becomes visible. Healthcare, emergency operations, KontrolIQ, and Labs
-              arrive in the next chapters.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="https://calendly.com/mainootechnologies"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-brand-orangeDark"
-              >
-                Schedule a Demo
-              </a>
-              <Link
-                href="/kontroliq.html"
-                className="rounded-full border border-white/40 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-white hover:text-brand-ink"
-              >
-                Explore KontrolIQ
-              </Link>
-            </div>
-            <p className="mt-8 text-xs text-white/45">
-              Audio will accompany later scenes — muted by default.
-            </p>
-          </div>
-        </section>
+        <HomepageSections />
       </main>
     </div>
   );
