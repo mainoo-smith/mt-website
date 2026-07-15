@@ -302,7 +302,7 @@ function SiteFooter() {
             </a>
           ))}
           <Link
-            href="/kontroliq.html"
+            href="/kontroliq/"
             className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 hover:text-brand-orange"
           >
             KontrolIQ

@@ -1,11 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { HOMEPAGE_NAV } from "@/config/homepage";
 import { EXPERIENCE_SCROLL_HEIGHT, SCROLL_CHAPTERS } from "@/config/scenes";
 import { HomepageSections } from "@/components/sections/HomepageSections";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ChapterCopy } from "./ChapterCopy";
 import { useScrollProgress } from "./useScrollProgress";
 
@@ -14,13 +13,8 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
   loading: () => <div className="absolute inset-0 bg-brand-ink" />,
 });
 
-const DESKTOP_NAV = HOMEPAGE_NAV.filter((item) =>
-  ["#nyansapo", "#solutions", "#industries", "#research"].includes(item.href),
-);
-
 export function ExperienceShell() {
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const { progress, scrollRef } = useScrollProgress({ smoothScroll: !reducedMotion });
 
   useEffect(() => {
@@ -38,63 +32,9 @@ export function ExperienceShell() {
     );
   }, [progress]);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
     <div className="bg-brand-ink text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-brand-ink/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <a href="#top" className="font-display text-sm font-extrabold uppercase tracking-[0.18em]">
-            Mainoo
-          </a>
-          <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.14em] lg:flex">
-            <a href="#experience" className="opacity-80 hover:opacity-100">
-              Experience
-            </a>
-            {DESKTOP_NAV.map((item) => (
-              <a key={item.href} href={item.href} className="opacity-80 hover:opacity-100">
-                {item.label}
-              </a>
-            ))}
-            <Link href="/kontroliq.html" className="opacity-80 hover:opacity-100">
-              KontrolIQ
-            </Link>
-            <a
-              href="https://calendly.com/mainootechnologies"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-brand-orange px-4 py-2 text-white hover:bg-brand-orangeDark"
-            >
-              Schedule a Demo
-            </a>
-          </nav>
-          <button
-            type="button"
-            className="rounded bg-brand-orange px-3 py-2 text-xs font-bold uppercase tracking-wider lg:hidden"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-expanded={menuOpen}
-          >
-            Menu
-          </button>
-        </div>
-        {menuOpen ? (
-          <div className="border-t border-white/10 px-4 py-3 lg:hidden">
-            <div className="flex flex-col gap-3 text-sm uppercase tracking-wider">
-              {HOMEPAGE_NAV.map((item) => (
-                <a key={item.href} href={item.href} onClick={closeMenu}>
-                  {item.label}
-                </a>
-              ))}
-              <Link href="/kontroliq.html" onClick={closeMenu}>
-                KontrolIQ
-              </Link>
-              <a href="https://calendly.com/mainootechnologies" target="_blank" rel="noopener noreferrer">
-                Schedule a Demo
-              </a>
-            </div>
-          </div>
-        ) : null}
-      </header>
+      <SiteHeader active="experience" />
 
       <main id="top">
         <section id="experience" ref={scrollRef} className="relative" style={{ height: EXPERIENCE_SCROLL_HEIGHT }}>
