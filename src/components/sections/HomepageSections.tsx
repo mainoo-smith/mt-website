@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { FRAMEWORK_STEPS, PLATFORM_LAYERS, SECTOR_ORGS } from "@/config/scenes";
-import { HOMEPAGE_NAV, INDUSTRIES, LABS, NYANSAPO, PILOT_URL, SOLUTIONS } from "@/config/homepage";
+import {
+  HOMEPAGE_NAV,
+  INDUSTRIES,
+  LABS,
+  NYANSAPO,
+  PILOT_URL,
+  SOLUTIONS,
+  WHY_NYANSAPO,
+} from "@/config/homepage";
 import {
   ArchitectureLayerCard,
   GlassPanel,
@@ -24,6 +32,7 @@ export function HomepageSections() {
     <HomepageCanvas>
       <ChallengeSection />
       <PlatformSection />
+      <WhyNyansapoSection />
       <FrameworkSection />
       <SolutionsSection />
       <IndustriesSection />
@@ -107,6 +116,33 @@ function PlatformSection() {
         {PLATFORM_LAYERS.map((layer, i) => (
           <RevealItem key={layer.id}>
             <ArchitectureLayerCard index={i + 1} label={layer.label} />
+          </RevealItem>
+        ))}
+      </Reveal>
+    </Section>
+  );
+}
+
+function WhyNyansapoSection() {
+  return (
+    <Section id="why-nyansapo">
+      <Reveal>
+        <SectionEyebrow>Why {NYANSAPO.name}</SectionEyebrow>
+        <SectionTitle>Programs end. Infrastructure compounds.</SectionTitle>
+        <SectionLead>
+          Africa has no shortage of coordination initiatives — early warning centres, referral
+          pilots, donor-funded situation rooms. Most are built once, for one sector, and fade when
+          the program ends. {NYANSAPO.name} is different by design.
+        </SectionLead>
+        <AccentRule />
+      </Reveal>
+      <Reveal stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {WHY_NYANSAPO.map((pillar) => (
+          <RevealItem key={pillar.id}>
+            <GlassPanel>
+              <h3 className="font-display text-base font-bold text-white">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/65">{pillar.description}</p>
+            </GlassPanel>
           </RevealItem>
         ))}
       </Reveal>
@@ -233,8 +269,11 @@ function SovereigntySection() {
             data.&rdquo;
           </blockquote>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-            Trusted connections, not centralized ownership. {NYANSAPO.name} enables coordination across
-            institutions while each organization retains authority over its own information.
+            Trusted connections, not centralized ownership. Most platforms available to African
+            institutions are foreign-hosted, foreign-owned, or demand your data leave your boundary.
+            {" "}{NYANSAPO.name} is built the other way: each institution keeps authority over its own
+            information, coordination happens through trusted exchange, and nothing requires
+            surrendering control to a central operator — foreign or domestic.
           </p>
         </div>
       </Reveal>

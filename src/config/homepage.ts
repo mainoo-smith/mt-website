@@ -5,10 +5,32 @@ export const NYANSAPO = {
   name: "Nyansapo",
   descriptor: "core infrastructure architecture system",
   today:
-    "Live MVPs and early products prove coordination patterns in health, emergency response, flood operations, and governance — each built to inform the shared core.",
+    "Live MVPs and early products prove coordination patterns in emergency response, flood operations, and governance — each built to inform the shared core.",
   direction:
-    "The roadmap extends Nyansapo across government, utilities, finance, and agriculture — one architecture, more sector engines over time.",
+    "The roadmap extends Nyansapo across government, utilities, finance, and agriculture — one architecture, more sector engines over time. Built in Africa, compliant with African data law from day one.",
 } as const;
+
+/** Differentiation pillars — programs vs. platform positioning. */
+export const WHY_NYANSAPO = [
+  {
+    id: "platform-not-project",
+    title: "Platform, not project",
+    description:
+      "One coordination core, many sector engines. When a new sector needs coordination, it plugs into proven infrastructure instead of starting a new build from zero.",
+  },
+  {
+    id: "operations-not-alerts",
+    title: "Operations, not just alerts",
+    description:
+      "Early warning tells you what's coming. Nyansapo coordinates what happens next — live signals, shared operating pictures, and multi-agency action in real time.",
+  },
+  {
+    id: "cross-sector",
+    title: "Cross-sector by design",
+    description:
+      "A flood is never just a flood. It's hospitals, utilities, police, and government at once. Nyansapo connects across silos because real events don't respect them.",
+  },
+] as const;
 
 export const HOMEPAGE_NAV = [
   { label: "Experience", href: "#experience" },
@@ -33,17 +55,6 @@ export type Solution = {
 };
 
 export const SOLUTIONS: Solution[] = [
-  {
-    id: "health",
-    title: "Nyansapo Health",
-    description:
-      "MVP exploring secure exchange, patient routing workflows, and cross-facility visibility for health operations.",
-    status: "live-demo",
-    statusLabel: "Live demo · MVP",
-    href: "/solutions/health",
-    linkLabel: "Explore solution",
-    external: false,
-  },
   {
     id: "emergency",
     title: "Nyansapo Emergency Coordination Engine",

@@ -13,13 +13,11 @@ import {
 import { SolutionShell } from "@/components/layout/SolutionShell";
 
 const SECTOR_LABELS: Record<string, string> = {
-  health: "Healthcare sector engine",
   emergency: "Emergency coordination sector engine",
   flood: "Flood operations sector engine",
 };
 
 const CRUMBS: Record<string, string> = {
-  health: "Health",
   emergency: "Emergency",
   flood: "Flood",
 };
