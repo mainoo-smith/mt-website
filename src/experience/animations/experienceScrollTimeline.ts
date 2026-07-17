@@ -17,19 +17,24 @@ export type ExperienceScrollTimeline = {
 /**
  * Binds the master experience scroll timeline to a DOM trigger.
  * Named labels match SCROLL_CHAPTERS for debugging and future scene tweens.
+ *
+ * Under reduced motion, scrub is disabled so progress tracks scroll 1:1
+ * without laggy interpolation.
  */
 export function createExperienceScrollTimeline(
   trigger: HTMLElement,
   driver: ScrollDriver,
   onProgress: (progress: number) => void,
+  options?: { reducedMotion?: boolean },
 ): ExperienceScrollTimeline {
+  const reducedMotion = options?.reducedMotion ?? false;
   const timeline = gsap.timeline({
     defaults: { ease: "none" },
     scrollTrigger: {
       trigger,
       start: SCROLL_TRIGGER.start,
       end: SCROLL_TRIGGER.end,
-      scrub: SCROLL_TRIGGER.scrub,
+      scrub: reducedMotion ? true : SCROLL_TRIGGER.scrub,
       invalidateOnRefresh: true,
       onUpdate: () => onProgress(driver.progress),
     },

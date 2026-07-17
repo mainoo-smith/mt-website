@@ -25,8 +25,8 @@ export function ExperienceLighting() {
   );
 }
 
-export function Starfield() {
-  const positions = useMemo(() => makeStarPositions(), []);
+export function Starfield({ count = 180 }: { count?: number }) {
+  const positions = useMemo(() => makeStarPositions(count), [count]);
 
   return (
     <points>
@@ -38,8 +38,7 @@ export function Starfield() {
   );
 }
 
-function makeStarPositions() {
-  const count = 420;
+function makeStarPositions(count: number) {
   const positions = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
     positions[i * 3] = (Math.random() - 0.5) * 28;

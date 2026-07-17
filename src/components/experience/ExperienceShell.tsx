@@ -1,10 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { EXPERIENCE_SCROLL_HEIGHT, SCROLL_CHAPTERS } from "@/config/scenes";
 import { HomepageSections } from "@/components/sections/HomepageSections";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { ChapterCopy } from "./ChapterCopy";
 import { useScrollProgress } from "./useScrollProgress";
 
@@ -14,16 +15,13 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas").then((m) => m.SceneCan
 });
 
 export function ExperienceShell() {
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const { progress, scrollRef } = useScrollProgress({ smoothScroll: !reducedMotion });
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const reducedMotion = usePrefersReducedMotion();
+  const motionReady = reducedMotion !== null;
+  const preferReduced = reducedMotion === true;
+  const { progress, scrollRef } = useScrollProgress({
+    smoothScroll: motionReady && !preferReduced,
+    reducedMotion: preferReduced,
+  });
 
   const activeChapter = useMemo(() => {
     return (
@@ -39,10 +37,12 @@ export function ExperienceShell() {
       <main id="top">
         <section id="experience" ref={scrollRef} className="relative" style={{ height: EXPERIENCE_SCROLL_HEIGHT }}>
           <div className="sticky top-0 h-[100svh] overflow-hidden">
-            {!reducedMotion ? (
-              <SceneCanvas progress={progress} />
-            ) : (
+            {!motionReady ? (
+              <div className="absolute inset-0 bg-brand-ink" aria-hidden />
+            ) : preferReduced ? (
               <ReducedMotionFallback progress={progress} />
+            ) : (
+              <SceneCanvas progress={progress} />
             )}
             <ChapterCopy chapter={activeChapter} progress={progress} />
             <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 -translate-x-1/2 text-center text-[10px] uppercase tracking-[0.18em] text-white/45 sm:bottom-5 sm:text-[11px] sm:tracking-[0.2em] lg:text-white/55">
@@ -50,7 +50,7 @@ export function ExperienceShell() {
             </div>
             <div className="absolute bottom-0 left-0 right-0 z-20 h-1 bg-white/10">
               <div
-                className="h-full bg-brand-orange transition-[width] duration-100"
+                className={`h-full bg-brand-orange ${preferReduced ? "" : "transition-[width] duration-100"}`}
                 style={{ width: `${Math.min(100, progress * 100)}%` }}
               />
             </div>

@@ -12,11 +12,15 @@ import { initLenisScroll } from "@/experience/animations/lenisScroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useScrollProgress(options?: { smoothScroll?: boolean }) {
+export function useScrollProgress(options?: {
+  smoothScroll?: boolean;
+  reducedMotion?: boolean;
+}) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState(0);
   const driverRef = useRef<ScrollDriver>({ progress: 0 });
   const smoothScroll = options?.smoothScroll ?? true;
+  const reducedMotion = options?.reducedMotion ?? false;
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -34,8 +38,10 @@ export function useScrollProgress(options?: { smoothScroll?: boolean }) {
       });
     };
 
-    const lenisBinding = smoothScroll ? initLenisScroll() : null;
-    const binding = createExperienceScrollTimeline(el, driverRef.current, publish);
+    const lenisBinding = smoothScroll && !reducedMotion ? initLenisScroll() : null;
+    const binding = createExperienceScrollTimeline(el, driverRef.current, publish, {
+      reducedMotion,
+    });
 
     if (typeof window !== "undefined") {
       (window as Window & {
@@ -53,7 +59,9 @@ export function useScrollProgress(options?: { smoothScroll?: boolean }) {
         refreshExperienceScroll();
       };
       // Direct progress force for visual QA (pauses scrub so frames don't jump back).
-      (window as Window & { __mainooSetProgress?: (p: number) => void }).__mainooSetProgress = (p: number) => {
+      (window as Window & { __mainooSetProgress?: (p: number) => void }).__mainooSetProgress = (
+        p: number,
+      ) => {
         const value = Math.min(1, Math.max(0, p));
         ScrollTrigger.getAll().forEach((st) => st.disable(false));
         if (lenisBinding?.lenis) lenisBinding.lenis.stop();
@@ -80,7 +88,7 @@ export function useScrollProgress(options?: { smoothScroll?: boolean }) {
         delete w.__mainooSetProgress;
       }
     };
-  }, [smoothScroll]);
+  }, [smoothScroll, reducedMotion]);
 
   return { progress, scrollRef };
 }

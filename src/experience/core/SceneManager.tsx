@@ -1,7 +1,7 @@
 "use client";
 
 import { useFrame, useThree } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { lazy, Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
 import {
   CAMERA_CONFIG,
@@ -15,6 +15,10 @@ import {
 import { computeSceneWeights } from "@/experience/animations/sceneWeights";
 import { flowEase, lerp, smoothstep } from "@/experience/animations/math";
 import { getCameraTargets, getExperienceFraming } from "@/experience/core/experienceFraming";
+import {
+  getExperienceQuality,
+  type ExperienceQuality,
+} from "@/experience/core/experienceQuality";
 import { ExperienceLighting, Starfield } from "@/experience/core/ExperienceLighting";
 import { AfricaMap } from "@/experience/objects/AfricaMap";
 import { CoordinationHub } from "@/experience/objects/CoordinationHub";
@@ -25,12 +29,26 @@ import {
   NetworkConnections,
 } from "@/experience/objects/NetworkConnections";
 import { SectorNode } from "@/experience/objects/SectorNode";
-import { FrameworkScene } from "@/experience/scenes/FrameworkScene";
-import { PlatformScene } from "@/experience/scenes/PlatformScene";
-import { FloodScene } from "@/experience/scenes/FloodScene";
-import { EmergencyScene } from "@/experience/scenes/EmergencyScene";
-import { ComplianceScene } from "@/experience/scenes/ComplianceScene";
-import { FutureScene } from "@/experience/scenes/FutureScene";
+
+/** Act III scenes are code-split and only mount when their weight is live. */
+const FloodScene = lazy(() =>
+  import("@/experience/scenes/FloodScene").then((m) => ({ default: m.FloodScene })),
+);
+const PlatformScene = lazy(() =>
+  import("@/experience/scenes/PlatformScene").then((m) => ({ default: m.PlatformScene })),
+);
+const FrameworkScene = lazy(() =>
+  import("@/experience/scenes/FrameworkScene").then((m) => ({ default: m.FrameworkScene })),
+);
+const EmergencyScene = lazy(() =>
+  import("@/experience/scenes/EmergencyScene").then((m) => ({ default: m.EmergencyScene })),
+);
+const ComplianceScene = lazy(() =>
+  import("@/experience/scenes/ComplianceScene").then((m) => ({ default: m.ComplianceScene })),
+);
+const FutureScene = lazy(() =>
+  import("@/experience/scenes/FutureScene").then((m) => ({ default: m.FutureScene })),
+);
 
 const HUB_STAND_Y = LAYOUT.groundY + 0.34;
 /** Final display scale of the coordination hub at full connect. */
@@ -39,8 +57,15 @@ const HUB_SCALE = 0.66;
 const HUB_DOCK_RADIUS = 0.3;
 /** Radius of a card footprint toward the hub (pipes start from this edge). */
 const CARD_DOCK_INSET = 0.28;
+const SCENE_MOUNT_THRESHOLD = 0.02;
 
-export function SceneManager({ progress }: { progress: number }) {
+export function SceneManager({
+  progress,
+  quality,
+}: {
+  progress: number;
+  quality?: ExperienceQuality;
+}) {
   const continentGroup = useRef<THREE.Group>(null);
   const sectors = useRef<THREE.Group>(null);
   const cards = useRef<THREE.Group>(null);
@@ -55,6 +80,7 @@ export function SceneManager({ progress }: { progress: number }) {
 
   const { size } = useThree();
   const framing = getExperienceFraming(size.width, size.height);
+  const resolvedQuality = quality ?? getExperienceQuality(framing.layout);
 
   const showOrgLabels =
     progress > SCENE_TIMING.orgLabels.showAfter && progress < SCENE_TIMING.orgLabels.hideAfter;
@@ -105,8 +131,11 @@ export function SceneManager({ progress }: { progress: number }) {
     () => groundCurves.map((curve) => new THREE.TubeGeometry(curve, 40, 0.024, 12, false)),
     [groundCurves],
   );
-  const packetOffsets = useMemo(() => groundCurves.map(() => [0, 0.33, 0.66]), [groundCurves]);
-  const packetCount = groundCurves.length * 3;
+  const packetOffsets = useMemo(
+    () => groundCurves.map(() => [...resolvedQuality.packetOffsets]),
+    [groundCurves, resolvedQuality.packetOffsets],
+  );
+  const packetCount = groundCurves.length * resolvedQuality.packetOffsets.length;
 
   useFrame(({ camera, clock }) => {
     const t = progressRef.current;
@@ -209,12 +238,13 @@ export function SceneManager({ progress }: { progress: number }) {
       packets.current.visible = hubVisible && connect > SCENE_TIMING.packets.showAfter;
       let idx = 0;
       groundCurves.forEach((curve, cIdx) => {
-        for (let p = 0; p < 3; p++) {
+        const offsets = packetOffsets[cIdx];
+        for (let p = 0; p < offsets.length; p++) {
           const mesh = packets.current!.children[idx] as THREE.Mesh;
           idx += 1;
           if (!mesh) return;
           const raw =
-            (clock.elapsedTime * (0.2 + p * 0.035) + packetOffsets[cIdx][p] + cIdx * 0.11) % 1;
+            (clock.elapsedTime * (0.2 + p * 0.035) + offsets[p] + cIdx * 0.11) % 1;
           const u = flowEase(raw);
           mesh.position.copy(curve.getPoint(u));
           const mat = mesh.material as THREE.MeshBasicMaterial;
@@ -266,7 +296,7 @@ export function SceneManager({ progress }: { progress: number }) {
   return (
     <group>
       <ExperienceLighting />
-      <Starfield />
+      <Starfield count={resolvedQuality.starCount} />
 
       <group ref={continentGroup}>
         <AfricaMap />
@@ -305,12 +335,22 @@ export function SceneManager({ progress }: { progress: number }) {
           <DataPackets count={packetCount} />
         </group>
 
-        <FloodScene weight={weights.flood} />
-        <PlatformScene weight={weights.platform} />
-        <FrameworkScene weight={weights.framework} />
-        <EmergencyScene weight={weights.emergency} />
-        <ComplianceScene weight={weights.compliance} />
-        <FutureScene weight={weights.future} />
+        <Suspense fallback={null}>
+          {weights.flood > SCENE_MOUNT_THRESHOLD ? <FloodScene weight={weights.flood} /> : null}
+          {weights.platform > SCENE_MOUNT_THRESHOLD ? (
+            <PlatformScene weight={weights.platform} />
+          ) : null}
+          {weights.framework > SCENE_MOUNT_THRESHOLD ? (
+            <FrameworkScene weight={weights.framework} />
+          ) : null}
+          {weights.emergency > SCENE_MOUNT_THRESHOLD ? (
+            <EmergencyScene weight={weights.emergency} />
+          ) : null}
+          {weights.compliance > SCENE_MOUNT_THRESHOLD ? (
+            <ComplianceScene weight={weights.compliance} />
+          ) : null}
+          {weights.future > SCENE_MOUNT_THRESHOLD ? <FutureScene weight={weights.future} /> : null}
+        </Suspense>
       </group>
     </group>
   );
