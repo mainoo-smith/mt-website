@@ -74,13 +74,14 @@ function ChallengeSection() {
 
 function PlatformSection() {
   return (
-    <Section id="nyansapo" className="border-t border-white/[0.06]">
+    <Section id="nyansapo">
       <Reveal>
         <SectionEyebrow>{NYANSAPO.name}</SectionEyebrow>
         <SectionTitle>One architecture. Multiple sectors.</SectionTitle>
         <SectionLead>
-          {NYANSAPO.name} is Mainoo&apos;s {NYANSAPO.descriptor} — applications, coordination, trust,
-          and infrastructure layered so sector engines can plug in without rebuilding from scratch.
+          {NYANSAPO.name} is Mainoo Technologies&apos; {NYANSAPO.descriptor} — applications,
+          coordination, trust, and infrastructure layered so sector engines can plug in without
+          rebuilding from scratch.
         </SectionLead>
       </Reveal>
       <Reveal stagger className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -102,10 +103,10 @@ function PlatformSection() {
         </RevealItem>
       </Reveal>
       <AccentRule />
-      <Reveal stagger className="mt-10 space-y-3">
+      <Reveal stagger className="mt-8 space-y-2">
         {PLATFORM_LAYERS.map((layer, i) => (
           <RevealItem key={layer.id}>
-            <ArchitectureLayerCard index={i + 1} label={layer.label} color={layer.color} />
+            <ArchitectureLayerCard index={i + 1} label={layer.label} />
           </RevealItem>
         ))}
       </Reveal>
@@ -115,7 +116,7 @@ function PlatformSection() {
 
 function FrameworkSection() {
   return (
-    <Section id="framework" className="border-t border-white/[0.06]">
+    <Section id="framework">
       <Reveal>
         <SectionEyebrow>The Framework</SectionEyebrow>
         <SectionTitle>How coordination actually works.</SectionTitle>
@@ -147,7 +148,7 @@ function FrameworkSection() {
 
 function SolutionsSection() {
   return (
-    <Section id="solutions" className="border-t border-white/[0.06]">
+    <Section id="solutions">
       <Reveal>
         <SectionEyebrow>Solutions</SectionEyebrow>
         <SectionTitle>Solutions in action.</SectionTitle>
@@ -200,7 +201,7 @@ function SolutionsSection() {
 
 function IndustriesSection() {
   return (
-    <Section id="industries" className="border-t border-white/[0.06]">
+    <Section id="industries">
       <Reveal>
         <SectionEyebrow>Industries</SectionEyebrow>
         <SectionTitle>Built for sectors that cannot afford silos.</SectionTitle>
@@ -223,7 +224,7 @@ function IndustriesSection() {
 
 function SovereigntySection() {
   return (
-    <Section id="sovereignty" className="border-t border-white/[0.06]">
+    <Section id="sovereignty">
       <Reveal>
         <div className="rounded-3xl border border-brand-cream/15 bg-gradient-to-br from-brand-orange/[0.08] via-white/[0.03] to-transparent p-8 sm:p-12">
           <SectionEyebrow>Data Sovereignty</SectionEyebrow>
@@ -243,7 +244,7 @@ function SovereigntySection() {
 
 function LabsSection() {
   return (
-    <Section id="research" className="border-t border-white/[0.06]">
+    <Section id="research">
       <Reveal>
         <SectionEyebrow>Mainoo Labs</SectionEyebrow>
         <SectionTitle>Research that feeds {NYANSAPO.name}.</SectionTitle>
@@ -269,7 +270,7 @@ function LabsSection() {
 
 function ContactSection() {
   return (
-    <Section id="contact" className="border-t border-white/[0.06] pb-28">
+    <Section id="contact" className="pb-28">
       <Reveal>
         <SectionEyebrow>Contact</SectionEyebrow>
         <SectionTitle>The future belongs to connected systems.</SectionTitle>
