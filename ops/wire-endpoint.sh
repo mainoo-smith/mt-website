@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Wire a deployed Apps Script Web App URL into the static site config.
-# Usage: ./ops/wire-endpoint.sh 'https://script.google.com/macros/s/XXXX/exec'
+# Sets js/funnel-config.js formEndpoint. Ops docs: Notion Website Revenue Funnel runbook.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 URL="${1:-}"
@@ -26,5 +25,5 @@ new, n = re.subn(
 if n != 1:
     raise SystemExit("Could not find formEndpoint in funnel-config.js")
 cfg_path.write_text(new)
-print(f"Updated {cfg_path} → formEndpoint set")
+print(f"Updated {cfg_path}")
 PY

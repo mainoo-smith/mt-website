@@ -1,18 +1,4 @@
-/**
- * KontrolIQ Lead Capture + Email Nurture
- *
- * SETUP (one time):
- * 1. Create a Google Sheet named "KontrolIQ Leads"
- * 2. Extensions → Apps Script → paste this file → Save
- * 3. Run setupSheet() once (authorize when prompted)
- * 4. Deploy → New deployment → Web app
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 5. Copy the deployment URL into mt-website/js/funnel-config.js → formEndpoint
- * 6. Run createDailyTrigger() once to enable Day 3 / Day 7 nurture emails
- *
- * Optional: set Script Property CALENDLY_URL (Project settings → Script properties)
- */
+/** KontrolIQ lead capture + email nurture. Ops docs live in Notion. */
 
 var SHEET_NAME = "Leads";
 var CALENDLY_DEFAULT = "https://calendly.com/mainootechnologies";
