@@ -1,0 +1,170 @@
+/* KontrolIQ Lead Magnet — matches mainootechnologies.com brand */
+:root {
+  --navy-900: #000000;
+  --navy-800: #161616;
+  --slate-700: #2f2f2f;
+  --slate-600: #4b4b4b;
+  --slate-500: #666666;
+  --surface-0: #ffffff;
+  --surface-50: #f8f8f8;
+  --surface-100: #efefef;
+  --border-subtle: #dddddd;
+  --accent-500: #D37506;
+  --accent-600: #b86705;
+  --accent-100: #f8ead9;
+}
+
+body {
+  font-family: "Montserrat", "Lato", system-ui, -apple-system, sans-serif;
+  background: var(--surface-50);
+  color: var(--slate-700);
+}
+
+.kq-navbar {
+  background: var(--navy-900);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.kq-navbar .navbar-brand {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+.kq-brand { color: #fff; }
+.kq-iq { color: var(--accent-500); }
+
+.kq-hero {
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+  color: #fff;
+  padding: 5rem 0 4rem;
+}
+.kq-hero h1 { font-weight: 800; letter-spacing: -0.5px; }
+.kq-hero .badge-accent {
+  background: var(--accent-100);
+  color: var(--accent-600);
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+}
+.kq-hero .lead { color: rgba(255,255,255,0.82); }
+
+.btn-accent {
+  background: var(--accent-500);
+  border-color: var(--accent-500);
+  color: #fff;
+  font-weight: 700;
+}
+.btn-accent:hover { background: var(--accent-600); border-color: var(--accent-600); color: #fff; }
+.btn-outline-accent {
+  border-color: var(--accent-500);
+  color: var(--accent-500);
+  font-weight: 700;
+}
+.btn-outline-accent:hover { background: var(--accent-500); color: #fff; }
+
+.kq-section { padding: 4rem 0; }
+.kq-section h2 { font-weight: 800; color: var(--navy-800); letter-spacing: -0.5px; }
+.feature-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--surface-0);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+
+.assess-card {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+}
+.q-block {
+  border-left: 3px solid var(--accent-500);
+  background: var(--surface-50);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+.q-block .q-label { font-weight: 700; color: var(--navy-800); }
+.q-block .q-control { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent-600); font-weight: 700; }
+.maturity-option { cursor: pointer; }
+.maturity-option input { display: none; }
+.maturity-option .opt-box {
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.5rem 0.3rem;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--slate-600);
+  transition: all .12s ease;
+}
+.maturity-option input:checked + .opt-box {
+  border-color: var(--accent-500);
+  background: var(--accent-100);
+  color: var(--accent-600);
+  font-weight: 700;
+}
+
+.score-ring {
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+  border: 8px solid var(--border-subtle);
+}
+.score-ring .num { font-size: 2.4rem; font-weight: 800; line-height: 1; }
+.score-ring .lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate-500); }
+.score-ring.tone-critical { border-color: #c0392b; }
+.score-ring.tone-warning { border-color: var(--accent-500); }
+.score-ring.tone-healthy { border-color: #1e8449; }
+.score-ring.tone-critical .num { color: #c0392b; }
+.score-ring.tone-warning .num { color: var(--accent-600); }
+.score-ring.tone-healthy .num { color: #1e8449; }
+
+.domain-bar-track { background: var(--surface-100); border-radius: 999px; height: 10px; overflow: hidden; }
+.domain-bar-fill { height: 100%; border-radius: 999px; transition: width .6s ease; }
+.fill-critical { background: #c0392b; }
+.fill-warning { background: var(--accent-500); }
+.fill-healthy { background: #1e8449; }
+
+.gap-chip {
+  display: inline-block; font-size: 0.75rem; font-weight: 700;
+  padding: 0.25rem 0.6rem; border-radius: 999px;
+  background: var(--surface-100); color: var(--slate-700);
+  border: 1px solid var(--border-subtle);
+  margin: 0.2rem;
+}
+
+.report-card {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+  padding: 2rem;
+}
+
+.report-meta {
+  font-size: 0.85rem;
+  color: var(--slate-500);
+}
+
+.report-cta {
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+  border-radius: 16px;
+  color: #fff;
+  padding: 2rem;
+}
+
+.kq-footer { background: var(--navy-900); color: rgba(255,255,255,0.7); }
+.kq-footer a { color: var(--accent-500); }
+
+.alert-success-soft {
+  background: #e8f6ef;
+  border-color: #1e8449;
+  color: #145a32;
+}
+
+@media (max-width: 767px) {
+  .kq-hero { padding: 3.5rem 0 2.5rem; }
+  .maturity-option .opt-box { font-size: 0.65rem; padding: 0.4rem 0.2rem; }
+}
