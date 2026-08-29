@@ -62,13 +62,19 @@ function getSheet() {
 
 function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return jsonResponse({ ok: false, error: "Empty body" });
+    }
     var payload = JSON.parse(e.postData.contents);
     var row = payloadToRow(payload);
     var sheet = getSheet();
     sheet.appendRow(row);
     var rowNum = sheet.getLastRow();
 
-    if (payload.contact && payload.contact.email) {
+    // Skip nurture for smoke tests
+    var email = payload.contact && payload.contact.email;
+    var isSmoke = payload.type === "smoke" || (email && /example\.com$/i.test(email));
+    if (email && !isSmoke) {
       sendEmail1_(payload, rowNum);
     }
 
