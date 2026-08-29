@@ -20,6 +20,7 @@ body {
   color: var(--slate-700);
 }
 
+/* ===== Navbar ===== */
 .kq-navbar {
   background: var(--navy-900);
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -32,6 +33,7 @@ body {
 .kq-brand { color: #fff; }
 .kq-iq { color: var(--accent-500); }
 
+/* ===== Hero ===== */
 .kq-hero {
   background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
   color: #fff;
@@ -47,6 +49,7 @@ body {
 }
 .kq-hero .lead { color: rgba(255,255,255,0.82); }
 
+/* ===== Buttons ===== */
 .btn-accent {
   background: var(--accent-500);
   border-color: var(--accent-500);
@@ -61,6 +64,7 @@ body {
 }
 .btn-outline-accent:hover { background: var(--accent-500); color: #fff; }
 
+/* ===== Cards / sections ===== */
 .kq-section { padding: 4rem 0; }
 .kq-section h2 { font-weight: 800; color: var(--navy-800); letter-spacing: -0.5px; }
 .feature-card {
@@ -71,6 +75,7 @@ body {
 }
 .feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
 
+/* ===== Assessment form ===== */
 .assess-card {
   background: var(--surface-0);
   border: 1px solid var(--border-subtle);
@@ -82,7 +87,6 @@ body {
   background: var(--surface-50);
   border-radius: 8px;
   padding: 1rem 1.1rem;
-  margin-bottom: 1rem;
 }
 .q-block .q-label { font-weight: 700; color: var(--navy-800); }
 .q-block .q-control { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent-600); font-weight: 700; }
@@ -104,6 +108,7 @@ body {
   font-weight: 700;
 }
 
+/* ===== Report ===== */
 .score-ring {
   width: 150px; height: 150px;
   border-radius: 50%;
@@ -122,7 +127,7 @@ body {
 .score-ring.tone-healthy .num { color: #1e8449; }
 
 .domain-bar-track { background: var(--surface-100); border-radius: 999px; height: 10px; overflow: hidden; }
-.domain-bar-fill { height: 100%; border-radius: 999px; transition: width .6s ease; }
+.domain-bar-fill { height: 100%; border-radius: 999px; }
 .fill-critical { background: #c0392b; }
 .fill-warning { background: var(--accent-500); }
 .fill-healthy { background: #1e8449; }
@@ -132,8 +137,11 @@ body {
   padding: 0.25rem 0.6rem; border-radius: 999px;
   background: var(--surface-100); color: var(--slate-700);
   border: 1px solid var(--border-subtle);
-  margin: 0.2rem;
 }
+
+/* ===== Trust footer ===== */
+.kq-footer { background: var(--navy-900); color: rgba(255,255,255,0.7); }
+.kq-footer a { color: var(--accent-500); }
 
 .report-card {
   background: var(--surface-0);
@@ -142,28 +150,20 @@ body {
   box-shadow: 0 6px 24px rgba(0,0,0,0.04);
   padding: 2rem;
 }
-
-.report-meta {
-  font-size: 0.85rem;
-  color: var(--slate-500);
-}
-
+.report-meta { font-size: 0.85rem; color: var(--slate-500); }
 .report-cta {
   background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
   border-radius: 16px;
   color: #fff;
   padding: 2rem;
 }
-
-.kq-footer { background: var(--navy-900); color: rgba(255,255,255,0.7); }
-.kq-footer a { color: var(--accent-500); }
-
 .alert-success-soft {
   background: #e8f6ef;
   border-color: #1e8449;
   color: #145a32;
 }
-
+.gap-chip { margin: 0.2rem; }
+.domain-bar-fill { transition: width .6s ease; }
 @media (max-width: 767px) {
   .kq-hero { padding: 3.5rem 0 2.5rem; }
   .maturity-option .opt-box { font-size: 0.65rem; padding: 0.4rem 0.2rem; }

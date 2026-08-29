@@ -1,7 +1,8 @@
 /**
- * KontrolIQ Compliance Readiness Assessment
- * Frontend for /assessment/ — posts to Google Apps Script (ops/Code.gs).
- * Contract: Notion "Website Revenue Funnel — Ops Runbook"
+ * KontrolIQ lead magnet — client logic
+ * Scoring/domains/questions from Perplexity app.js (mirrors app/scoring.py).
+ * Lead capture adapted for static GitHub Pages → Google Apps Script
+ * (see js/funnel-config.js + ops/Code.gs + Notion Ops Runbook).
  */
 (function () {
   "use strict";
@@ -11,122 +12,95 @@
   var STORAGE_REPORT = "kontroliq_latest_report";
   var STORAGE_UTM = "kontroliq_utm";
 
-  var MATURITY = [
-    { value: 0, label: "Not in place" },
-    { value: 1, label: "Ad-hoc" },
-    { value: 2, label: "Defined" },
-    { value: 3, label: "Verified" }
+  // Mirrors app/scoring.py QUESTIONS + DOMAINS (kept in sync manually)
+  var DOMAINS = [
+    { id: "D1", name: "Identity & Access Security", weight: 0.21 },
+    { id: "D2", name: "Data Protection & Privacy", weight: 0.19 },
+    { id: "D3", name: "Infrastructure Security", weight: 0.17 },
+    { id: "D4", name: "Monitoring & Accountability", weight: 0.17 },
+    { id: "D5", name: "Resilience & Availability", weight: 0.14 },
+    { id: "D6", name: "Processing Integrity", weight: 0.12 }
   ];
 
-  /* Six domains matching Apps Script email copy + SOC 2 TSC + Act 843 */
-  var DOMAINS = [
+  var MATURITY = [
+    "Not in place",
+    "Ad-hoc / manual",
+    "Defined & implemented",
+    "Verified & continuous"
+  ];
+
+  var QUESTIONS = [
     {
-      id: "security",
-      name: "Security",
-      weight: 1.2,
-      frameworks: ["SOC 2 CC6", "ISO 27001 A.9", "Ghana DPA"],
-      questions: [
-        {
-          id: "sec-01",
-          control: "SEC-01",
-          text: "Privileged access is role-based, MFA-protected, and reviewed on a defined cadence."
-        },
-        {
-          id: "sec-02",
-          control: "SEC-02",
-          text: "Security baselines (encryption, network exposure, hardening) are enforced in production."
-        }
-      ]
+      id: "q1",
+      domain: "D1",
+      text: "Multi-factor authentication is enforced for all cloud console and programmatic (API) access.",
+      control: "MFA Enforcement"
     },
     {
-      id: "availability",
-      name: "Availability",
-      weight: 1.0,
-      frameworks: ["SOC 2 A1", "ISO 27001 A.12"],
-      questions: [
-        {
-          id: "avl-01",
-          control: "AVL-01",
-          text: "Backup, recovery, and uptime objectives are documented and periodically tested."
-        },
-        {
-          id: "avl-02",
-          control: "AVL-02",
-          text: "Monitoring alerts cover outages, capacity, and critical dependency failures."
-        }
-      ]
+      id: "q2",
+      domain: "D1",
+      text: "Privileged access is scoped (least privilege), reviewed periodically, and joiner-mover-leaver changes are automated.",
+      control: "Privileged Access & JML"
     },
     {
-      id: "confidentiality",
-      name: "Confidentiality",
-      weight: 1.1,
-      frameworks: ["SOC 2 C1", "ISO 27001 A.8"],
-      questions: [
-        {
-          id: "cnf-01",
-          control: "CNF-01",
-          text: "Sensitive data is classified and access is restricted to need-to-know roles."
-        },
-        {
-          id: "cnf-02",
-          control: "CNF-02",
-          text: "Data at rest and in transit is encrypted with managed keys and rotation policy."
-        }
-      ]
+      id: "q3",
+      domain: "D2",
+      text: "Sensitive and personal data is encrypted at rest and in transit with managed keys, and retention/deletion is enforced.",
+      control: "Encryption & Retention"
     },
     {
-      id: "privacy",
-      name: "Privacy / Act 843",
-      weight: 1.2,
-      frameworks: ["Ghana DPA (Act 843)", "SOC 2 P", "ISO 27001 A.5"],
-      questions: [
-        {
-          id: "prv-01",
-          control: "PRV-01",
-          text: "Personal data inventory and lawful basis are documented and kept current."
-        },
-        {
-          id: "prv-02",
-          control: "PRV-02",
-          text: "Data subject rights and breach-notification timelines have a defined owner and SLA."
-        }
-      ]
+      id: "q4",
+      domain: "D2",
+      text: "You can identify where personal data lives, who can access it, and demonstrate lawful processing (Ghana DPA / NDPA / GDPR).",
+      control: "Data Discovery & Privacy"
     },
     {
-      id: "processing_integrity",
-      name: "Processing Integrity",
-      weight: 1.0,
-      frameworks: ["SOC 2 PI1", "ISO 27001 A.12"],
-      questions: [
-        {
-          id: "pi-01",
-          control: "PI-01",
-          text: "Change management and deployment approvals are documented for production systems."
-        },
-        {
-          id: "pi-02",
-          control: "PI-02",
-          text: "Critical processing jobs have integrity checks, error handling, and audit trails."
-        }
-      ]
+      id: "q5",
+      domain: "D3",
+      text: "Network exposure is restricted (no public ports, private subnets, security groups/NACLs) and configurations are hardened.",
+      control: "Network & Config Hardening"
     },
     {
-      id: "audit_readiness",
-      name: "Audit Readiness",
-      weight: 1.2,
-      frameworks: ["ISO 27001 A.18", "SOC 2 CC8"],
-      questions: [
-        {
-          id: "aud-01",
-          control: "AUD-01",
-          text: "Compliance evidence is collected continuously — not assembled in a pre-audit scramble."
-        },
-        {
-          id: "aud-02",
-          control: "AUD-02",
-          text: "Control owners, evidence sources, and review cadence are mapped and traceable."
-        }
-      ]
+      id: "q6",
+      domain: "D3",
+      text: "Environments (dev/test/prod) are isolated and access is segregated across them.",
+      control: "Environment Segregation"
+    },
+    {
+      id: "q7",
+      domain: "D4",
+      text: "Audit logging is enabled for control-plane activity and access to sensitive resources, with alerting on anomalies.",
+      control: "Audit Logging & Alerting"
+    },
+    {
+      id: "q8",
+      domain: "D4",
+      text: "You produce audit-ready evidence (who did what, when, and whether controls passed) without manual assembly.",
+      control: "Evidence Readiness"
+    },
+    {
+      id: "q9",
+      domain: "D5",
+      text: "Backups exist, are tested, and have defined recovery objectives (RTO/RPO) for in-scope systems.",
+      control: "Backups & Recovery"
+    },
+    {
+      id: "q10",
+      domain: "D5",
+      text: "Change management is controlled and every infrastructure change is reviewed, approved, and logged.",
+      control: "Change Management"
+    },
+    {
+      id: "q11",
+      domain: "D6",
+      text: "Transaction and processing controls are monitored for completeness, accuracy, and authorization.",
+      control: "Transaction Governance"
+    },
+    {
+      id: "q12",
+      domain: "D6",
+      text: "Third-party and vendor access is governed, reviewed, and risks are tracked.",
+      control: "Vendor Risk Management"
     }
   ];
 
@@ -152,16 +126,6 @@
     gcp: "Google Cloud",
     hybrid: "Hybrid / on-prem"
   };
-
-  function $(sel) { return document.querySelector(sel); }
-
-  function escapeHtml(str) {
-    return String(str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
 
   function captureUtm() {
     var params = new URLSearchParams(window.location.search);
@@ -193,25 +157,92 @@
     }
   }
 
-  function toneForScore(pct) {
-    if (pct < 40) return "critical";
-    if (pct < 70) return "warning";
-    return "healthy";
-  }
-
-  function scoreToPct(raw) {
-    return Math.round((raw / 3) * 100);
-  }
-
-  function formatDate(iso) {
-    if (!iso) return "Not specified";
-    try {
-      return new Date(iso + "T00:00:00").toLocaleDateString(undefined, {
-        year: "numeric", month: "short", day: "numeric"
+  // ---- Client-side scoring (ports app/scoring.py weighted_domain_aggregation) ----
+  function scoreReadiness(answers, qualification) {
+    var byDomain = {};
+    DOMAINS.forEach(function (d) {
+      byDomain[d.id] = [];
+    });
+    QUESTIONS.forEach(function (q) {
+      var m = Math.max(0, Math.min(3, parseInt(answers[q.id] != null ? answers[q.id] : 0, 10)));
+      byDomain[q.domain].push({
+        control: q.control,
+        text: q.text,
+        maturity: m,
+        label: MATURITY[m],
+        gap: m < 3
       });
-    } catch (e) {
-      return iso;
-    }
+    });
+    var domains = DOMAINS.map(function (d) {
+      var items = byDomain[d.id];
+      var avg = items.length
+        ? items.reduce(function (s, i) {
+            return s + i.maturity;
+          }, 0) / items.length
+        : 0;
+      return {
+        id: d.id,
+        name: d.name,
+        weight: d.weight,
+        avg_maturity: Math.round(avg * 100) / 100,
+        score: Math.round((avg / 3) * 100 * 10) / 10,
+        items: items
+      };
+    });
+    var overall =
+      Math.round(
+        domains.reduce(function (s, dr) {
+          return s + dr.score * dr.weight;
+        }, 0) * 10
+      ) / 10;
+    var toneVal = overall < 50 ? "critical" : overall < 75 ? "warning" : "healthy";
+    var verdict =
+      overall < 50
+        ? "Not audit-ready — significant gaps across multiple domains."
+        : overall < 75
+          ? "Partially ready — several controls need remediation before audit."
+          : "Largely ready — focus on closing the remaining gaps to 'verified'.";
+    var gaps = [];
+    domains.forEach(function (dr) {
+      dr.items.forEach(function (i) {
+        if (i.gap) {
+          gaps.push({
+            control: i.control,
+            text: i.text,
+            maturity: i.maturity,
+            label: i.label,
+            domain: dr.name,
+            domain_id: dr.id,
+            weight: dr.weight
+          });
+        }
+      });
+    });
+    gaps.sort(function (a, b) {
+      return a.maturity - b.maturity || b.weight - a.weight;
+    });
+    var top_gaps = gaps.slice(0, 3).map(function (g) {
+      return {
+        control: g.control,
+        domain: g.domain,
+        label: g.label,
+        maturity: g.maturity,
+        text: g.text
+      };
+    });
+    return {
+      overall_score: overall,
+      verdict: verdict,
+      verdict_tone: toneVal,
+      domains: domains,
+      top_gaps: top_gaps,
+      qualification: qualification || {},
+      run_id: ""
+    };
+  }
+
+  function tone(score) {
+    return score < 50 ? "critical" : score < 75 ? "warning" : "healthy";
   }
 
   function daysUntil(iso) {
@@ -228,35 +259,78 @@
     return "nurture";
   }
 
-  function renderQuestions() {
-    var container = $("#questions");
-    if (!container) return;
-    var html = "";
-    DOMAINS.forEach(function (domain) {
-      html += '<div class="mb-4">';
-      html += '<h5 class="font-weight-bold mb-1">' + domain.name + '</h5>';
-      html += '<p class="text-muted small mb-3">Mapped to: ' + domain.frameworks.join(" · ") + '</p>';
-      domain.questions.forEach(function (q) {
-        var name = "q_" + q.id;
-        html += '<div class="q-block">';
-        html += '<div class="d-flex justify-content-between align-items-start mb-2">';
-        html += '<div class="q-label">' + q.text + '</div>';
-        html += '<span class="q-control ml-2">' + q.control + '</span>';
-        html += '</div><div class="row no-gutters">';
-        MATURITY.forEach(function (m) {
-          html += '<div class="col-3 px-1 maturity-option"><label class="w-100 mb-0">';
-          html += '<input type="radio" name="' + name + '" value="' + m.value + '" required>';
-          html += '<div class="opt-box">' + m.label + '</div>';
-          html += '</label></div>';
-        });
-        html += '</div></div>';
-      });
-      html += '</div>';
-    });
-    container.innerHTML = html;
+  function calendlyUrl(qualification) {
+    var base = CFG.calendlyUrl || "https://calendly.com/mainootechnologies";
+    var utm = getUtm();
+    var params = new URLSearchParams();
+    if (qualification && qualification.full_name) params.set("name", qualification.full_name);
+    if (qualification && qualification.email) params.set("email", qualification.email);
+    if (utm.utm_source) params.set("utm_source", utm.utm_source);
+    params.set("utm_medium", utm.utm_medium || "assessment");
+    params.set("utm_campaign", utm.utm_campaign || "readiness-checklist");
+    if (utm.utm_content) params.set("utm_content", utm.utm_content);
+    var qs = params.toString();
+    return qs ? base + "?" + qs : base;
   }
 
-  function readFormData(form) {
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderQuestions() {
+    var host = document.getElementById("questions");
+    if (!host) return;
+    var cur = "";
+    var html = "";
+    for (var qi = 0; qi < QUESTIONS.length; qi++) {
+      var q = QUESTIONS[qi];
+      if (q.domain !== cur) {
+        var d = DOMAINS.find(function (x) {
+          return x.id === q.domain;
+        });
+        html +=
+          '<div class="d-flex align-items-center mt-4 mb-2"><i class="fas fa-layer-group mr-2" style="color:var(--accent-500)"></i><h5 class="mb-0 font-weight-bold">' +
+          d.name +
+          '</h5><span class="ml-2 text-muted small">weight ' +
+          d.weight +
+          "</span></div>";
+        cur = q.domain;
+      }
+      html +=
+        '<div class="q-block mb-3"><div class="d-flex justify-content-between align-items-start flex-wrap"><div class="q-label pr-2" style="min-width:0">' +
+        q.text +
+        '</div><div class="q-control">' +
+        q.control +
+        '</div></div><div class="row mt-2 text-center">';
+      for (var v = 0; v < 4; v++) {
+        html +=
+          '<div class="col-3 px-1"><label class="maturity-option"><input type="radio" name="' +
+          q.id +
+          '" value="' +
+          v +
+          '"><div class="opt-box">' +
+          MATURITY[v] +
+          "</div></label></div>";
+      }
+      html += "</div></div>";
+    }
+    host.innerHTML = html;
+  }
+
+  function collectAnswers() {
+    var a = {};
+    QUESTIONS.forEach(function (q) {
+      var el = document.querySelector('input[name="' + q.id + '"]:checked');
+      a[q.id] = el ? parseInt(el.value, 10) : 0;
+    });
+    return a;
+  }
+
+  function collectQualification(form) {
     var fd = new FormData(form);
     var frameworks = fd.getAll("frameworks");
     if (!frameworks.length) {
@@ -267,102 +341,153 @@
         });
       }
     }
-    var answers = {};
-    DOMAINS.forEach(function (domain) {
-      domain.questions.forEach(function (q) {
-        var val = fd.get("q_" + q.id);
-        answers[q.id] = val !== null ? parseInt(val, 10) : null;
-      });
-    });
     return {
-      full_name: (fd.get("full_name") || "").trim(),
-      email: (fd.get("email") || "").trim(),
       company: (fd.get("company") || "").trim(),
+      full_name: (fd.get("full_name") || "").trim(),
       role: fd.get("role") || "",
+      email: (fd.get("email") || "").trim(),
       next_audit_date: fd.get("next_audit_date") || "",
-      team_size: fd.get("team_size") || "",
       frameworks: frameworks,
-      cloud_provider: fd.get("cloud_provider") || "",
       evidence_process: fd.get("evidence_process") || "",
-      message: (fd.get("message") || "").trim(),
-      answers: answers
+      cloud_provider: fd.get("cloud_provider") || "",
+      team_size: fd.get("team_size") || "",
+      message: (fd.get("message") || "").trim()
     };
   }
 
-  function computeScores(answers) {
-    var domainResults = [];
-    var allQuestions = [];
-    var totalWeight = 0;
-    var weightedSum = 0;
+  function renderReport(r) {
+    var host = document.getElementById("report");
+    if (!host || !r) return;
+    var t = r.verdict_tone || tone(r.overall_score);
+    var q = r.qualification || {};
+    var bars = "";
+    for (var i = 0; i < r.domains.length; i++) {
+      var d = r.domains[i];
+      var dt = tone(d.score);
+      bars +=
+        '<div class="mt-3"><div class="d-flex justify-content-between"><span class="font-weight-bold">' +
+        d.name +
+        '</span><span class="text-muted small">' +
+        Math.round(d.score) +
+        "% · weight " +
+        d.weight +
+        '</span></div><div class="domain-bar-track mt-1"><div class="domain-bar-fill fill-' +
+        dt +
+        '" style="width:' +
+        Math.round(d.score) +
+        '%"></div></div></div>';
+    }
+    var gaps =
+      r.top_gaps && r.top_gaps.length
+        ? r.top_gaps
+            .map(function (g) {
+              return (
+                '<li class="mb-3"><span class="gap-chip">' +
+                escapeHtml(g.control) +
+                '</span><div class="small text-muted mt-1">' +
+                escapeHtml(g.domain) +
+                " · currently: " +
+                escapeHtml(g.label) +
+                "</div></li>"
+              );
+            })
+            .join("")
+        : '<p class="text-muted mt-3">No major gaps detected.</p>';
 
-    DOMAINS.forEach(function (domain) {
-      var scores = domain.questions.map(function (q) {
-        var raw = answers[q.id];
-        if (raw === null || isNaN(raw)) raw = 0;
-        return { question: q, raw: raw, pct: scoreToPct(raw) };
-      });
-      var avgRaw = scores.reduce(function (s, x) { return s + x.raw; }, 0) / scores.length;
-      var pct = scoreToPct(avgRaw);
-      domainResults.push({
-        id: domain.id,
-        name: domain.name,
-        weight: domain.weight,
-        pct: pct,
-        tone: toneForScore(pct),
-        questions: scores
-      });
-      totalWeight += domain.weight;
-      weightedSum += pct * domain.weight;
-      scores.forEach(function (s) {
-        allQuestions.push(Object.assign({ domain: domain.name }, s));
-      });
-    });
+    var meta = "";
+    if (q.full_name || q.company) {
+      meta =
+        '<p class="text-muted small mb-3">Prepared for ' +
+        escapeHtml(q.full_name || "you") +
+        (q.company ? " · " + escapeHtml(q.company) : "") +
+        (q.next_audit_date ? " · next review " + escapeHtml(q.next_audit_date) : "") +
+        "</p>";
+    }
 
-    var overall = Math.round(weightedSum / totalWeight);
-    var gaps = allQuestions
-      .filter(function (q) { return q.raw <= 1; })
-      .sort(function (a, b) {
-        return a.raw - b.raw || a.question.control.localeCompare(b.question.control);
-      })
-      .slice(0, 5);
+    host.innerHTML =
+      '<div class="card assess-card p-4 mb-4 text-center">' +
+      '<div class="row align-items-center">' +
+      '<div class="col-md-4"><div class="score-ring tone-' +
+      t +
+      '"><div class="num">' +
+      Math.round(r.overall_score) +
+      '%</div><div class="lbl">Readiness</div></div></div>' +
+      '<div class="col-md-8 text-md-left mt-3 mt-md-0"><h4 class="font-weight-bold">Verdict</h4><p class="lead">' +
+      escapeHtml(r.verdict) +
+      "</p>" +
+      meta +
+      '<p class="text-muted small mb-0">Weighted aggregate across 6 domains, mirroring how auditors weight assurance areas (domain model v1.1).</p></div>' +
+      "</div></div>" +
+      '<div class="card assess-card p-4 mb-4"><h4 class="font-weight-bold"><i class="fas fa-chart-bar mr-2" style="color:var(--accent-500)"></i>Domain breakdown</h4>' +
+      bars +
+      "</div>" +
+      '<div class="row">' +
+      '<div class="col-md-6 mb-4"><div class="card assess-card p-4 h-100"><h4 class="font-weight-bold"><i class="fas fa-bullseye mr-2" style="color:var(--accent-500)"></i>Top gaps to fix first</h4><ul class="list-unstyled mt-3">' +
+      gaps +
+      "</ul></div></div>" +
+      '<div class="col-md-6 mb-4"><div class="card assess-card p-4 h-100" style="background:var(--navy-800);color:#fff"><h4 class="font-weight-bold" style="color:#fff">Turn this score into audit-ready evidence</h4><p class="mt-3" style="color:rgba(255,255,255,0.8)">KontrolIQ continuously collects control signals, evaluates your posture, and produces regulator-ready evidence — without moving sensitive data out of your environment.</p><ul class="mt-3" style="color:rgba(255,255,255,0.85)"><li>Continuous evidence collection (no more spreadsheet chase)</li><li>Remediation steps with owners and deadlines</li><li>Audit-ready reports mapped to Ghana DPA, ISO 27001 &amp; SOC 2</li></ul><a href="' +
+      calendlyUrl(q) +
+      '" target="_blank" rel="noopener" class="btn btn-accent btn-lg btn-block mt-3"><i class="far fa-calendar mr-2"></i>Book a 20-min readiness review</a></div></div>' +
+      "</div>";
 
-    return {
-      overall: overall,
-      tone: toneForScore(overall),
-      domains: domainResults,
-      gaps: gaps
-    };
+    host.scrollIntoView({ behavior: "smooth" });
   }
 
-  function buildPayload(type, data, scores) {
+  function showFormError(msg) {
+    var e = document.getElementById("formError");
+    if (e) {
+      e.textContent = msg;
+      e.style.display = "block";
+    }
+  }
+
+  function saveReportLocally(report) {
+    var id = "kq_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    try {
+      sessionStorage.setItem("kq_report_" + id, JSON.stringify(report));
+      sessionStorage.setItem(STORAGE_REPORT, id);
+    } catch (e) {}
+    return id;
+  }
+
+  function loadReportLocally(id) {
+    try {
+      var raw = sessionStorage.getItem("kq_report_" + id);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function buildAppsScriptPayload(type, qualification, report) {
     var utm = getUtm();
-    var gaps = scores
-      ? scores.gaps.map(function (g) {
-          return g.question.control + ": " + g.question.text;
+    var fw = qualification.frameworks || [];
+    if (typeof fw === "string") fw = fw ? fw.split(",") : [];
+    var gaps = report
+      ? (report.top_gaps || []).map(function (g) {
+          return g.control + " (" + g.domain + "): " + g.label;
         })
       : [];
-    var tier = scores
-      ? qualificationTier(scores.overall, data.next_audit_date)
-      : "nurture";
-
+    var score = report ? Math.round(report.overall_score) : null;
     return {
       submitted_at: new Date().toISOString(),
       type: type,
       contact: {
-        full_name: data.full_name,
-        email: data.email,
-        company: data.company,
-        role: data.role,
-        message: data.message || ""
+        full_name: qualification.full_name || "",
+        email: qualification.email || "",
+        company: qualification.company || "",
+        role: qualification.role || "",
+        message: qualification.message || ""
       },
       qualification: {
-        next_audit_date: data.next_audit_date,
-        frameworks: (data.frameworks || []).map(function (f) {
+        next_audit_date: qualification.next_audit_date || "",
+        frameworks: fw.map(function (f) {
           return FRAMEWORK_LABELS[f] || f;
         }),
-        cloud_provider: CLOUD_LABELS[data.cloud_provider] || data.cloud_provider,
-        evidence_process: EVIDENCE_LABELS[data.evidence_process] || data.evidence_process,
-        team_size: data.team_size
+        cloud_provider: CLOUD_LABELS[qualification.cloud_provider] || qualification.cloud_provider || "",
+        evidence_process:
+          EVIDENCE_LABELS[qualification.evidence_process] || qualification.evidence_process || "",
+        team_size: qualification.team_size || ""
       },
       attribution: {
         utm_source: utm.utm_source || "",
@@ -371,14 +496,11 @@
         utm_content: utm.utm_content || "",
         ref: utm.ref || ""
       },
-      readiness_score: scores ? scores.overall : null,
-      qualification_tier: tier,
-      priority_gaps: gaps,
-      domain_scores: scores
-        ? scores.domains.map(function (d) {
-            return { id: d.id, name: d.name, pct: d.pct };
-          })
-        : []
+      readiness_score: score,
+      qualification_tier: report
+        ? qualificationTier(score, qualification.next_audit_date)
+        : "nurture",
+      priority_gaps: gaps
     };
   }
 
@@ -393,10 +515,7 @@
   function submitLead(payload) {
     saveLeadLocally(payload);
     var endpoint = CFG.formEndpoint || "";
-    if (!endpoint) {
-      return Promise.resolve({ ok: false, skipped: true });
-    }
-    /* Apps Script web apps often require no-cors / text; try JSON first */
+    if (!endpoint) return Promise.resolve({ ok: false, skipped: true });
     return fetch(endpoint, {
       method: "POST",
       mode: "cors",
@@ -407,246 +526,161 @@
         return { ok: res.ok || res.type === "opaque", status: res.status };
       })
       .catch(function () {
-        /* Fallback: no-cors so submit still reaches Apps Script */
         return fetch(endpoint, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
-        }).then(function () {
-          return { ok: true, opaque: true };
-        }).catch(function () {
-          return { ok: false, error: true };
-        });
+        })
+          .then(function () {
+            return { ok: true, opaque: true };
+          })
+          .catch(function () {
+            return { ok: false, error: true };
+          });
       });
-  }
-
-  function calendlyUrl(data) {
-    var base = CFG.calendlyUrl || "https://calendly.com/mainootechnologies";
-    var utm = getUtm();
-    var params = new URLSearchParams();
-    if (data && data.full_name) params.set("name", data.full_name);
-    if (data && data.email) params.set("email", data.email);
-    if (utm.utm_source) params.set("utm_source", utm.utm_source);
-    params.set("utm_medium", utm.utm_medium || "assessment");
-    params.set("utm_campaign", utm.utm_campaign || "readiness-checklist");
-    if (utm.utm_content) params.set("utm_content", utm.utm_content);
-    var qs = params.toString();
-    return qs ? base + "?" + qs : base;
-  }
-
-  function renderReportHtml(data, scores) {
-    var fwLabels = (data.frameworks || [])
-      .map(function (f) { return FRAMEWORK_LABELS[f] || f; })
-      .join(", ") || "Not specified";
-
-    var html = '<div class="report-card mb-4">';
-    html += '<div class="text-center mb-4">';
-    html += '<div class="score-ring tone-' + scores.tone + '">';
-    html += '<div class="num">' + scores.overall + '</div>';
-    html += '<div class="lbl">/ 100</div></div>';
-    html += '<h3 class="font-weight-bold mt-3 mb-1">Audit Readiness Snapshot</h3>';
-    html += '<p class="report-meta mb-0">Prepared for ' + escapeHtml(data.full_name);
-    if (data.company) html += " · " + escapeHtml(data.company);
-    html += "</p></div>";
-
-    html += '<div class="row mb-4">';
-    html += metaCol("Frameworks", fwLabels);
-    html += metaCol("Next review", formatDate(data.next_audit_date));
-    html += metaCol("Cloud", CLOUD_LABELS[data.cloud_provider] || data.cloud_provider || "—");
-    html += metaCol("Evidence today", EVIDENCE_LABELS[data.evidence_process] || data.evidence_process || "—");
-    html += "</div>";
-
-    html += '<h5 class="font-weight-bold mb-3">Domain breakdown</h5>';
-    scores.domains.forEach(function (d) {
-      html += '<div class="mb-3">';
-      html += '<div class="d-flex justify-content-between small mb-1">';
-      html += '<span class="font-weight-bold">' + d.name + "</span>";
-      html += "<span>" + d.pct + "%</span></div>";
-      html +=
-        '<div class="domain-bar-track"><div class="domain-bar-fill fill-' +
-        d.tone +
-        '" style="width:' +
-        d.pct +
-        '%"></div></div></div>';
-    });
-
-    html += '<h5 class="font-weight-bold mt-4 mb-2">Top gaps to address first</h5>';
-    if (scores.gaps.length) {
-      html += '<div class="mb-3">';
-      scores.gaps.forEach(function (g) {
-        html +=
-          '<span class="gap-chip">' +
-          g.question.control +
-          " · " +
-          escapeHtml(g.question.text) +
-          "</span>";
-      });
-      html += "</div>";
-    } else {
-      html +=
-        '<p class="text-muted small">No critical gaps flagged — focus on maintaining continuous evidence collection.</p>';
-    }
-
-    html +=
-      '<p class="small text-muted mt-4 mb-0">Indicative self-assessment across Security, Availability, Confidentiality, Privacy/Act 843, Processing Integrity, and Audit Readiness — not an audit or legal opinion.</p>';
-    html += "</div>";
-
-    html += '<div class="report-cta text-center mb-4">';
-    html += '<h4 class="font-weight-bold mb-2">Want a walkthrough of your gaps?</h4>';
-    html +=
-      '<p class="mb-3" style="opacity:0.85">Book a 20-minute design-partner session. We\'ll map your readiness score to a sovereign BYOC pilot plan.</p>';
-    html +=
-      '<a class="btn btn-accent btn-lg px-4 mr-2 mb-2" href="' +
-      calendlyUrl(data) +
-      '" target="_blank" rel="noopener"><i class="far fa-calendar mr-2"></i>Schedule a readiness demo</a>';
-    html +=
-      '<a class="btn btn-outline-accent btn-lg px-4 mb-2" href="contact.html" style="background:transparent;color:#fff;border-color:#fff;">Talk to us</a>';
-    html += "</div>";
-    return html;
-  }
-
-  function metaCol(label, value) {
-    return (
-      '<div class="col-6 col-md-3 mb-3"><div class="small text-muted text-uppercase">' +
-      label +
-      '</div><div class="font-weight-bold">' +
-      escapeHtml(value) +
-      "</div></div>"
-    );
-  }
-
-  function saveReport(payload) {
-    var id = "kq_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-    try {
-      sessionStorage.setItem("kq_report_" + id, JSON.stringify(payload));
-      sessionStorage.setItem(STORAGE_REPORT, id);
-    } catch (e) {}
-    return id;
-  }
-
-  function loadReport(id) {
-    try {
-      var raw = sessionStorage.getItem("kq_report_" + id);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function showError(el, msg) {
-    if (!el) return;
-    el.textContent = msg;
-    el.style.display = "block";
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-
-  function hideError(el) {
-    if (el) el.style.display = "none";
-  }
-
-  function handleAssessSubmit(e) {
-    e.preventDefault();
-    var form = e.target;
-    var errEl = $("#formError");
-    hideError(errEl);
-
-    var data = readFormData(form);
-    if (!data.full_name || !data.email) {
-      showError(errEl, "Please enter your name and work email.");
-      return;
-    }
-
-    var missing = false;
-    DOMAINS.forEach(function (d) {
-      d.questions.forEach(function (q) {
-        if (data.answers[q.id] === null || isNaN(data.answers[q.id])) missing = true;
-      });
-    });
-    if (missing) {
-      showError(errEl, "Please answer all readiness questions before generating your report.");
-      return;
-    }
-
-    var scores = computeScores(data.answers);
-    var reportPayload = {
-      data: data,
-      scores: scores,
-      created_at: new Date().toISOString()
-    };
-    var reportId = saveReport(reportPayload);
-    var leadPayload = buildPayload("assessment", data, scores);
-
-    var btn = form.querySelector('[type="submit"]');
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating report…';
-    }
-
-    submitLead(leadPayload).finally(function () {
-      window.location.href = "report.html?id=" + encodeURIComponent(reportId);
-    });
-  }
-
-  function handleContactSubmit(e) {
-    e.preventDefault();
-    var form = e.target;
-    var errEl = $("#cErr");
-    hideError(errEl);
-    var data = readFormData(form);
-    if (!data.full_name || !data.email) {
-      showError(errEl, "Please enter your name and work email.");
-      return;
-    }
-    var btn = form.querySelector('[type="submit"]');
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "Sending…";
-    }
-    var payload = buildPayload("contact", data, null);
-    submitLead(payload).then(function () {
-      form.innerHTML =
-        '<div class="alert alert-success-soft mb-0">Thanks — we received your message and will follow up shortly.</div>';
-    });
-  }
-
-  function initReportPage() {
-    var container = $("#report");
-    if (!container) return;
-    var params = new URLSearchParams(window.location.search);
-    var id = params.get("id");
-    if (!id) {
-      try {
-        id = sessionStorage.getItem(STORAGE_REPORT);
-      } catch (e) {}
-    }
-    var payload = id ? loadReport(id) : null;
-    if (!payload) {
-      container.innerHTML =
-        '<div class="alert alert-warning">No report found. <a href="assess.html">Take the assessment</a> to generate your readiness snapshot.</div>';
-      return;
-    }
-    container.innerHTML = renderReportHtml(payload.data, payload.scores);
-    document.title = payload.scores.overall + "/100 Readiness | KontrolIQ";
   }
 
   function initAssessPage() {
     renderQuestions();
-    var form = $("#assessForm");
-    if (form) form.addEventListener("submit", handleAssessSubmit);
+    var form = document.getElementById("assessForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = document.getElementById("formError");
+      if (err) err.style.display = "none";
+
+      var qualification = collectQualification(form);
+      if (!qualification.full_name || !qualification.email) {
+        showFormError("Please enter your name and work email.");
+        return;
+      }
+
+      var missing = QUESTIONS.filter(function (q) {
+        return !document.querySelector('input[name="' + q.id + '"]:checked');
+      });
+      if (
+        missing.length &&
+        !window.confirm(
+          "You left " +
+            missing.length +
+            " question(s) unanswered. They will be scored as 0 (not in place). Continue?"
+        )
+      ) {
+        return;
+      }
+
+      var answers = collectAnswers();
+      var report = scoreReadiness(answers, qualification);
+      var reportId = saveReportLocally(report);
+      var leadPayload = buildAppsScriptPayload("assessment", qualification, report);
+
+      var btn = form.querySelector("button[type=submit]");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Calculating…';
+      }
+
+      submitLead(leadPayload).finally(function () {
+        // Prefer dedicated report page (shareable deep link within session)
+        if (location.pathname.indexOf("assess.html") !== -1) {
+          window.location.href = "report.html?id=" + encodeURIComponent(reportId);
+          return;
+        }
+        form.style.display = "none";
+        renderReport(report);
+        if (history.replaceState) {
+          history.replaceState({}, "", "report.html?id=" + reportId);
+        }
+      });
+    });
+  }
+
+  function initReportPage() {
+    var host = document.getElementById("report");
+    if (!host) return;
+    var params = new URLSearchParams(location.search);
+    var rid = params.get("id");
+    if (!rid) {
+      try {
+        rid = sessionStorage.getItem(STORAGE_REPORT);
+      } catch (e) {}
+    }
+    if (rid) {
+      var stored = loadReportLocally(rid);
+      if (stored) {
+        renderReport(stored);
+        return;
+      }
+    }
+    // No stored report: show sample so preview/demo is never blank
+    var sample = {
+      q1: 2,
+      q2: 1,
+      q3: 3,
+      q4: 0,
+      q5: 2,
+      q6: 1,
+      q7: 0,
+      q8: 1,
+      q9: 2,
+      q10: 2,
+      q11: 1,
+      q12: 0
+    };
+    if (!rid) {
+      renderReport(
+        scoreReadiness(sample, { company: "Sample Co.", role: "Compliance Lead", full_name: "Sample User" })
+      );
+    } else {
+      host.innerHTML =
+        '<div class="alert alert-warning">Report not found. <a href="assess.html">Take the assessment</a></div>';
+    }
   }
 
   function initContactPage() {
-    var form = $("#contactForm");
-    if (form) form.addEventListener("submit", handleContactSubmit);
+    var cform = document.getElementById("contactForm");
+    if (!cform) return;
+    cform.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var qualification = collectQualification(cform);
+      if (!qualification.full_name || !qualification.email) {
+        var e2 = document.getElementById("cErr");
+        if (e2) {
+          e2.textContent = "Please enter your name and work email.";
+          e2.style.display = "block";
+        }
+        return;
+      }
+      var btn = cform.querySelector('[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+      }
+      var payload = buildAppsScriptPayload("contact", qualification, null);
+      submitLead(payload).then(function () {
+        cform.innerHTML =
+          '<div class="alert alert-success mb-0"><strong>Thanks — we\'ve got your message.</strong> We\'ll be in touch within one business day.</div>';
+      });
+    });
   }
 
   function init() {
     captureUtm();
     var page = document.body && document.body.getAttribute("data-kq-page");
-    if (page === "assess") initAssessPage();
-    else if (page === "report") initReportPage();
-    else if (page === "contact") initContactPage();
+    var path = location.pathname || "";
+
+    if (page === "assess" || path.indexOf("assess.html") !== -1) {
+      initAssessPage();
+    }
+    if (page === "report" || path.indexOf("report.html") !== -1) {
+      initReportPage();
+    }
+    if (page === "contact" || path.indexOf("contact.html") !== -1) {
+      initContactPage();
+    }
+    // Landing page only needs UTM capture (already done)
   }
 
   if (document.readyState === "loading") {
