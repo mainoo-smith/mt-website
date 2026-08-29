@@ -9,7 +9,7 @@ Implements the flow documented in Notion: **Website Revenue Funnel — Ops Runbo
 | Path | Purpose |
 | --- | --- |
 | `/assessment/` | Lead-magnet landing (LinkedIn CTA destination) |
-| `/assessment/assess.html` | 12-question form + qualification fields |
+| `/assessment/assess.html` | 12-question form (Perplexity domain model v1.1) + qualification |
 | `/assessment/report.html` | Instant score /100 + domain gaps + Calendly CTA |
 | `/assessment/contact.html` | Lead-capture contact form |
 
