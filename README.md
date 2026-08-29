@@ -21,6 +21,12 @@ https://www.mainootechnologies.com/assessment/assess.html?utm_source=linkedin&ut
 
 ### Lead backend (Google Sheets + Apps Script)
 
+Full deploy steps: [`ops/README.md`](ops/README.md). After you have the `/exec` URL:
+
+```bash
+./ops/wire-endpoint.sh 'https://script.google.com/macros/s/YOUR_ID/exec'
+```
+
 1. Create spreadsheet **KontrolIQ Leads**
 2. Extensions → Apps Script → paste `ops/Code.gs` → Save
 3. Run `setupSheet()` once (authorize)

@@ -1,0 +1,18 @@
+{
+  "name": "kontroliq-lead-capture",
+  "version": "1.0.0",
+  "description": "clasp tooling for KontrolIQ Apps Script lead capture",
+  "main": "index.js",
+  "scripts": {
+    "login": "clasp login",
+    "push": "clasp push --rootDir apps-script",
+    "open": "clasp open --rootDir apps-script"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@google/clasp": "^3.4.1"
+  },
+  "private": true
+}
