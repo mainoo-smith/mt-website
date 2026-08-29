@@ -1,9 +1,4 @@
-/**
- * KontrolIQ lead magnet — client logic
- * Scoring/domains/questions from Perplexity app.js (mirrors app/scoring.py).
- * Lead capture adapted for static GitHub Pages → Google Apps Script
- * (see js/funnel-config.js + ops/Code.gs + Notion Ops Runbook).
- */
+/** KontrolIQ assessment scoring + lead capture (static site). */
 (function () {
   "use strict";
 
