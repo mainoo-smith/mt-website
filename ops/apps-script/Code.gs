@@ -53,8 +53,13 @@ function doPost(e) {
     }
     var payload = JSON.parse(e.postData.contents);
     var isTest = isTestOrSmokePayload_(payload);
-    var row = payloadToRow(payload, isTest);
     var sheet = getSheet();
+
+    if (isDuplicateLead_(sheet, payload)) {
+      return jsonResponse({ ok: true, duplicate: true, test: isTest });
+    }
+
+    var row = payloadToRow(payload, isTest);
     sheet.appendRow(row);
     var rowNum = sheet.getLastRow();
 
@@ -96,6 +101,24 @@ function shouldSendEmail1_(payload) {
   if (type !== "assessment" && type !== "contact") return false;
   if (type === "assessment" && payload.readiness_score == null) return false;
   return true;
+}
+
+/** Ignore rapid duplicate POSTs (beacon + report-page retry). */
+function isDuplicateLead_(sheet, payload) {
+  var email = payload.contact && payload.contact.email;
+  if (!email) return false;
+  var type = (payload.type || "").toLowerCase();
+  var score = payload.readiness_score;
+  var data = sheet.getDataRange().getValues();
+  var now = Date.now();
+  for (var i = data.length - 1; i >= 1 && i >= data.length - 20; i--) {
+    if (String(data[i][3] || "").toLowerCase() !== String(email).toLowerCase()) continue;
+    if (String(data[i][1] || "").toLowerCase() !== type) continue;
+    if (score != null && data[i][11] !== "" && Number(data[i][11]) !== Number(score)) continue;
+    var submitted = new Date(data[i][0]).getTime();
+    if (!isNaN(submitted) && now - submitted < 180000) return true;
+  }
+  return false;
 }
 
 function payloadToRow(p, isTest) {

@@ -507,13 +507,34 @@
     } catch (e) {}
   }
 
-  function submitLead(payload) {
+  function submitLead(payload, opts) {
+    opts = opts || {};
     saveLeadLocally(payload);
     var endpoint = CFG.formEndpoint || "";
     if (!endpoint) return Promise.resolve({ ok: false, skipped: true });
 
     var body = JSON.stringify(payload);
     var headers = { "Content-Type": "text/plain;charset=utf-8" };
+
+    function postBeacon() {
+      try {
+        if (navigator.sendBeacon) {
+          var blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+          if (navigator.sendBeacon(endpoint, blob)) {
+            return Promise.resolve({ ok: true, beacon: true });
+          }
+        }
+      } catch (e) {}
+      return Promise.resolve({ ok: false, error: true });
+    }
+
+    // sendBeacon survives page navigation — use it when redirecting to report.html.
+    if (opts.preferBeacon) {
+      return postBeacon().then(function (result) {
+        if (result.ok) return result;
+        return postNoCors();
+      });
+    }
 
     // Apps Script web apps answer POST with a 302 redirect. CORS fetch treats
     // that as a failed response and never reaches our no-cors fallback, so the
@@ -529,21 +550,28 @@
       });
     }
 
-    function postBeacon() {
-      try {
-        if (navigator.sendBeacon) {
-          var blob = new Blob([body], { type: "text/plain;charset=utf-8" });
-          if (navigator.sendBeacon(endpoint, blob)) {
-            return Promise.resolve({ ok: true, beacon: true });
-          }
-        }
-      } catch (e) {}
-      return Promise.resolve({ ok: false, error: true });
-    }
-
     return postNoCors().catch(function () {
       return postBeacon();
     });
+  }
+
+  function markLeadPending(reportId, payload) {
+    try {
+      sessionStorage.setItem("kq_pending_" + reportId, JSON.stringify(payload));
+    } catch (e) {}
+  }
+
+  function retryPendingLead(reportId, report) {
+    if (!reportId || !report || !report.qualification) return;
+    try {
+      if (sessionStorage.getItem("kq_synced_" + reportId)) return;
+      var raw = sessionStorage.getItem("kq_pending_" + reportId);
+      var payload = raw ? JSON.parse(raw) : buildAppsScriptPayload("assessment", report.qualification, report);
+      submitLead(payload, { preferBeacon: false }).then(function () {
+        sessionStorage.setItem("kq_synced_" + reportId, "1");
+        sessionStorage.removeItem("kq_pending_" + reportId);
+      });
+    } catch (e) {}
   }
 
   function initAssessPage() {
@@ -580,6 +608,7 @@
       var report = scoreReadiness(answers, qualification);
       var reportId = saveReportLocally(report);
       var leadPayload = buildAppsScriptPayload("assessment", qualification, report);
+      markLeadPending(reportId, leadPayload);
 
       var btn = form.querySelector("button[type=submit]");
       if (btn) {
@@ -587,8 +616,8 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Calculating…';
       }
 
-      submitLead(leadPayload).finally(function () {
-        // Brief pause so the POST/beacon can flush before navigation aborts it.
+      submitLead(leadPayload, { preferBeacon: true }).finally(function () {
+        // Brief pause so the beacon/POST can flush before navigation aborts it.
         var go = function () {
           // Prefer dedicated report page (shareable deep link within session)
           if (location.pathname.indexOf("assess.html") !== -1) {
@@ -601,7 +630,7 @@
             history.replaceState({}, "", "report.html?id=" + reportId);
           }
         };
-        setTimeout(go, 600);
+        setTimeout(go, 1200);
       });
     });
   }
@@ -620,6 +649,7 @@
       var stored = loadReportLocally(rid);
       if (stored) {
         renderReport(stored);
+        retryPendingLead(rid, stored);
         return;
       }
     }
