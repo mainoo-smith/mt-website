@@ -511,29 +511,39 @@
     saveLeadLocally(payload);
     var endpoint = CFG.formEndpoint || "";
     if (!endpoint) return Promise.resolve({ ok: false, skipped: true });
-    return fetch(endpoint, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    })
-      .then(function (res) {
-        return { ok: res.ok || res.type === "opaque", status: res.status };
-      })
-      .catch(function () {
-        return fetch(endpoint, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        })
-          .then(function () {
-            return { ok: true, opaque: true };
-          })
-          .catch(function () {
-            return { ok: false, error: true };
-          });
+
+    var body = JSON.stringify(payload);
+    var headers = { "Content-Type": "text/plain;charset=utf-8" };
+
+    // Apps Script web apps answer POST with a 302 redirect. CORS fetch treats
+    // that as a failed response and never reaches our no-cors fallback, so the
+    // lead is dropped while the report still renders locally.
+    function postNoCors() {
+      return fetch(endpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: headers,
+        body: body
+      }).then(function () {
+        return { ok: true, opaque: true };
       });
+    }
+
+    function postBeacon() {
+      try {
+        if (navigator.sendBeacon) {
+          var blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+          if (navigator.sendBeacon(endpoint, blob)) {
+            return Promise.resolve({ ok: true, beacon: true });
+          }
+        }
+      } catch (e) {}
+      return Promise.resolve({ ok: false, error: true });
+    }
+
+    return postNoCors().catch(function () {
+      return postBeacon();
+    });
   }
 
   function initAssessPage() {
@@ -578,16 +588,20 @@
       }
 
       submitLead(leadPayload).finally(function () {
-        // Prefer dedicated report page (shareable deep link within session)
-        if (location.pathname.indexOf("assess.html") !== -1) {
-          window.location.href = "report.html?id=" + encodeURIComponent(reportId);
-          return;
-        }
-        form.style.display = "none";
-        renderReport(report);
-        if (history.replaceState) {
-          history.replaceState({}, "", "report.html?id=" + reportId);
-        }
+        // Brief pause so the POST/beacon can flush before navigation aborts it.
+        var go = function () {
+          // Prefer dedicated report page (shareable deep link within session)
+          if (location.pathname.indexOf("assess.html") !== -1) {
+            window.location.href = "report.html?id=" + encodeURIComponent(reportId);
+            return;
+          }
+          form.style.display = "none";
+          renderReport(report);
+          if (history.replaceState) {
+            history.replaceState({}, "", "report.html?id=" + reportId);
+          }
+        };
+        setTimeout(go, 600);
       });
     });
   }
