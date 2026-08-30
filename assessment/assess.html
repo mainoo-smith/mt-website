@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Compliance Readiness Assessment | KontrolIQ</title>
+  <meta name="description" content="12 questions across 6 compliance domains. Get an instant weighted readiness score mapped to Ghana DPA, ISO 27001, and SOC 2.">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/kq.css">
+</head>
+<body data-kq-page="assess">
+  <nav class="navbar navbar-expand-lg kq-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Kontrol<span class="kq-iq">IQ</span></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav"><i class="fas fa-bars text-white"></i></button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Overview</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="kq-hero py-4">
+    <div class="container text-center">
+      <span class="badge badge-accent">3-minute self-assessment</span>
+      <h1 class="mt-2">Compliance Readiness Assessment</h1>
+      <p class="lead">12 questions across 6 domains. Get an instant readiness score out of 100.</p>
+    </div>
+  </header>
+
+  <section class="kq-section">
+    <div class="container">
+      <div id="formError" class="alert alert-warning" style="display:none"></div>
+      <form id="assessForm" class="mb-5">
+        <div class="assess-card p-4 mb-4">
+          <h4 class="font-weight-bold">First, a few details</h4>
+          <p class="text-muted small">Your report is generated instantly. We use this to produce your assessment and follow up on next steps.</p>
+          <div class="row mt-3">
+            <div class="col-md-6 form-group">
+              <label>Full name *</label>
+              <input class="form-control" name="full_name" required autocomplete="name">
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Work email *</label>
+              <input type="email" class="form-control" name="email" required autocomplete="email">
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Company</label>
+              <input class="form-control" name="company" autocomplete="organization">
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Your role</label>
+              <select class="form-control" name="role">
+                <option value="">Select...</option>
+                <option>Founder / CEO</option>
+                <option>CTO / Head of Engineering</option>
+                <option>Compliance / Risk Officer</option>
+                <option>Security Lead</option>
+                <option>Operations / Finance</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Next audit or regulatory review date</label>
+              <input type="date" class="form-control" name="next_audit_date">
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Team size</label>
+              <select class="form-control" name="team_size">
+                <option>1-10</option><option>11-50</option><option>51-200</option><option>200+</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>Which frameworks apply?</label>
+              <select multiple class="form-control" name="frameworks" size="5">
+                <option value="ghana_dpa">Ghana Data Protection Act (Act 843)</option>
+                <option value="ndpa">Nigeria NDPA</option>
+                <option value="iso_27001">ISO/IEC 27001</option>
+                <option value="soc2">SOC 2</option>
+                <option value="not_sure">Not sure yet</option>
+              </select>
+              <small class="text-muted">Hold Ctrl/Cmd to select multiple.</small>
+            </div>
+            <div class="col-md-3 form-group">
+              <label>Cloud provider</label>
+              <select class="form-control" name="cloud_provider">
+                <option value="aws">AWS</option>
+                <option value="azure">Azure</option>
+                <option value="gcp">Google Cloud</option>
+                <option value="hybrid">Hybrid / on-prem</option>
+              </select>
+            </div>
+            <div class="col-md-3 form-group">
+              <label>How is evidence collected today?</label>
+              <select class="form-control" name="evidence_process">
+                <option value="email">Email / shared drives</option>
+                <option value="tickets">Ticketing system</option>
+                <option value="spreadsheets">Spreadsheets</option>
+                <option value="governance_tool">GRC / governance tool</option>
+                <option value="none">No formal process</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="assess-card p-4 mb-4">
+          <h4 class="font-weight-bold">Readiness questions</h4>
+          <p class="text-muted small">Rate each control: 0 = not in place, 1 = ad-hoc, 2 = defined, 3 = verified &amp; continuous.</p>
+          <div id="questions"></div>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-accent btn-lg px-5"><i class="fas fa-bolt mr-2"></i>Generate my readiness report</button>
+          <p class="small text-muted mt-2">You&apos;ll get an instant score, domain breakdown, and top gaps.</p>
+        </div>
+      </form>
+      <div id="report"></div>
+    </div>
+  </section>
+
+  <footer class="kq-footer py-4">
+    <div class="container text-center">
+      <p class="small mb-0"><a href="../index.html">mainootechnologies.com</a> · <a href="contact.html">Contact</a></p>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/funnel-config.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

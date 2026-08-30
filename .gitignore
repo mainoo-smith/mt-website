@@ -1,0 +1,7 @@
+node_modules/
+ops/node_modules/
+.clasprc.json
+ops/.clasprc.json
+ops/apps-script/.clasp.json
+*.log
+.DS_Store
