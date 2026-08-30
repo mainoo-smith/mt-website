@@ -52,29 +52,53 @@ function doPost(e) {
       return jsonResponse({ ok: false, error: "Empty body" });
     }
     var payload = JSON.parse(e.postData.contents);
-    var row = payloadToRow(payload);
+    var isTest = isTestOrSmokePayload_(payload);
+    var row = payloadToRow(payload, isTest);
     var sheet = getSheet();
     sheet.appendRow(row);
     var rowNum = sheet.getLastRow();
 
-    // Skip nurture for smoke tests
-    var email = payload.contact && payload.contact.email;
-    var isSmoke = payload.type === "smoke" || (email && /example\.com$/i.test(email));
-    if (email && !isSmoke) {
+    if (shouldSendEmail1_(payload)) {
       sendEmail1_(payload, rowNum);
     }
 
-    return jsonResponse({ ok: true, row: rowNum });
+    return jsonResponse({ ok: true, row: rowNum, test: isTest });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err) });
   }
 }
 
 function doGet(e) {
-  return jsonResponse({ ok: true, service: "KontrolIQ Lead Capture", version: "1.0.0" });
+  return jsonResponse({ ok: true, service: "KontrolIQ Lead Capture", version: "1.1.0" });
 }
 
-function payloadToRow(p) {
+/** Block smoke tests, placeholder domains, and incomplete payloads from sending mail. */
+function isTestEmail_(email) {
+  if (!email) return true;
+  var e = String(email).trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return true;
+  return /(@example\.com$|@test\.com$|@localhost$|^(test|demo|foo|bar)@)/i.test(e);
+}
+
+function isTestOrSmokePayload_(payload) {
+  var type = (payload.type || "").toLowerCase();
+  if (type === "smoke" || type === "test") return true;
+  var email = payload.contact && payload.contact.email;
+  return isTestEmail_(email);
+}
+
+function shouldSendEmail1_(payload) {
+  if (isTestOrSmokePayload_(payload)) return false;
+  var c = payload.contact || {};
+  if (!c.full_name || !String(c.full_name).trim()) return false;
+  if (!c.email || isTestEmail_(c.email)) return false;
+  var type = (payload.type || "").toLowerCase();
+  if (type !== "assessment" && type !== "contact") return false;
+  if (type === "assessment" && payload.readiness_score == null) return false;
+  return true;
+}
+
+function payloadToRow(p, isTest) {
   var c = p.contact || {};
   var q = p.qualification || {};
   var a = p.attribution || {};
@@ -100,10 +124,10 @@ function payloadToRow(p) {
     a.utm_campaign || "",
     a.utm_content || a.utm_medium || "",
     c.message || "",
-    new Date().toISOString(),
     "",
     "",
-    "active"
+    "",
+    isTest ? "test" : "active"
   ];
 }
 
@@ -176,7 +200,7 @@ function processNurtureQueue() {
 
   for (var i = 1; i < data.length; i++) {
     var row = rowToObject_(data[i]);
-    if (row.nurture_status !== "active" || !row.email) continue;
+    if (row.nurture_status !== "active" || !row.email || isTestEmail_(row.email)) continue;
 
     var submitted = new Date(row.submitted_at);
     var days = (now - submitted) / 86400000;
