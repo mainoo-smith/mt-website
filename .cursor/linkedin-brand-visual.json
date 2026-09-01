@@ -1,0 +1,35 @@
+{
+  "brand": "KontrolIQ",
+  "company": "Mainoo Technologies",
+  "template_name": "KontrolIQ LinkedIn — Weekly",
+  "preferred_size": {
+    "width": 1080,
+    "height": 1350,
+    "label": "linkedin-portrait"
+  },
+  "fallback_size": {
+    "width": 1080,
+    "height": 1080,
+    "label": "linkedin-square"
+  },
+  "colors": {
+    "accent": "#D37506",
+    "navy_900": "#000000",
+    "navy_800": "#161616",
+    "surface_0": "#FFFFFF",
+    "surface_50": "#F8F8F8",
+    "muted": "#666666"
+  },
+  "typography": {
+    "preferred_font": "Montserrat",
+    "fallback_fonts": ["Lato", "Arial", "Helvetica"]
+  },
+  "wordmark": {
+    "text": "KontrolIQ",
+    "accent_suffix": "IQ"
+  },
+  "cta_line": "Free 3-min readiness assessment",
+  "export_format": "png",
+  "canva_mcp_url": "https://mcp.canva.com/mcp",
+  "notes": "Create a Canva Brand Template named exactly template_name with autofill fields: headline, subline, bullet_1, bullet_2, bullet_3, cta, brand. Desktop Cursor must have Canva MCP authenticated."
+}
