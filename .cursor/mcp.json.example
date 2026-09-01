@@ -5,8 +5,8 @@
       "args": ["-y", "@roomi-fields/notebooklm-mcp"]
     },
     "Canva": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote@latest", "https://mcp.canva.com/mcp"]
+      "command": "mcp-remote",
+      "args": ["https://mcp.canva.com/mcp"]
     }
   }
 }

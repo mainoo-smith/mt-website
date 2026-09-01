@@ -1,7 +1,9 @@
 {
   "brand": "KontrolIQ",
   "company": "Mainoo Technologies",
-  "template_name": "KontrolIQ LinkedIn — Weekly",
+  "template_name": "KontrolIQ LinkedIn - Weekly",
+  "template_design_id": "DAHT7Nx_LoM",
+  "template_edit_url": "https://www.canva.com/design/DAHT7Nx_LoM/xFqJ-iWYxzx0sQ02bWLlcA/edit",
   "preferred_size": {
     "width": 1080,
     "height": 1350,
@@ -31,5 +33,5 @@
   "cta_line": "Free 3-min readiness assessment",
   "export_format": "png",
   "canva_mcp_url": "https://mcp.canva.com/mcp",
-  "notes": "Create a Canva Brand Template named exactly template_name with autofill fields: headline, subline, bullet_1, bullet_2, bullet_3, cta, brand. Desktop Cursor must have Canva MCP authenticated."
+  "notes": "Canonical weekly template: design_id DAHT7Nx_LoM (KontrolIQ LinkedIn - Weekly). Editable layers: headline, subline, bullet_1–3, cta, brand. Use copy-design + perform-editing-operations for weekly swaps — do NOT use generate-design (flattens text). Desktop Cursor must have Canva MCP authenticated."
 }
