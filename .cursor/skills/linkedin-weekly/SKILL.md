@@ -1,9 +1,11 @@
 ---
 name: linkedin-weekly
-description: Run the KontrolIQ LinkedIn weekly pipeline — refresh NotebookLM sources, landscape briefing, draft post, fact-check, generate a branded Canva infographic, and save a Notion publish pack. Use when the user asks to run LinkedIn weekly, Monday briefing, refresh NotebookLM sources, draft this week's LinkedIn post, generate post infographic, or automate the assessment funnel content cadence. Requires Desktop Cursor with NotebookLM + Canva MCP authenticated.
+description: Run the KontrolIQ weekly social pipeline — refresh NotebookLM sources, landscape briefing, draft LinkedIn post, atomize X posts from the same research, fact-check, generate a branded Canva infographic, and save a Notion publish pack (LinkedIn + X). Use when the user asks to run LinkedIn weekly, social weekly, X pack, Monday briefing, refresh NotebookLM sources, draft this week's post, or automate the assessment funnel content cadence. Requires Desktop Cursor with NotebookLM + Canva MCP authenticated.
 ---
 
-# KontrolIQ LinkedIn Weekly Pipeline (Desktop)
+# KontrolIQ Social Weekly Pipeline (LinkedIn + X)
+
+One NotebookLM refresh → **LinkedIn flagship** + **3 atomized X posts** + shared Canva graphic. Desktop only.
 
 ## When to use
 
@@ -18,6 +20,7 @@ Desktop Cursor only (NotebookLM + Canva need local OAuth/sessions). Do **not** e
 5. Read:
    - `.cursor/linkedin-source-watchlist.json` (research / seed URLs)
    - `.cursor/linkedin-brand-visual.json` (Canva brand + template settings)
+   - `.cursor/x-distribution.json` (X UTMs, schedule, slugs, engagement hints)
 
 ### Canva Desktop MCP (required config)
 
@@ -138,6 +141,7 @@ Based ONLY on the sources in this notebook (prefer the newest / most recent sour
 3. What misconceptions should we avoid in public posts?
 4. Suggest ONE LinkedIn post angle for this week that naturally leads to our free readiness assessment (do NOT mention pricing or self-serve signup).
 5. Suggest infographic copy: headline (≤8 words), subline (≤16 words), and exactly 3 short bullets suitable for a LinkedIn graphic.
+6. Suggest ONE sharp X hook (≤12 words) and ONE standalone insight tweet angle (operational, not inspirational).
 
 Cite sources. Keep it practical, not inspirational.
 ```
@@ -188,13 +192,57 @@ Flag:
 Suggest minimal edits only.
 ```
 
-Apply minimal safe edits. Also fact-check the proposed infographic headline/bullets the same way.
+Apply minimal safe edits. Also fact-check the proposed infographic headline/bullets and X copy the same way.
 
-### 7. Generate branded infographic (Canva) — REQUIRED when Canva is connected
+### 7. Atomize X pack (from same briefing — no second research pass)
+
+Read `.cursor/x-distribution.json`. Derive all X copy from the **Monday briefing + fact-checked LinkedIn draft** — do not run a separate NotebookLM query unless fact-checking X-specific claims.
+
+Produce **3 posts** for the week (copy-paste ready):
+
+#### 7a. Hook tweet (Wed)
+- ≤280 characters including link
+- Painful question or sharp observation (from briefing item 6 hook)
+- **Inline UTM** (X has no first-comment scheduling advantage)
+- 0–2 hashtags from config (`GhanaTech`, `FinTech` — max 2)
+- End with guardrail if space: "Indicative self-assessment — not an audit opinion."
+
+**UTM:**
+```
+https://www.mainootechnologies.com/assessment/assess.html?utm_source=x&utm_medium=social&utm_campaign={CAMPAIGN}&utm_content=hook-tweet
+```
+
+#### 7b. Insight tweet (Fri)
+- One operational bullet from infographic or briefing pain points
+- Inline UTM with `utm_content=insight-tweet`
+- Can attach **square Canva PNG** (1080×1080 crop of same weekly graphic) if exported
+
+#### 7c. 4-tweet thread (optional — same week)
+Compress the LinkedIn post into 4 tweets:
+1. Hook question
+2. One concrete pain point (grounded in sources)
+3. What the free assessment checks (6 domains, 12 controls, indicative)
+4. CTA + inline UTM (`utm_content=thread`) + guardrail line
+
+Each tweet ≤280 chars. Number tweets (1/4, 2/4…).
+
+#### 7d. News-reactive template (include only if refresh found breaking news)
+If step 3 imported new BoG/DPA/fintech sources this week:
+- Draft a quote-tweet template: `[PASTE NEWS URL]` + 2 sentences on **operational impact for Ghana fintech teams** + inline UTM (`utm_content=news-react`)
+- If no news, write `N/A — no breaking regulatory news this refresh`
+
+#### 7e. X reply scripts (2)
+- "Is this free?" → yes + link
+- "Is this an audit / legal advice?" → indicative self-assessment only + link
+
+#### 7f. Engagement note (for Smith, not auto-posted)
+From `x-distribution.json` `engagement_queries`, suggest **2 accounts or search terms** to reply to this week (substantive ops insight, not "great post").
+
+### 8. Generate branded infographic (Canva) — REQUIRED when Canva is connected
 
 Read `.cursor/linkedin-brand-visual.json`.
 
-#### 7a. Preferred path — Brand template autofill
+#### 8a. Preferred path — Brand template autofill
 1. Search Canva for template named in config (`template_name`, default: `KontrolIQ LinkedIn — Weekly`)
 2. If found and autofill is available: create a design from that template with fields:
    - `headline`
@@ -206,7 +254,7 @@ Read `.cursor/linkedin-brand-visual.json`.
 4. Run brand-check if the tool exists; fix obvious off-brand issues
 5. Export **PNG**
 
-#### 7b. Fallback — Generate from prompt
+#### 8b. Fallback — Generate from prompt
 If no brand template / autofill:
 
 ```
@@ -232,32 +280,48 @@ Do not include a long URL. Do not claim audit certification or regulator endorse
 
 Then export PNG. Brand-check if available.
 
-#### 7c. Optional NotebookLM Studio
+#### 8c. Optional NotebookLM Studio
 Only if Canva fails entirely: generate a NotebookLM Studio infographic as a rough visual, and label it **off-brand draft — replace with Canva**. Do not treat Studio output as final.
 
-#### 7d. Asset handling
+#### 8d. Asset handling
 - Prefer attaching/exporting PNG into the Notion publish pack (upload or link)
 - Record Canva design URL if returned
 - File name suggestion: `kontroliq-linkedin-{campaign}-{YYYYMMDD}.png`
+- **Also export or crop square 1080×1080** for X (`kontroliq-x-{campaign}-{YYYYMMDD}.png`) when Canva supports it — reuse same design
 
-### 8. Save Notion publish pack
+### 9. Save Notion publish pack
 
 Create a child page under LinkedIn-to-Revenue Campaign (`3cc4e335-fe54-8150-9dae-d27f1fb46912`) titled:
 
 `Week N Publish Pack — {campaign} (YYYY-MM-DD)`
 
 Include:
+
+**LinkedIn block**
 - **Source refresh summary** (synced / imported / skipped)
 - Status + publish checklist
-- Post body (copy-paste) with **in-body UTM**
+- Post body (copy-paste) with **in-body UTM** (`utm_source=linkedin`)
 - Scheduling note: attach Canva PNG; LinkedIn Schedule does not support first comment — UTM stays in body
 - Infographic: PNG / Canva link + headline/bullets used
 - 2–3 comment reply scripts
-- Week KPI targets (5 assessments / 2 hot / 1 Calendly / 3 DMs)
 
-### 9. Stop
+**X block** (atomized — same campaign code as LinkedIn)
+- Hook tweet (Wed) + UTM `utm_content=hook-tweet`
+- Insight tweet (Fri) + UTM `utm_content=insight-tweet`
+- 4-tweet thread (optional) + UTM `utm_content=thread`
+- News-reactive template or `N/A`
+- Square PNG note if using Canva visual on X
+- 2 X reply scripts
+- Engagement targets (2 suggested replies)
+- Posting schedule from `x-distribution.json`
 
-Do **not** publish or schedule to LinkedIn automatically. Tell Smith the Notion URL and ask for review / schedule in LinkedIn UI.
+**KPIs (combined)**
+- Week targets: 5 assessments / 2 hot / 1 Calendly / 3 DMs (any channel)
+- Note: track `utm_source` split in Leads sheet (`linkedin` vs `x`)
+
+### 10. Stop
+
+Do **not** publish or schedule to LinkedIn or X automatically. Tell Smith the Notion URL and ask for review / schedule in each platform's UI.
 
 ## Messaging guardrails (hard rules)
 
@@ -270,6 +334,8 @@ Do **not** publish or schedule to LinkedIn automatically. Tell Smith the Notion 
 Edit `.cursor/linkedin-source-watchlist.json` for research queries / seed URLs / import cap.
 
 Edit `.cursor/linkedin-brand-visual.json` for Canva template name, size, colors, and CTA line.
+
+Edit `.cursor/x-distribution.json` for X UTMs, schedule, hashtags, and engagement queries.
 
 ## Notion references
 

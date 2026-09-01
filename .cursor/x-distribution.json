@@ -1,0 +1,53 @@
+{
+  "platform": "x",
+  "notes": "Atomized from the same NotebookLM briefing + LinkedIn weekly draft. One research pass → LinkedIn flagship + 3 X posts. Used by .cursor/skills/linkedin-weekly/SKILL.md.",
+  "utm_source": "x",
+  "utm_medium": "social",
+  "bio_link": {
+    "utm_campaign": "bio",
+    "utm_content": "profile",
+    "url_template": "https://www.mainootechnologies.com/assessment/assess.html?utm_source=x&utm_medium=social&utm_campaign=bio&utm_content=profile"
+  },
+  "utm_template": "https://www.mainootechnologies.com/assessment/assess.html?utm_source=x&utm_medium=social&utm_campaign={CAMPAIGN}&utm_content={SLUG}",
+  "campaign_codes": [
+    "week1-builder",
+    "week2-visibility",
+    "week3-audit-prep",
+    "week4-evidence",
+    "sept-audit-readiness"
+  ],
+  "content_slugs": {
+    "hook": "hook-tweet",
+    "insight": "insight-tweet",
+    "thread": "thread",
+    "news_react": "news-react",
+    "visual": "visual-tweet",
+    "poll": "poll-dm"
+  },
+  "hashtags": ["GhanaTech", "FinTech"],
+  "max_hashtags_per_post": 2,
+  "posts_per_week": 3,
+  "schedule": {
+    "linkedin_flagship": "Tuesday 08:00-10:00 GMT",
+    "x_hook": "Wednesday 08:00-10:00 GMT",
+    "x_insight": "Friday 08:00-10:00 GMT",
+    "x_thread": "Optional — same week as LinkedIn, Thu or Sat"
+  },
+  "engagement": {
+    "daily_minutes": 15,
+    "min_substantive_replies_per_day": 2,
+    "engagement_queries": [
+      "Ghana fintech compliance audit",
+      "Bank of Ghana fintech regulation",
+      "Ghana cloud security startup",
+      "Ghana DPA data protection fintech"
+    ]
+  },
+  "rules": {
+    "link_placement": "inline_in_tweet",
+    "max_tweet_length": 280,
+    "thread_length": 4,
+    "reuse_canva_square": true,
+    "guardrail_footer": "Indicative self-assessment — not an audit opinion or legal advice."
+  }
+}
