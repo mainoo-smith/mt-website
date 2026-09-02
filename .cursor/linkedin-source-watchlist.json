@@ -1,0 +1,20 @@
+{
+  "notebook_name": "KontrolIQ — Ghana Compliance Landscape",
+  "refresh_cadence": "weekly",
+  "notes": "Used by .cursor/skills/linkedin-weekly before drafting. NotebookLM does not re-crawl old URL snapshots — refresh = research + import new sources (+ sync Drive if present).",
+  "research_queries": [
+    "Bank of Ghana Cyber and Information Security Directive 2026 fintech compliance",
+    "Ghana Data Protection Act fintech audit readiness 2026",
+    "Ghana payment service provider BoG licence compliance cloud security",
+    "Ghana fintech regulatory updates Board cyber oversight cloud hosting"
+  ],
+  "research_mode": "fast",
+  "max_new_sources_per_week": 6,
+  "seed_urls": [
+    "https://www.bog.gov.gh/wp-content/uploads/2020/06/Cyber-Information-Security-Directive-2026.pdf",
+    "https://gna.org.gh/2026/03/bog-heightens-effort-to-safeguard-ghanas-digital-financial-sector/",
+    "https://sustineriattorneys.com/2026/04/01/navigating-the-digital-frontier-fintech-regulation-and-compliance-in-ghana/",
+    "https://blog.norebase.com/payment-service-provider-licence-ghana/"
+  ],
+  "drive_folder_hint": "KontrolIQ-NotebookLM-Inbox (optional — sync Drive sources if notebook uses Google Drive)"
+}
